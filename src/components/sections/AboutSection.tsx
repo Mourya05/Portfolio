@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import myPhoto from "@/../public/myphoto.jpg";
 
 const typewriterText = `Initializing background process...
 I am a Computer Science engineer who operates at the intersection of low-level systems, hardware-software integration, and scalable industrial solutions.
@@ -92,12 +93,12 @@ export default function AboutSection() {
            <div className="absolute inset-0 bg-gradient-to-b from-indigo/50 to-obsidian/80 mix-blend-multiply z-10" />
            <div className="w-full h-full relative z-0">
              <Image 
-               src="/myphoto.jfif" 
+               src={myPhoto} 
                alt="Mourya Birru Biometric Scan" 
                fill 
                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 animate-glitch filter hue-rotate-[260deg] saturate-[2.5] brightness-[1.2] contrast-[1.2]"
-               onError={(e: any) => { e.currentTarget.style.display = 'none'; }}
+               priority
              />
              <div className="absolute inset-0 bg-lavender/30 mix-blend-hard-light pointer-events-none z-10" />
              <div className="absolute inset-0 bg-indigo/20 mix-blend-screen pointer-events-none z-10" />
