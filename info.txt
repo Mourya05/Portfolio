@@ -1,0 +1,249 @@
+Name: Mourya Birru
+Age: 20 years old
+Date of Birth: 30/08/2005
+Email: mourya.birru@gmail.com
+Primary input: AI Engineer and Data Scientist
+Description: I am a Computer Science engineer who operates at the intersection of low-level systems, hardware-software integration, and scalable industrial solutions. My work focuses on building the underlying logic that allows complex hardware to communicate with the digital world.
+
+Core Expertise & Industrial Impact
+Industrial Software Engineering (Kernin Eco Solutions): As a Software Engineer, I am currently architecting long-range communication signals to facilitate reliable data exchange between the company and farmers over vast distances. My focus is on creating robust, resilient connectivity in environments where traditional networking fails.
+
+Hardware Emulation & Nuclear Physics: I successfully developed a "soft clone" of a complex radiation-identification circuit. This project involved emulating sophisticated hardware to enable nuclear physics experiments, requiring deep integration between physical signal processing and software logic.
+
+Low-Level OS Development: Driven by a "metal-up" philosophy, I am building a custom 32-bit x86 operating system from scratch. This includes implementing core kernel functionalities like paging, segmentation, and context switching using i686-elf-gcc and QEMU.
+
+Specialized Systems & AI: My technical breadth extends to architecting Hyperledger Fabric blockchain solutions, securing Agentic AI through "Model Armor," and optimizing facial recognition systems for edge deployment on Raspberry Pi.
+
+The Philosophy
+I don’t just write applications; I build the systems they run on. Whether it’s writing a kernel, emulating a radiation detector, or engineering long-range signals for agri-tech, I specialize in solving the "hard problems" that exist at the boundary of hardware and software.
+
+Education:
+Geethanjali College of Engineering and Technology
+B.Tech in Computer Science and Engineering
+Sep 2023 – Jan 2027
+Grade: 8.25 GPA
+
+Resonance Eduventures Limited
+Intermediate , MPC
+Sep 2022 – Mar 2023
+Grade: 84.9%
+
+Rajiv Gandhi University of Knowledge Technologies Basara
+Pre-University Course, MPC
+May 2021 – Aug 2022
+
+Pallavi Model School
+Schooling
+2015 – 2021
+Grade: 88.7%
+
+
+Experience:
+Software Engineer - Avasan Chakra
+Apr 2026 - Present
+Software Design ,Web Engineering, Software Systems Engineering
+
+PR Head - Coding Club - Geethanjali College of Engineering and Technology
+Dec 2024 - Present
+
+Student Member - Indian Society for Technical Education
+Feb 2024 - Present · 2 yrs 3 mos
+Student Leadership
+
+Webmaster - IEEE Education Society (EdSoc)
+Aug 2025 - Dec 2025 · 5 mos
+Python (Programming Language), SQL, JavaScript, MySQL
+
+Student Ambassador - Google · Full-time
+Jul 2025 - Dec 2025 · 6 mos
+Communication, Student Leadership, Time Management
+
+Student Member - IEEE Computer Society
+Sep 2024 - Dec 2025 · 1 yr 4 mos
+Python (Programming Language), Logical Reasoning, Critical Thinking, C (Programming Language), Problem Solving, Mathematics, Analytical Skills, Computer Science
+
+Cyber Security Intern - Supraja Technologies · Internship
+May 2025 - Aug 2025 · 4 mos
+Vijayawada, Andhra Pradesh, India · On-site
+Cybersecurity, Penetration Testing, Ethical Hacking, Kali Linux, Vulnerability Scanning
+
+AI Intern - Agnirva.com Space Community · Internship
+Apr 2025 - Jun 2025 · 3 mos
+Generative AI and Artificial Intelligence (AI)
+
+Skills:
+Software Systems Engineering
+Software Design
+OpenCV
+Natural Language Processing (NLP)
+Linux
+GNU Make
+POSIX
+MongoDB
+Artificial Intelligence (AI)
+R (Programming Language)
+Deep Learning
+DSA
+Full-Stack Development
+MERN Stack
+C++
+Cybersecurity
+Digital Designs
+Probability
+Student Leadership
+Machine Learning
+English
+Logical Reasoning
+SQL
+Automation
+Java
+Object-Oriented Programming (OOP)
+Programming
+Data Science
+Presentations
+Power BI
+Power Query
+Data Analytics
+Data Modeling
+Data Visualization
+Generative AI
+Critical Thinking
+Communication
+Time Management
+Analytical Skills
+Prompt Engineering
+C (Programming Language)
+Python (Programming Language)
+Show all 13 details
+Microsoft Excel
+Microsoft PowerPoint
+Mathematics
+Problem Solving
+Data Analysis
+
+Projects:
+1. Title: Air Canvas | Computer Vision-Based Motion Tracking
+
+Description: Developed an interactive "Air Canvas" application that allows users to draw on a digital screen by moving their hands in the air. This project utilizes advanced Computer Vision techniques to map physical gestures to virtual coordinates in real-time.
+
+Hand Tracking: Leveraged OpenCV and MediaPipe to implement high-fidelity hand landmark detection and tracking.
+
+Real-Time Processing: Engineered a low-latency pipeline to process video frames, identify specific finger gestures (e.g., "Index finger up" to draw), and render smooth lines on a digital overlay.
+
+Color & Canvas Control: Built custom logic for color selection and "clear screen" functions triggered by specific spatial coordinates (virtual buttons).
+
+Skills: Python (Programming Language), OpenCV, +1 skill
+
+2. Title: Student Attendance System | Facial Recognition & Computer Vision
+
+Description: Developed an automated attendance system using Biometric Identification to replace traditional manual methods. The project leverages Computer Vision to recognize and log student attendance in real-time, significantly reducing administrative overhead and eliminating proxy attendance.
+
+Recognition Engine: Implemented OpenCV and the face_recognition library (based on dlib) to achieve high-accuracy facial encoding and matching.
+
+Real-Time Processing: Engineered a pipeline to capture video frames, detect multiple faces simultaneously, and verify identities against a pre-registered database.
+
+Database Integration: Designed a system to automatically log timestamps and attendance records into SQL Database.
+
+Skills: Python (Programming Language), OpenCV, +2 skills
+
+3. Title: Eat-IQ | AI-Powered Nutrition Tracking Platform
+
+Description: Developed Eat-IQ, a wellness application designed to help users make smarter dietary choices through data-driven insights. The project focuses on simplifying nutritional complexity into actionable information for everyday health management.
+
+Key Features: Built a comprehensive dashboard for tracking daily caloric intake, macronutrients, and hydration levels.
+
+Data Visualization: Integrated dynamic charts and progress bars to provide users with a visual representation of their nutritional trends over time.
+
+Architecture: Designed a clean, intuitive UI/UX to lower the barrier for consistent health logging and habit formation.
+
+Skills: React.js, Artificial Intelligence (AI), +2 skills
+
+4. Title: Career-Compass | Personalized Career Roadmap Tool
+
+Decription: Developed an interactive platform designed to help students and professionals navigate their career trajectories through data-driven insights. Career-Compass bridges the gap between current skill sets and industry demands by providing tailored roadmaps and resource recommendations.
+
+Key Features: Integrated a recommendation engine to suggest personalized career paths based on user interests and background.
+
+Tech Stack: TypeScript, React, Node.js, Python
+
+Outcome: Simplified the complex process of career planning into a user-friendly, visual experience.
+
+Skills: Artificial Intelligence (AI), Data Analysis, +1 skill
+
+5. Title: Custom Linux Shell Implementation | Systems Programming
+
+Description: Developed a functional Unix-like shell from scratch in C, providing a deep dive into how operating systems manage processes and user input. This project involved implementing the core read-eval-print loop (REPL) and handling the lifecycle of system processes.
+
+Process Management: Implemented process creation using fork(), program execution via exec(), and synchronization with wait().
+
+Command Parsing: Built a custom parser to handle user input, tokenize strings, and manage built-in commands vs. external binaries.
+
+Memory Safety: Managed low-level memory allocation and deallocation to ensure a leak-free execution environment.
+
+Skills: C (Programming Language), POSIX, +2 skills
+
+6. Title: Bitcoin-Predictor | Time Series Forecasting
+
+Description: Designed and implemented a predictive model to forecast Bitcoin price movements using historical market data. This project explores the application of machine learning in highly volatile financial markets, focusing on data preprocessing and feature engineering.
+
+Key Technical Contributions:
+
+Developed a [e.g., LSTM / Random Forest / ARIMA] model to analyze time-series data and predict future price trends.
+
+Performed extensive data cleaning and normalization using Pandas and NumPy to handle market noise.
+
+Visualized price trends and model accuracy using Matplotlib/Seaborn to evaluate performance metrics like RMSE and MAE.
+
+Skills: Machine Learning, Python (Programming Language), +1 skill
+
+7. Title: ChatBot-in-Python | Natural Language Processing
+
+Description: Developed an intelligent conversational agent using Python and NLP techniques to simulate human-like interactions. The project focuses on intent recognition and response generation, providing a foundation for automated customer support or personal assistants.
+
+NLP Implementation: Utilized SpaCy for text processing, tokenization, and lemmatization to understand user queries.
+
+Logic Engine: Built a generative model to match user inputs with appropriate responses.
+
+User Interface: Implemented a CLI interface for seamless user engagement.
+
+Skills: Python (Programming Language), Natural Language Processing (NLP), +1 skill
+
+8. Title: Banking System Management | Object-Oriented System Design
+
+Description: This project resembles a bank and it's basic functionalities. This is a beginner-level project written in C.
+
+The program performs following tasks:
+
+Create an account
+Deposit
+Withdrawl
+Check Balance
+Display Transaction History
+Display all accounts
+The changes once made in the data during execution are stored in a binary file and remain even if the execution is complete.
+
+Skills: C (Programming Language)
+
+9. Title: Training Center Management System | Enterprise Resource Planning (ERP)
+
+Description:This project deals with handling student data in a job training center. This a beginner-level project written in C language
+
+This program can perform the following functions: Student:
+
+Add a new student
+Show all students
+Search student
+Edit student profile
+Delete a student
+Delete all student
+Course:
+
+Add a new course
+Show all courses
+Search a course
+Edit a course
+Delete a course
+Delete all courses
+
+Skills: C (Programming Language)
+
