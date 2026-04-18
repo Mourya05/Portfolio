@@ -40,38 +40,40 @@ export default function AboutSection() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         
         {/* Left Registry Panel */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 order-2 lg:order-1">
           <div className="glass-panel p-6 rounded-xl font-mono text-xs text-ash tracking-widest uppercase flex flex-col gap-6">
             <h4 className="text-[10px] opacity-50 mb-2">METADATA_FIELDS</h4>
-            <div>
-              <div className="opacity-50 text-[9px]">LOCATION</div>
-              <div className="text-white">HYDERABAD, IN</div>
-            </div>
-            <div>
-              <div className="opacity-50 text-[9px]">UPTIME</div>
-              <div className="text-white">20_YEARS</div>
-            </div>
-            <div>
-              <div className="opacity-50 text-[9px]">BORN</div>
-              <div className="text-white">30_08_2005</div>
-            </div>
-            <div>
-              <div className="opacity-50 text-[9px]">STATUS</div>
-              <div className="text-white">B.TECH_CSE_STUDENT</div>
-            </div>
-            <div>
-              <div className="opacity-50 text-[9px]">EDUCATION</div>
-              <div className="text-white">GEETHANJALI_COLLEGE</div>
-            </div>
-            <div>
-              <div className="opacity-50 text-[9px]">PRIMARY_INPUT</div>
-              <div className="text-white">AI_ENGINEER_&_DATA_SCIENTIST</div>
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-6 lg:gap-6">
+              <div>
+                <div className="opacity-50 text-[9px]">LOCATION</div>
+                <div className="text-white text-[10px] sm:text-xs">HYDERABAD, IN</div>
+              </div>
+              <div>
+                <div className="opacity-50 text-[9px]">UPTIME</div>
+                <div className="text-white text-[10px] sm:text-xs">20_YEARS</div>
+              </div>
+              <div>
+                <div className="opacity-50 text-[9px]">BORN</div>
+                <div className="text-white text-[10px] sm:text-xs">30_08_2005</div>
+              </div>
+              <div>
+                <div className="opacity-50 text-[9px]">STATUS</div>
+                <div className="text-white text-[10px] sm:text-xs text-nowrap">B.TECH_CSE_STUDENT</div>
+              </div>
+              <div>
+                <div className="opacity-50 text-[9px]">EDUCATION</div>
+                <div className="text-white text-[10px] sm:text-xs">GEETHANJALI_COLLEGE</div>
+              </div>
+              <div>
+                <div className="opacity-50 text-[9px]">PRIMARY_INPUT</div>
+                <div className="text-white text-[10px] sm:text-xs">AI_ENGINEER_&_DATA_SCIENTIST</div>
+              </div>
             </div>
           </div>
 
           <div className="glass-panel p-6 rounded-xl flex flex-col gap-4">
              <div className="font-mono text-xs text-teal tracking-widest uppercase">INTEGRITY_CHECK</div>
-             <div className="w-full h-1 bg-white/10 mt-2 rounded-full overflow-hidden relative">
+             <div className="w-full h-1.5 bg-white/10 mt-2 rounded-full overflow-hidden relative">
               <motion.div 
                 className="absolute top-0 left-0 h-full bg-lavender shadow-[0_0_8px_rgba(161,138,255,0.8)]"
                 initial={{ width: "0%" }}
@@ -88,7 +90,7 @@ export default function AboutSection() {
         </div>
 
         {/* Center: Biometric ID */}
-        <div className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-[3/4] lg:aspect-auto">
+        <div className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-square sm:aspect-[4/5] lg:aspect-auto order-1 lg:order-2 h-[300px] sm:h-[400px] lg:h-auto">
            {/* Fallback pattern / image */}
            <div className="absolute inset-0 bg-gradient-to-b from-indigo/50 to-obsidian/80 mix-blend-multiply z-10" />
            <div className="w-full h-full relative z-0">
@@ -111,7 +113,7 @@ export default function AboutSection() {
         </div>
 
         {/* Right Code Panel */}
-        <div className="glass-panel p-6 rounded-xl flex flex-col font-mono text-xs">
+        <div className="glass-panel p-6 rounded-xl flex flex-col font-mono text-xs order-3">
           <div className="flex items-center gap-2 mb-6 border-b border-white/10 pb-4">
             <div className="flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
@@ -125,13 +127,13 @@ export default function AboutSection() {
             $ cat user_intent.txt
           </div>
           
-          <div className="text-ash/90 leading-relaxed whitespace-pre-wrap min-h-[200px]">
+          <div className="text-ash/90 leading-relaxed whitespace-pre-wrap min-h-[150px] sm:min-h-[200px] text-[10px] sm:text-xs">
              {typedText}
              <span className="animate-pulse">_</span>
           </div>
 
           <div className="mt-8 flex gap-3 text-teal">
-            $ <span className="text-ash/60 text-[10px] uppercase gap-2 flex flex-wrap">
+            $ <span className="text-ash/60 text-[9px] sm:text-[10px] uppercase gap-2 flex flex-wrap">
               <span className="bg-white/5 px-2 py-1 rounded">Neural_Arch</span>
               <span className="bg-white/5 px-2 py-1 rounded">Glassmorphism_Expert</span>
               <span className="bg-white/5 px-2 py-1 rounded">Ethical_AI</span>

@@ -136,8 +136,9 @@ export default function HeroSection() {
            initial={{ opacity: 0, y: 30 }}
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 1, delay: 0.2 }}
+           className="px-4"
         >
-          <h1 className="font-display font-bold text-5xl md:text-7xl lg:text-[5rem] leading-[1.1] tracking-[-0.02em] text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+          <h1 className="font-display font-bold text-3xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.1] tracking-[-0.02em] text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
             MOURYA BIRRU.<br />
             <span className="text-lavender neon-text-lavender">3RD YR CSE.</span><br />
             AI & DATA SCIENCE.
@@ -145,7 +146,7 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.p 
-          className="font-mono text-gray-300 text-xs md:text-md mt-8 max-w-lg tracking-widest leading-relaxed uppercase font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+          className="font-mono text-gray-300 text-[10px] sm:text-xs md:text-md mt-6 sm:mt-8 max-w-lg tracking-[0.15em] sm:tracking-widest leading-relaxed uppercase font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
@@ -155,18 +156,18 @@ export default function HeroSection() {
 
         {/* Buttons */}
         <motion.div 
-          className="mt-12 flex items-center gap-6 pointer-events-auto"
+          className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 pointer-events-auto w-full max-w-[280px] sm:max-w-none px-6"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
         >
-          <Link href="/projects">
-            <button className="bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian px-8 py-4 rounded-md font-mono text-xs uppercase tracking-widest font-bold hover-lift">
+          <Link href="/projects" className="w-full sm:w-auto">
+            <button className="w-full sm:w-auto bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian px-8 py-3.5 sm:py-4 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-widest font-bold hover-lift">
               Explore Projects
             </button>
           </Link>
-          <a href="/Mourya_Resume.pdf" target="_blank" rel="noopener noreferrer">
-            <button className="bg-black/60 backdrop-blur-xl border border-white/20 text-white px-8 py-4 rounded-md font-mono text-xs uppercase tracking-widest hover-lift shadow-2xl">
+          <a href="/Mourya_Resume.pdf" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+            <button className="w-full sm:w-auto bg-black/60 backdrop-blur-xl border border-white/20 text-white px-8 py-3.5 sm:py-4 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-widest hover-lift shadow-2xl">
               View Resume
             </button>
           </a>
