@@ -156,7 +156,7 @@ export default function HeroSection() {
 
         {/* Buttons */}
         <motion.div 
-          className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 pointer-events-auto w-full max-w-[280px] sm:max-w-none px-6"
+          className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto w-full max-w-[320px] sm:max-w-none px-6 mx-auto"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
