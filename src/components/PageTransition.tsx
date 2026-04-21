@@ -16,8 +16,20 @@ export default function PageTransition({ children }: { children: React.ReactNode
     );
     setBinaryStrings(strings);
 
-    const timer = setTimeout(() => setIsGlitching(false), 400);
-    return () => clearTimeout(timer);
+    const audio = new Audio("/glitch.mp3");
+    audio.playbackRate = 4.0;
+    audio.play().catch(e => console.log("Audio autoplay prevented:", e));
+
+    const timer = setTimeout(() => {
+      setIsGlitching(false);
+      audio.pause();
+      audio.currentTime = 0;
+    }, 400);
+    return () => {
+      clearTimeout(timer);
+      audio.pause();
+      audio.currentTime = 0;
+    };
   }, []);
 
   return (

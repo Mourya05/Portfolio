@@ -90,7 +90,13 @@ export default function AboutSection() {
         </div>
 
         {/* Center: Biometric ID */}
-        <div className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-square sm:aspect-[4/5] lg:aspect-auto order-1 lg:order-2 h-[300px] sm:h-[400px] lg:h-auto">
+        <motion.div 
+          initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+          whileInView={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+          transition={{ duration: 1.0, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-square sm:aspect-[4/5] lg:aspect-auto order-1 lg:order-2 h-[300px] sm:h-[400px] lg:h-auto"
+        >
            {/* Fallback pattern / image */}
            <div className="absolute inset-0 bg-gradient-to-b from-indigo/50 to-obsidian/80 mix-blend-multiply z-10" />
            <div className="w-full h-full relative z-0">
@@ -110,7 +116,7 @@ export default function AboutSection() {
            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 glass-panel rounded-md uppercase font-mono text-[9px] tracking-widest text-white border border-teal/30 shadow-[0_0_10px_rgba(0,229,255,0.2)] animate-pulse">
              ENTITY: MRY_BIRRU.EXT
            </div>
-        </div>
+        </motion.div>
 
         {/* Right Code Panel */}
         <div className="glass-panel p-6 rounded-xl flex flex-col font-mono text-xs order-3">

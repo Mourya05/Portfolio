@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PointerGlow from "@/components/PointerGlow";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-teal/30 overflow-x-hidden">
         <div className="fixed inset-0 bg-gradient-to-br from-[#000000] via-[#040406] to-[#08080C] pointer-events-none z-0" />
         <PointerGlow />
+        <BackgroundMusic />
         <Navigation />
         <Footer />
         <div className="relative z-10 w-full flex-1 flex flex-col pt-24">
