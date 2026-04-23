@@ -30,5 +30,5 @@ export default function BackgroundMusic() {
     }
   }, []);
 
-  return <audio ref={audioRef} src="/bgmusic.mp3" loop className="hidden" />;
+  return <audio ref={audioRef} src="/bgmusic.mp3" loop autoPlay className="hidden" />;
 }

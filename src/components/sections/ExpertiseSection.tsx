@@ -7,6 +7,7 @@ import { Points, PointMaterial } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
 import { useState, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { BashAnimation } from "./ProjectsSection";
 
 function EndlessCodeStream() {
   const ref = useRef<any>(null);
@@ -155,7 +156,7 @@ export default function ExpertiseSection() {
       skills: ['SYSTEMS_ARCH', 'DATA_EXCHANGE', 'AGRI_TECH', 'ROBUST_COMMS'],
       border: "border-l-teal",
       accent: "#00E5FF",
-      visual: EndlessCodeStream
+      visual: BashAnimation
     },
     {
       reg: "REG_02 // HARDWARE",
@@ -269,7 +270,7 @@ export default function ExpertiseSection() {
             {/* Visual element for the corner - adjusted for mobile */}
             <div className="absolute -top-12 -right-12 sm:-top-8 sm:-right-8 w-48 h-48 sm:w-64 sm:h-64 opacity-20 sm:opacity-30 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none">
                <Canvas camera={{ position: [0, 0, 4] }}>
-                 <cap.visual />
+                 <cap.visual isHovered={hoveredIndex === idx} />
                </Canvas>
             </div>
           </motion.div>
