@@ -8,6 +8,159 @@ import * as random from "maath/random/dist/maath-random.esm";
 import { useState, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { BashAnimation } from "./ProjectsSection";
+import SkillLogOverlay, { type CapabilitySkillData } from "../SkillLogOverlay";
+
+// ─── Per-capability skill registry data ───────────────────────────────────────
+const skillRegistry: CapabilitySkillData[] = [
+  {
+    reg: "REG_01 // INDUSTRIAL",
+    title: "INDUSTRIAL SOFTWARE ENGINEERING",
+    accent: "#00E5FF",
+    categories: [
+      {
+        label: "Languages",
+        tag: "LANG",
+        color: "#00E5FF",
+        items: ["C", "C++", "Python", "Bash / Shell Script"],
+      },
+      {
+        label: "Protocols & Comms",
+        tag: "PROTO",
+        color: "#39FF14",
+        items: ["LoRa / LoRaWAN", "MQTT", "UART / SPI / I2C", "TCP/IP Sockets"],
+      },
+      {
+        label: "Frameworks & Middleware",
+        tag: "FW",
+        color: "#A18AFF",
+        items: ["FreeRTOS", "Linux IPC (pipes, shmem)", "Protobuf / MsgPack"],
+      },
+      {
+        label: "Tools",
+        tag: "TOOLS",
+        color: "#94A3B8",
+        items: ["GCC Toolchain", "Make / CMake", "Valgrind", "Wireshark", "Git"],
+      },
+      {
+        label: "Concepts",
+        tag: "CONCEPTS",
+        color: "#FFD700",
+        items: ["Systems Architecture", "Scalable Middleware", "Agri-tech IoT", "Signal Reliability"],
+      },
+    ],
+  },
+  {
+    reg: "REG_02 // HARDWARE",
+    title: "HARDWARE EMULATION & PHYSICS",
+    accent: "#A18AFF",
+    categories: [
+      {
+        label: "Languages",
+        tag: "LANG",
+        color: "#A18AFF",
+        items: ["C", "Python", "VHDL (basic)", "Octave / MATLAB-like"],
+      },
+      {
+        label: "Emulation & Simulation",
+        tag: "SIM",
+        color: "#00E5FF",
+        items: ["QEMU", "Soft-cloning ADC/DAC logic", "Pulse-Height Analysis (PHA)", "MCA Emulation"],
+      },
+      {
+        label: "Physics Domains",
+        tag: "PHYS",
+        color: "#39FF14",
+        items: ["Nuclear Radiation Detection", "Signal Spectroscopy", "Geiger-Müller Counting", "Gamma Spectrum Analysis"],
+      },
+      {
+        label: "Libraries & Tools",
+        tag: "LIBS",
+        color: "#94A3B8",
+        items: ["NumPy / SciPy", "Matplotlib", "ROOT (CERN)", "Custom DSP Filters"],
+      },
+      {
+        label: "Concepts",
+        tag: "CONCEPTS",
+        color: "#FFD700",
+        items: ["Hardware-Software Co-design", "Latency Optimization", "Circuit Emulation", "Digital Signal Processing"],
+      },
+    ],
+  },
+  {
+    reg: "REG_03 // KERNEL",
+    title: "LOW-LEVEL OS DEVELOPMENT",
+    accent: "#94A3B8",
+    categories: [
+      {
+        label: "Languages",
+        tag: "LANG",
+        color: "#94A3B8",
+        items: ["C (i686-elf-gcc)", "x86 Assembly (NASM)", "Linker Scripts (ld)"],
+      },
+      {
+        label: "Kernel Subsystems",
+        tag: "KERN",
+        color: "#00E5FF",
+        items: ["GDT / IDT / TSS", "Memory Paging (CR0, CR3)", "System Calls (int 0x80)", "Context Switching", "VGA Framebuffer"],
+      },
+      {
+        label: "Toolchain",
+        tag: "TOOL",
+        color: "#39FF14",
+        items: ["i686-elf-gcc Cross Compiler", "NASM Assembler", "GNU ld", "QEMU Emulator", "GDB Remote Debug"],
+      },
+      {
+        label: "OS Concepts",
+        tag: "OS",
+        color: "#A18AFF",
+        items: ["Protected Mode (Ring 0–3)", "Physical / Virtual Memory", "IRQ & PIC Remapping", "ELF Loading", "Multiboot"],
+      },
+      {
+        label: "Security",
+        tag: "SEC",
+        color: "#FFD700",
+        items: ["Memory Safety", "Stack Canaries", "Privilege Separation", "DPL Enforcement"],
+      },
+    ],
+  },
+  {
+    reg: "REG_04 // SPECIALIZED",
+    title: "AI & DATA SCIENCE",
+    accent: "#00E5FF",
+    categories: [
+      {
+        label: "Languages",
+        tag: "LANG",
+        color: "#00E5FF",
+        items: ["Python", "SQL", "JavaScript (Node.js)"],
+      },
+      {
+        label: "ML / AI Frameworks",
+        tag: "AI",
+        color: "#A18AFF",
+        items: ["TensorFlow / Keras", "scikit-learn", "OpenCV", "SpaCy (NLP)", "LangChain / Agentic AI"],
+      },
+      {
+        label: "Data Science",
+        tag: "DATA",
+        color: "#39FF14",
+        items: ["NumPy / Pandas", "Matplotlib / Seaborn", "Feature Engineering", "Model Evaluation & Tuning"],
+      },
+      {
+        label: "Deployment & Edge",
+        tag: "EDGE",
+        color: "#FFD700",
+        items: ["TensorFlow Lite", "ONNX Runtime", "Raspberry Pi Inference", "Docker Containers"],
+      },
+      {
+        label: "Concepts",
+        tag: "CONCEPTS",
+        color: "#94A3B8",
+        items: ["Agentic AI Swarms", "Model Armor / AI Security", "Facial Recognition", "LLM Prompt Engineering", "Edge Compute Optimization"],
+      },
+    ],
+  },
+];
 
 function EndlessCodeStream() {
   const ref = useRef<any>(null);
@@ -146,14 +299,13 @@ function AgenticFace() {
 
 export default function ExpertiseSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeSkill, setActiveSkill] = useState<number | null>(null);
 
   const capabilities = [
     {
       reg: "REG_01 // INDUSTRIAL",
       title: "INDUSTRIAL SOFTWARE ENGINEERING",
       description: "Architecting long-range communication signals to facilitate reliable data exchange in environments where traditional networking fails.",
-      details: "Building the underlying logic for agri-tech solutions, focusing on signal stability and scalable middleware for industrial hardware.",
-      skills: ['SYSTEMS_ARCH', 'DATA_EXCHANGE', 'AGRI_TECH', 'ROBUST_COMMS'],
       border: "border-l-teal",
       accent: "#00E5FF",
       visual: BashAnimation
@@ -162,8 +314,6 @@ export default function ExpertiseSection() {
       reg: "REG_02 // HARDWARE",
       title: "HARDWARE EMULATION & PHYSICS",
       description: "Developing 'soft clones' of complex radiation-identification circuits to enable sophisticated nuclear physics experiments.",
-      details: "Emulating hardware-level logic gates and physical signal processing in software to bridge digital analysis with physical sensors.",
-      skills: ['SIGNAL_PROC', 'CIRCUIT_EMU', 'PHYSICS_LOGIC', 'LATENCY_OPT'],
       border: "border-l-lavender",
       accent: "#A18AFF",
       visual: SignalWave
@@ -172,8 +322,6 @@ export default function ExpertiseSection() {
       reg: "REG_03 // KERNEL",
       title: "LOW-LEVEL OS DEVELOPMENT",
       description: "Building a custom 32-bit x86 operating system from scratch, driven by a 'metal-up' philosophy.",
-      details: "Implementing core kernel functionalities including paging, segmentation, and context switching using i686-elf-gcc and QEMU.",
-      skills: ['KERNEL_ARCH', 'PAGING', 'X86_ASM', 'MEMORY_SAFETY'],
       border: "border-l-ash",
       accent: "#94A3B8",
       visual: CircuitLogic
@@ -182,18 +330,11 @@ export default function ExpertiseSection() {
       reg: "REG_04 // SPECIALIZED",
       title: "AI & DATA SCIENCE",
       description: "Architecting Agentic AI swarms, securing machine learning modules, and leveraging data science for industrial insights.",
-      details: "Developing Model Armor for AI security and optimizing facial recognition systems for edge deployment on low-power hardware.",
-      skills: ['AGENTIC_AI', 'MODEL_ARMOR', 'NLP', 'EDGE_COMPUTE'],
       border: "border-l-white/20",
       accent: "#00E5FF",
       visual: AgenticFace
     }
   ];
-
-  const handleToggle = (idx: number) => {
-    if (hoveredIndex === idx) setHoveredIndex(null);
-    else setHoveredIndex(idx);
-  };
 
   return (
     <section className="relative w-full min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-24 flex flex-col justify-center">
@@ -217,7 +358,7 @@ export default function ExpertiseSection() {
             transition={{ delay: idx * 0.1 }}
             onMouseEnter={() => setHoveredIndex(idx)}
             onMouseLeave={() => setHoveredIndex(null)}
-            onClick={() => handleToggle(idx)}
+            onClick={() => setActiveSkill(idx)}
             className={`glass-panel p-6 sm:p-8 rounded-xl flex flex-col transition-all duration-500 overflow-hidden relative group cursor-crosshair ${cap.border} ${hoveredIndex === idx ? 'scale-[1.01] sm:scale-[1.02] shadow-[0_0_30px_rgba(0,229,255,0.15)] bg-white/[0.04]' : 'bg-white/[0.02]'}`}
             style={{ minHeight: '300px' }}
           >
@@ -233,26 +374,6 @@ export default function ExpertiseSection() {
               {cap.description}
             </p>
 
-            <motion.div 
-              initial={false}
-              animate={{ height: hoveredIndex === idx ? "auto" : 0, opacity: hoveredIndex === idx ? 1 : 0 }}
-              transition={{ duration: 0.4, ease: "circOut" }}
-              className="overflow-hidden"
-            >
-              <div className="pt-4 border-t border-white/10 mt-2">
-                <p className="font-mono text-white/50 text-[9px] sm:text-[10px] leading-relaxed mb-6 italic tracking-wider">
-                   {">>"} DETAILED_FOCUS: {cap.details}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {cap.skills.map((skill) => (
-                    <span key={skill} className="px-2 py-0.5 sm:px-3 sm:py-1 bg-teal/5 border border-teal/20 rounded-md font-mono text-[7px] sm:text-[8px] text-teal tracking-widest uppercase">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
             <div className="mt-auto pt-6 flex items-center justify-between">
                <div className="w-full h-[1px] bg-white/10 relative overflow-hidden">
                  <motion.div 
@@ -262,12 +383,21 @@ export default function ExpertiseSection() {
                    transition={{ duration: 0.8, ease: "easeInOut" }}
                  />
                </div>
-               <span className="font-mono text-[9px] sm:text-[10px] text-ash/40 ml-4 group-hover:text-teal transition-colors whitespace-nowrap uppercase tracking-widest">
-                 {hoveredIndex === idx ? 'SYSTEM_EXPANDED' : 'TAP_TO_ENGAGE'}
-               </span>
+
+               {/* CTA label */}
+               <motion.span
+                 className="font-mono text-[9px] sm:text-[10px] ml-4 whitespace-nowrap uppercase tracking-widest select-none"
+                 animate={hoveredIndex === idx
+                   ? { color: cap.accent, textShadow: `0 0 14px ${cap.accent}` }
+                   : { color: "rgba(148,163,184,0.4)", textShadow: "none" }
+                 }
+                 transition={{ duration: 0.3 }}
+               >
+                 {hoveredIndex === idx ? "▶ ACCESS_SKILL_LOG" : "TAP_TO_ENGAGE"}
+               </motion.span>
             </div>
 
-            {/* Visual element for the corner - adjusted for mobile */}
+            {/* Visual element for the corner */}
             <div className="absolute -top-12 -right-12 sm:-top-8 sm:-right-8 w-48 h-48 sm:w-64 sm:h-64 opacity-20 sm:opacity-30 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none">
                <Canvas camera={{ position: [0, 0, 4] }}>
                  <cap.visual isHovered={hoveredIndex === idx} />
@@ -276,6 +406,12 @@ export default function ExpertiseSection() {
           </motion.div>
         ))}
       </div>
+
+      {/* Skill Log Overlay */}
+      <SkillLogOverlay
+        data={activeSkill !== null ? skillRegistry[activeSkill] : null}
+        onClose={() => setActiveSkill(null)}
+      />
 
       {/* Professional Log */}
       <div className="mt-32 relative z-10">

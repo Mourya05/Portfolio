@@ -209,7 +209,7 @@ export default function AboutSection() {
               title: "PALLAVI MODEL",
               period: "2015 – 2021",
               degree: "Schooling",
-              grade: "88.7%",
+              grade: "87.8%",
               border: "border-l-white/20"
             }
           ].map((edu, idx) => (
