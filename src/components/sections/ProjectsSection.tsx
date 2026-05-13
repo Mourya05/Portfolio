@@ -539,7 +539,144 @@ function BookAnimation({ isHovered }: { isHovered: boolean }) {
   );
 }
 
+function BootSequenceAnimation({ isHovered }: { isHovered: boolean }) {
+  const [textTexture, setTextTexture] = useState<THREE.CanvasTexture | null>(null);
+  const canvasRef = useRef(typeof document !== 'undefined' ? document.createElement('canvas') : null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d')!;
+    const texture = new THREE.CanvasTexture(canvas);
+    setTextTexture(texture);
+
+    const bootLines = [
+      "BIOS v2.0 — System Reset",
+      "Detecting hardware...",
+      "[ OK ] GDT Loaded @ 0x00100000",
+      "[ OK ] IDT Configured — 256 entries",
+      "[ OK ] Paging enabled — CR0=0x80000001",
+      "Mapping kernel @ 0xC0000000...",
+      "  0xC0000000 → 0x00100000  [RW]",
+      "  0xC0400000 → 0x00500000  [RW]",
+      "[ OK ] Heap init  0x00200000–0x00400000",
+      "[ OK ] PIC remapped — IRQ 0x20–0x2F",
+      "[ OK ] PIT  ch0 @ 1000 Hz",
+      "[ OK ] Keyboard IRQ1 handler set",
+      "Loading syscall gate — int 0x80 DPL=3",
+      "[ OK ] TSS installed — ESP0=0xC03FF000",
+      "[ OK ] Ring-3 task spawned",
+      "Dump: 0xC0001000: DE AD BE EF 00 00 00 01",
+      "Dump: 0xC0001008: FF FE FD FC 0A 0B 0C 0D",
+      "[ OK ] VGA framebuf @ 0xB8000",
+      "Kernel v0.1 — boot complete.",
+      "_ "
+    ];
+
+    let lineIdx = 0;
+    let charIdx = 0;
+    let frame = 0;
+    const visibleLines: string[] = [];
+    const MAX_VISIBLE = 14;
+
+    const draw = () => {
+      ctx.fillStyle = '#050510';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Scanline overlay
+      ctx.fillStyle = 'rgba(0,229,255,0.025)';
+      for (let y = 0; y < canvas.height; y += 4) ctx.fillRect(0, y, canvas.width, 2);
+
+      ctx.font = '18px monospace';
+      const startY = 36;
+      const lineH = 30;
+
+      visibleLines.forEach((line, i) => {
+        const isMeta = line.startsWith('[ OK ]');
+        const isDump = line.startsWith('Dump:');
+        const isMap  = line.startsWith('  0x');
+        ctx.fillStyle = isMeta ? '#39FF14'
+          : isDump ? '#A18AFF'
+          : isMap  ? '#00B0CC'
+          : '#00E5FF';
+        ctx.fillText(line, 16, startY + i * lineH);
+      });
+
+      // Cursor blink on last line
+      const cursorVisible = frame % 16 < 8;
+      if (cursorVisible && lineIdx < bootLines.length) {
+        const partialLine = bootLines[lineIdx].substring(0, charIdx);
+        const isMeta = partialLine.startsWith('[ OK ]');
+        ctx.fillStyle = isMeta ? '#39FF14' : '#00E5FF';
+        const textW = ctx.measureText(partialLine).width;
+        ctx.fillRect(16 + textW, startY + visibleLines.length * lineH - 4, 10, 20);
+      }
+
+      texture.needsUpdate = true;
+      frame++;
+    };
+
+    const interval = setInterval(() => {
+      const currentLine = bootLines[lineIdx];
+      const speed = isHovered ? 2 : 1;
+
+      for (let s = 0; s < speed; s++) {
+        if (lineIdx >= bootLines.length) {
+          // Loop restart
+          lineIdx = 0; charIdx = 0;
+          visibleLines.length = 0;
+          break;
+        }
+        if (charIdx < currentLine.length) {
+          charIdx++;
+        } else {
+          const committed = currentLine;
+          visibleLines.push(committed);
+          if (visibleLines.length > MAX_VISIBLE) visibleLines.shift();
+          lineIdx++;
+          charIdx = 0;
+        }
+      }
+      draw();
+    }, isHovered ? 22 : 55);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  return (
+    <group>
+      {/* Dark terminal background */}
+      <mesh>
+        <planeGeometry args={[2.5, 2.5]} />
+        <meshBasicMaterial color="#050510" />
+      </mesh>
+      {/* Text texture plane */}
+      {textTexture && (
+        <mesh position={[0, 0, 0.01]}>
+          <planeGeometry args={[2.5, 2.5]} />
+          <meshBasicMaterial map={textTexture} transparent opacity={0.95} />
+        </mesh>
+      )}
+      {/* Neon green scanline rim glow */}
+      <mesh position={[0, 0, 0.02]}>
+        <planeGeometry args={[2.5, 2.5]} />
+        <meshBasicMaterial color="#39FF14" transparent opacity={isHovered ? 0.06 : 0.02} blending={THREE.AdditiveBlending} />
+      </mesh>
+    </group>
+  );
+}
+
 const projects = [
+  {
+    title: "Hobby-OS",
+    tags: ["C", "x86 Assembly", "QEMU", "Makefile"],
+    description: "A custom-built 32-bit x86 operating system kernel developed from scratch, featuring custom implementations of GDT, IDT, memory paging, and system calls.",
+    visual: BootSequenceAnimation,
+    tag: "KERN_BOOT",
+    repoUrl: "https://github.com/Mourya05/Hobby-OS.git"
+  },
   {
     title: "Air Canvas | Motion Tracking",
     tags: ["Python", "OpenCV"],
@@ -679,7 +816,7 @@ export default function ProjectsSection() {
     <section className="relative w-full py-24 sm:py-32 px-4 sm:px-6 flex flex-col items-center">
       <div className="text-center mb-10 flex flex-col items-center w-full px-4">
         <div className="px-4 py-1.5 glass-panel rounded-full font-mono text-[9px] text-ash tracking-widest uppercase mb-8">
-          SYSTEM PROJECTS / 009
+          SYSTEM PROJECTS / 010
         </div>
         <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-white mb-4 leading-tight">
           Neural Systems<br className="hidden sm:block" /> Portfolio
