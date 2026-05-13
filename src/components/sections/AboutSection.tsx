@@ -231,7 +231,7 @@ export default function AboutSection() {
                 {edu.degree}
               </p>
               <div className="font-mono text-[10px] text-teal tracking-widest uppercase">
-                STATUS: {edu.grade}
+                SCORE: {edu.grade}
               </div>
             </motion.div>
           ))}
