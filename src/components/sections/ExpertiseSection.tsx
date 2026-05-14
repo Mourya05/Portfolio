@@ -413,62 +413,26 @@ export default function ExpertiseSection() {
         onClose={() => setActiveSkill(null)}
       />
 
-      {/* Professional Log */}
+      {/* Experience CTA */}
       <div className="mt-32 relative z-10">
-        <div className="mb-10">
-          <p className="font-mono text-ash text-[9px] tracking-[0.2em] uppercase mb-2 opacity-50">
-            [ LOG_TYPE: DEPLOYMENT_HISTORY ]
-          </p>
-          <h3 className="font-display font-bold text-3xl text-white">
-            SERVICE <span className="text-teal italic opacity-80">// LOGS</span>
-          </h3>
-        </div>
-
-        <div className="glass-panel rounded-xl overflow-hidden border border-white/5">
-          <div className="bg-white/5 px-6 py-3 border-b border-white/5 flex items-center justify-between">
-            <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-red-500/40" />
-              <div className="w-2 h-2 rounded-full bg-yellow-500/40" />
-              <div className="w-2 h-2 rounded-full bg-green-500/40" />
-            </div>
-            <span className="font-mono text-[9px] text-ash/60 tracking-widest">DEPLOYMENT_ARCHIVE_V2.0</span>
+        <div className="glass-panel rounded-xl p-8 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-teal/20 transition-colors duration-500">
+          <div>
+            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-ash/50 mb-2">
+              [ LOG_TYPE: DEPLOYMENT_HISTORY ]
+            </p>
+            <h3 className="font-display font-bold text-2xl text-white">
+              SERVICE <span className="text-teal italic opacity-80">// LOGS</span>
+            </h3>
+            <p className="font-sans text-xs text-ash/60 mt-2 max-w-md leading-relaxed">
+              A full chronological record of deployments, internships, and active organizational roles — rendered as a cybernetic timeline.
+            </p>
           </div>
-          
-          <div className="p-6 font-mono text-xs flex flex-col gap-4 max-h-[500px] overflow-y-auto custom-scrollbar">
-            {[
-              { date: "APR 2026 - PRESENT", company: "AVASAN CHAKRA", role: "Software Engineer", skills: "Software Design, Systems Eng" },
-              { date: "DEC 2024 - PRESENT", company: "GCET CODING CLUB", role: "PR Head", skills: "Leadership, Communication" },
-              { date: "FEB 2024 - PRESENT", company: "ISTE", role: "Student Member", skills: "Technical Leadership" },
-              { date: "AUG 2025 - DEC 2025", company: "IEEE EdSoc", role: "Webmaster", skills: "Python, SQL, JS" },
-              { date: "JUL 2025 - DEC 2025", company: "GOOGLE", role: "Student Ambassador", skills: "Time Management, Leadership" },
-              { date: "SEP 2024 - DEC 2025", company: "IEEE COMPUTER SOCIETY", role: "Student Member", skills: "C, Algorithms, Analytical" },
-              { date: "MAY 2025 - AUG 2025", company: "SUPRAJA TECHNOLOGIES", role: "Cyber Security Intern", skills: "Ethical Hacking, Kali Linux" },
-              { date: "APR 2025 - JUN 2025", company: "AGNIRVA.COM SPACE", role: "AI Intern", skills: "Generative AI, LLMs" }
-            ].map((exp, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex flex-col md:flex-row gap-4 border-b border-white/5 pb-4 last:border-0 group"
-              >
-                <div className="text-teal opacity-60 w-44 shrink-0">
-                  [{exp.date}]
-                </div>
-                <div className="flex-1">
-                  <span className="text-white group-hover:text-lavender transition-colors uppercase font-bold">{exp.role}</span>
-                  <span className="text-ash/40 mx-2">@</span>
-                  <span className="text-ash tracking-tight font-semibold">{exp.company}</span>
-                  <div className="mt-1 text-[10px] text-ash/60 italic">
-                    &gt;&gt; INIT_TAGS: {exp.skills}
-                  </div>
-                </div>
-                <div className="hidden md:block text-ash/20 select-none">
-                  S_00{idx + 1}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <a
+            href="/experience"
+            className="shrink-0 font-mono text-xs tracking-widest uppercase px-8 py-3 rounded-full border border-teal/40 text-teal hover:bg-teal/10 hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] transition-all duration-300 flex items-center gap-3"
+          >
+            ACCESS TIMELINE <span className="text-lg">→</span>
+          </a>
         </div>
       </div>
 

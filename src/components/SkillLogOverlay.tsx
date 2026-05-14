@@ -85,6 +85,23 @@ const BOOT_HEADER = [
 export default function SkillLogOverlay({ data, onClose }: Props) {
   const isOpen = data !== null;
 
+  // Play window.mp3 (first 3 s at 1.5×) whenever the overlay opens
+  useEffect(() => {
+    if (!isOpen) return;
+    const audio = new Audio("/window.mp3");
+    audio.playbackRate = 1.5;
+    audio.volume = 0.3;
+    audio.play().catch(() => {});
+    const stop = setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }, 3000);
+    return () => {
+      clearTimeout(stop);
+      audio.pause();
+    };
+  }, [isOpen]);
+
   // Build a flat list of boot header + skill log lines
   const allLines: { text: string; type: "boot" | "section" | "skill" | "sep" }[] =
     data
