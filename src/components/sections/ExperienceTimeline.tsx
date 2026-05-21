@@ -19,14 +19,14 @@ const experiences: ExperienceEntry[] = [
   {
     date: "APR 2026 – PRESENT",
     company: "AVASAN CHAKRA",
-    role: "Software Engineer",
-    type: "ROLE",
+    role: "Software Development Engineer Intern",
+    type: "INTERNSHIP",
     accent: "#00E5FF",
     accentBg: "rgba(0,229,255,0.08)",
     logId: "S_001",
     skills: ["Software Design", "Systems Engineering", "C/C++", "Embedded Systems"],
     description:
-      "Embedded on the core engineering team at Avasan Chakra, working at the intersection of low-level software design and industrial systems. Responsible for architecting robust, fault-tolerant software components that interface directly with hardware subsystems. This role demands a deep understanding of memory management, real-time constraints, and signal integrity — pushing the boundary between application logic and bare-metal execution.",
+      "Embedded on the core engineering team at Avasan Chakra (Startup), working at the intersection of low-level software design and industrial systems. Responsible for architecting robust, fault-tolerant software components that interface directly with hardware subsystems. This role demands a deep understanding of memory management, real-time constraints, and signal integrity — pushing the boundary between application logic and bare-metal execution.",
   },
   {
     date: "DEC 2024 – PRESENT",

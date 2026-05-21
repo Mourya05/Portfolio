@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const MUSIC_ENABLED = false; // Set to true to enable background music
+
 export default function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -12,6 +14,7 @@ export default function BackgroundMusic() {
     const unlock = () => {
       if (unlocked) return;
       setUnlocked(true);
+      if (!MUSIC_ENABLED) return; // Skip autoplay if disabled
       const audio = audioRef.current;
       if (!audio) return;
       audio.volume = 0.2;
@@ -30,6 +33,7 @@ export default function BackgroundMusic() {
   }, [unlocked]);
 
   const toggle = () => {
+    if (!MUSIC_ENABLED) return; // Prevent toggle if disabled
     const audio = audioRef.current;
     if (!audio) return;
     if (playing) {
