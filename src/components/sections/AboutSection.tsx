@@ -114,7 +114,7 @@ export default function AboutSection() {
            </div>
            
            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 glass-panel rounded-md uppercase font-mono text-[9px] tracking-widest text-white border border-teal/30 shadow-[0_0_10px_rgba(0,229,255,0.2)] animate-pulse">
-             ENTITY: MRY_BIRRU.EXT
+             ENTITY: MOURYA_BIRRU.EXT
            </div>
         </motion.div>
 
@@ -182,33 +182,26 @@ export default function AboutSection() {
           <div className="h-[1px] flex-1 bg-white/10" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              title: "GCET (HYDERABAD)",
-              period: "SEP 2023 – JAN 2027",
-              degree: "B.Tech in CSE",
-              grade: "8.25 GPA",
+              title: "Geethanjali College of Engineering and Technology",
+              period: "2023 – 2027",
+              degree: "Bachelor of Technology (B.Tech) in Computer Science and Engineering",
+              grade: "8.25 / 10.0 GPA",
               border: "border-l-lavender"
             },
             {
-              title: "RESONANCE EDU",
-              period: "SEP 2022 – MAR 2023",
-              degree: "Intermediate, MPC",
+              title: "Resonance Junior College / RGUKT Basar",
+              period: "2021 – 2023",
+              degree: "Intermediate (MPC) / Pre-University Course (PUC)",
               grade: "84.9%",
               border: "border-l-teal"
             },
             {
-              title: "RGUKT BASARA",
-              period: "MAY 2021 – AUG 2022",
-              degree: "PUC, MPC",
-              grade: "N/A",
-              border: "border-l-ash"
-            },
-            {
-              title: "PALLAVI MODEL",
+              title: "Pallavi Model School",
               period: "2015 – 2021",
-              degree: "Schooling",
+              degree: "Central Board of Secondary Education (CBSE)",
               grade: "87.8%",
               border: "border-l-white/20"
             }
