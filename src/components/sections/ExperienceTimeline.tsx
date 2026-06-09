@@ -17,19 +17,19 @@ interface ExperienceEntry {
 
 const experiences: ExperienceEntry[] = [
   {
-    date: "APR 2026 – PRESENT",
+    date: "APR 2026 – MAY 2026",
     company: "AVASAN CHAKRA",
     role: "Software Development Engineer Intern",
     type: "INTERNSHIP",
     accent: "#00E5FF",
     accentBg: "rgba(0,229,255,0.08)",
     logId: "S_001",
-    skills: ["Software Design", "Systems Engineering", "C/C++", "Embedded Systems"],
+    skills: ["Software Design", "Collaboration", "Sustainable Technology Design"],
     description:
-      "Embedded on the core engineering team at Avasan Chakra (Startup), working at the intersection of low-level software design and industrial systems. Responsible for architecting robust, fault-tolerant software components that interface directly with hardware subsystems. This role demands a deep understanding of memory management, real-time constraints, and signal integrity — pushing the boundary between application logic and bare-metal execution.",
+      "As a Software Development Engineer Intern at Avasan Chakra (Startup), I engaged in a two-month remote role starting in April 2026. Reporting directly to the CTO, I was responsible for tackling algorithmic problem-solving and advancing various software development projects. My work actively contributed to the company's mission of driving innovative, sustainable, and eco-friendly solutions tailored for high-rise buildings. This opportunity allowed me to apply my technical skills to meaningful sustainability initiatives within a collaborative environment centered on clarity and precision",
   },
   {
-    date: "DEC 2024 – PRESENT",
+    date: "DEC 2024 – JUN 2026",
     company: "GCET CODING CLUB",
     role: "PR Head",
     type: "ROLE",
