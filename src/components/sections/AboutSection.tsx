@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import myPhoto from "@/../public/myphoto.jpg";
+import myPhoto from "@/../public/myphoto.jpeg";
 
 const typewriterText = `Initializing background process...
 I am a Computer Science engineer who operates at the intersection of low-level systems, hardware-software integration, and scalable industrial solutions.
