@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://mourya-birru.me
+
+# Sitemaps
+Sitemap: https://mourya-birru.me/sitemap.xml
