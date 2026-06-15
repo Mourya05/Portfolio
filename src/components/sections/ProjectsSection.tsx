@@ -845,15 +845,7 @@ export default function ProjectsSection() {
         <div className="w-4 h-4 rounded-full border border-ash flex items-center justify-center text-[8px]">?</div>
       </div>
 
-      <div className="flex flex-col items-center mt-20 gap-4">
-        <div className="flex gap-12">
-          <button className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-teal transition-colors">↑</button>
-          <button className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:border-teal transition-colors">↓</button>
-        </div>
-        <div className="font-mono text-[9px] text-ash tracking-[0.2em] uppercase mt-2">
-          SCROLL TO DEPTH
-        </div>
-      </div>
+
     </section>
   );
 }

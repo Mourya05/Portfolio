@@ -166,9 +166,9 @@ export default function HeroSection() {
               Explore Projects
             </button>
           </Link>
-          <a href="/Mourya_Resume.pdf" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+          <a href="/Mourya_Resume.pdf" download="Mourya_Resume.pdf" className="w-full sm:w-auto">
             <button className="w-full sm:w-auto bg-black/60 backdrop-blur-xl border border-white/20 text-white px-8 py-3.5 sm:py-4 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-widest hover-lift shadow-2xl">
-              View Resume
+              Download Resume
             </button>
           </a>
         </motion.div>

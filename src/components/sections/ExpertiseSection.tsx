@@ -468,33 +468,7 @@ export default function ExpertiseSection() {
         <SkillTicker />
       </div>
 
-      {/* Experience CTA */}
-      <div className="mt-16 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass-panel rounded-xl p-7 sm:p-8 border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 group hover:border-teal/20 transition-colors duration-500"
-        >
-          <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/30 mb-2">
-              [ LOG_TYPE: DEPLOYMENT_HISTORY ]
-            </p>
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
-              SERVICE <span className="text-teal italic opacity-80">// LOGS</span>
-            </h3>
-            <p className="font-sans text-xs text-white/40 mt-2 max-w-md leading-relaxed">
-              A full chronological record of deployments, internships, and active organizational roles — rendered as a cybernetic timeline.
-            </p>
-          </div>
-          <a
-            href="/experience"
-            className="shrink-0 font-mono text-xs tracking-widest uppercase px-8 py-3 rounded-full border border-teal/40 text-teal hover:bg-teal/10 hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] transition-all duration-300 flex items-center gap-3"
-          >
-            ACCESS TIMELINE <span className="text-lg">→</span>
-          </a>
-        </motion.div>
-      </div>
+
     </section>
   );
 }

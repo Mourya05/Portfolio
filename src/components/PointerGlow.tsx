@@ -46,8 +46,8 @@ export default function PointerGlow() {
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const loop = () => {
-      smooth.current.x = lerp(smooth.current.x, pos.current.x, 0.12);
-      smooth.current.y = lerp(smooth.current.y, pos.current.y, 0.12);
+      smooth.current.x = lerp(smooth.current.x, pos.current.x, 0.50);
+      smooth.current.y = lerp(smooth.current.y, pos.current.y, 0.50);
 
       if (ringRef.current) {
         ringRef.current.style.transform =

@@ -27,7 +27,7 @@ const CERTS: Cert[] = [
     icon: "🌐",
     accentColor: "#00E5FF",
     hexColor: "#00E5FF",
-    year: "2024",
+    year: "Oct 2025",
   },
   {
     title: "CCNA: Introduction to Networks",
@@ -36,7 +36,7 @@ const CERTS: Cert[] = [
     icon: "📡",
     accentColor: "#00E5FF",
     hexColor: "#00E5FF",
-    year: "2024",
+    year: "Oct 2025",
   },
 
   // Cloud / DB / Dev
@@ -47,7 +47,7 @@ const CERTS: Cert[] = [
     icon: "🍃",
     accentColor: "#00ED64",
     hexColor: "#00ED64",
-    year: "2024",
+    year: "Jul 2025",
   },
   {
     title: "Software Engineer Skills",
@@ -56,7 +56,7 @@ const CERTS: Cert[] = [
     icon: "🎮",
     accentColor: "#A18AFF",
     hexColor: "#A18AFF",
-    year: "2024",
+    year: "Jan 2025",
   },
 
   // AI & Data Science
@@ -67,7 +67,7 @@ const CERTS: Cert[] = [
     icon: "🤖",
     accentColor: "#FF6B6B",
     hexColor: "#FF6B6B",
-    year: "2024",
+    year: "May 2025",
   },
   {
     title: "Data Science & ML Bootcamp with R",
@@ -76,7 +76,7 @@ const CERTS: Cert[] = [
     icon: "📊",
     accentColor: "#FF6B6B",
     hexColor: "#FF6B6B",
-    year: "2024",
+    year: "Apr 2025",
   },
   {
     title: "Machine Learning in Python",
@@ -85,7 +85,7 @@ const CERTS: Cert[] = [
     icon: "🧠",
     accentColor: "#FFA500",
     hexColor: "#FFA500",
-    year: "2024",
+    year: "Nov 2024",
   },
   {
     title: "Generative AI",
@@ -94,7 +94,7 @@ const CERTS: Cert[] = [
     icon: "✨",
     accentColor: "#00A4EF",
     hexColor: "#00A4EF",
-    year: "2024",
+    year: "Aug 2024",
   },
   {
     title: "Introduction to Generative AI Studio",
@@ -103,7 +103,7 @@ const CERTS: Cert[] = [
     icon: "☁️",
     accentColor: "#4285F4",
     hexColor: "#4285F4",
-    year: "2024",
+    year: "Jul 2024",
   },
 
   // Analytics
@@ -114,7 +114,7 @@ const CERTS: Cert[] = [
     icon: "📈",
     accentColor: "#00E5FF",
     hexColor: "#00E5FF",
-    year: "2024",
+    year: "Nov 2024",
   },
   {
     title: "Data Analytics and Visualization",
@@ -123,7 +123,7 @@ const CERTS: Cert[] = [
     icon: "🔍",
     accentColor: "#A100FF",
     hexColor: "#A100FF",
-    year: "2024",
+    year: "Sep 2024",
   },
   {
     title: "Power BI",
@@ -132,7 +132,7 @@ const CERTS: Cert[] = [
     icon: "⚡",
     accentColor: "#F2C811",
     hexColor: "#F2C811",
-    year: "2024",
+    year: "Jul 2024",
   },
 
   // Web Dev
@@ -143,7 +143,7 @@ const CERTS: Cert[] = [
     icon: "💻",
     accentColor: "#FF6B6B",
     hexColor: "#FF6B6B",
-    year: "2024",
+    year: "Apr 2025",
   },
   {
     title: "Advanced Programming in C",
@@ -152,7 +152,7 @@ const CERTS: Cert[] = [
     icon: "⚙️",
     accentColor: "#00E5FF",
     hexColor: "#00E5FF",
-    year: "2024",
+    year: "Jun 2024",
   },
   {
     title: "Introduction to Python",
@@ -161,7 +161,7 @@ const CERTS: Cert[] = [
     icon: "🐍",
     accentColor: "#3776AB",
     hexColor: "#3776AB",
-    year: "2024",
+    year: "Nov 2024",
   },
 
   // Badges
@@ -172,7 +172,7 @@ const CERTS: Cert[] = [
     icon: "🏆",
     accentColor: "#FFA116",
     hexColor: "#FFA116",
-    year: "2024",
+    year: "Apr 2025",
   },
   {
     title: "LeetCode 75",
@@ -181,7 +181,7 @@ const CERTS: Cert[] = [
     icon: "🎯",
     accentColor: "#FFA116",
     hexColor: "#FFA116",
-    year: "2024",
+    year: "Apr 2025",
   },
   {
     title: "SQL",
@@ -190,7 +190,7 @@ const CERTS: Cert[] = [
     icon: "🗄️",
     accentColor: "#2EC866",
     hexColor: "#2EC866",
-    year: "2024",
+    year: "Nov 2024",
   },
   {
     title: "Problem Solving",
@@ -199,7 +199,7 @@ const CERTS: Cert[] = [
     icon: "🧩",
     accentColor: "#2EC866",
     hexColor: "#2EC866",
-    year: "2024",
+    year: "Aug 2024",
   },
   {
     title: "Java",
@@ -208,7 +208,7 @@ const CERTS: Cert[] = [
     icon: "☕",
     accentColor: "#2EC866",
     hexColor: "#2EC866",
-    year: "2024",
+    year: "Oct 2024",
   },
   {
     title: "Python",
@@ -217,7 +217,7 @@ const CERTS: Cert[] = [
     icon: "🐍",
     accentColor: "#2EC866",
     hexColor: "#2EC866",
-    year: "2024",
+    year: "Aug 2024",
   },
 ];
 
@@ -236,6 +236,27 @@ const TABS: { id: Category; label: string; shortLabel: string }[] = [
 function countForTab(id: Category) {
   if (id === "all") return CERTS.length;
   return CERTS.filter((c) => c.category === id).length;
+}
+
+// ─── Date sort helper — newest first ─────────────────────────────────────────
+const MONTH_MAP: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+function parseCertDate(year?: string): number {
+  if (!year) return 0;
+  const parts = year.trim().split(" ");
+  if (parts.length === 2) {
+    const [mon, yr] = parts;
+    return new Date(parseInt(yr, 10), MONTH_MAP[mon] ?? 0).getTime();
+  }
+  // plain year e.g. "2024"
+  return new Date(parseInt(parts[0], 10), 0).getTime();
+}
+
+function sortNewestFirst(certs: Cert[]): Cert[] {
+  return [...certs].sort((a, b) => parseCertDate(b.year) - parseCertDate(a.year));
 }
 
 // ─── Single Card ──────────────────────────────────────────────────────────────
@@ -325,7 +346,7 @@ function CertCard({ cert, index }: { cert: Cert; index: number }) {
                 transition: "all 0.3s ease",
               }}
             >
-              VERIFIED · {cert.year}
+              ISSUED · {cert.year}
             </span>
             {/* Credential indicator dot */}
             <div
@@ -357,9 +378,9 @@ function CertCard({ cert, index }: { cert: Cert; index: number }) {
 export default function CertificationsSection() {
   const [activeTab, setActiveTab] = useState<Category>("all");
 
-  const filtered = activeTab === "all"
-    ? CERTS
-    : CERTS.filter((c) => c.category === activeTab);
+  const filtered = sortNewestFirst(
+    activeTab === "all" ? CERTS : CERTS.filter((c) => c.category === activeTab)
+  );
 
   return (
     <section className="relative w-full min-h-screen px-4 sm:px-6 lg:px-8 py-16 sm:py-24">

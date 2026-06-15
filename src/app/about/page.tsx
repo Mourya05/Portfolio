@@ -1,9 +1,2 @@
-import AboutSection from "@/components/sections/AboutSection";
-
-export default function AboutPage() {
-  return (
-    <main className="relative w-full flex flex-col">
-      <AboutSection />
-    </main>
-  );
-}
+import { redirect } from "next/navigation";
+export default function AboutPage() { redirect("/#about"); }

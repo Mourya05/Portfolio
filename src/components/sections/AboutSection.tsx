@@ -97,21 +97,21 @@ export default function AboutSection() {
           viewport={{ once: true }}
           className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-square sm:aspect-[4/5] lg:aspect-auto order-1 lg:order-2 h-[300px] sm:h-[400px] lg:h-auto"
         >
-           {/* Fallback pattern / image */}
-           <div className="absolute inset-0 bg-gradient-to-b from-indigo/50 to-obsidian/80 mix-blend-multiply z-10" />
-           <div className="w-full h-full relative z-0">
-             <Image 
-               src={myPhoto} 
-               alt="Mourya Birru Biometric Scan" 
-               fill 
-               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 animate-glitch filter hue-rotate-[260deg] saturate-[2.5] brightness-[1.2] contrast-[1.2]"
-               priority
-             />
-             <div className="absolute inset-0 bg-lavender/30 mix-blend-hard-light pointer-events-none z-10" />
-             <div className="absolute inset-0 bg-indigo/20 mix-blend-screen pointer-events-none z-10" />
-             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none" />
-           </div>
+            {/* Fallback pattern / image */}
+            <div className="absolute inset-0 bg-gradient-to-b from-indigo/20 to-obsidian/40 mix-blend-multiply z-10" />
+            <div className="w-full h-full relative z-0">
+              <Image 
+                src={myPhoto} 
+                alt="Mourya Birru Biometric Scan" 
+                fill 
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover opacity-100 transition-opacity duration-500 animate-glitch filter hue-rotate-[260deg] saturate-[2.5] brightness-[1.5] contrast-[1.1]"
+                priority
+              />
+              <div className="absolute inset-0 bg-lavender/15 mix-blend-hard-light pointer-events-none z-10" />
+              <div className="absolute inset-0 bg-indigo/10 mix-blend-screen pointer-events-none z-10" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-15 pointer-events-none" />
+            </div>
            
            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 px-4 py-1.5 glass-panel rounded-md uppercase font-mono text-[9px] tracking-widest text-white border border-teal/30 shadow-[0_0_10px_rgba(0,229,255,0.2)] animate-pulse">
              ENTITY: MOURYA_BIRRU.EXT
@@ -150,7 +150,7 @@ export default function AboutSection() {
       </div>
 
       {/* Lower Capabilities */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 relative z-10">
          <motion.div whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }} className="glass-panel p-6 rounded-xl border-l-[3px] border-l-lavender">
            <h4 className="font-display font-medium text-lg text-white mb-2">Systems Engineering</h4>
            <p className="text-xs font-sans text-ash/80 leading-relaxed">Developing low-level OS components, memory-safe kernels, and bridging hardware with software.</p>
@@ -160,16 +160,6 @@ export default function AboutSection() {
            <h4 className="font-display font-medium text-lg text-white mb-2">Industrial Integration</h4>
            <p className="text-xs font-sans text-ash/80 leading-relaxed">Architecting robust connectivity and data exchange systems for large-scale, complex environments.</p>
          </motion.div>
-
-         <Link href="/expertise" className="block w-full">
-           <motion.div whileHover={{ rotateX: -5, rotateY: 5, scale: 1.02 }} className="glass-panel p-6 rounded-xl flex items-center justify-between group cursor-pointer border-l-[3px] border-l-white/20">
-             <div>
-               <h4 className="font-display font-medium text-lg text-white mb-1 uppercase">System Architecture</h4>
-               <p className="font-mono text-[9px] text-teal tracking-widest uppercase">Initiate_Protocol_Sync</p>
-             </div>
-             <div className="text-ash group-hover:text-teal transition-colors">→</div>
-           </motion.div>
-         </Link>
       </div>
 
       {/* Education Registry */}

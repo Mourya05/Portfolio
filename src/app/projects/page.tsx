@@ -1,9 +1,2 @@
-import ProjectsSection from "@/components/sections/ProjectsSection";
-
-export default function ProjectsPage() {
-  return (
-    <main className="relative w-full flex flex-col pt-10">
-      <ProjectsSection />
-    </main>
-  );
-}
+import { redirect } from "next/navigation";
+export default function ProjectsPage() { redirect("/#projects"); }
