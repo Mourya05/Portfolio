@@ -1,429 +1,489 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Canvas } from "@react-three/fiber";
-import { Points, PointMaterial } from "@react-three/drei";
-// @ts-expect-error - maath does not have complete typescript definitions for esm paths
-import * as random from "maath/random/dist/maath-random.esm";
-import { useState, useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import { BashAnimation } from "./ProjectsSection";
-import SkillLogOverlay, { type CapabilitySkillData } from "../SkillLogOverlay";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
 
-// ─── Per-capability skill registry data ───────────────────────────────────────
-const skillRegistry: CapabilitySkillData[] = [
+// ─── Skill Category Data ────────────────────────────────────────────────────
+const skillCategories = [
   {
-    reg: "REG_01 // INDUSTRIAL",
-    title: "INDUSTRIAL SOFTWARE ENGINEERING",
+    id: "lang",
+    reg: "SYS_01",
+    label: "Programming Languages",
+    tag: "LANG",
     accent: "#00E5FF",
-    categories: [
-      {
-        label: "Languages",
-        tag: "LANG",
-        color: "#00E5FF",
-        items: ["C", "C++", "Python", "Bash / Shell Script"],
-      },
-      {
-        label: "Protocols & Comms",
-        tag: "PROTO",
-        color: "#39FF14",
-        items: ["LoRa / LoRaWAN", "MQTT", "UART / SPI / I2C", "TCP/IP Sockets"],
-      },
-      {
-        label: "Frameworks & Middleware",
-        tag: "FW",
-        color: "#A18AFF",
-        items: ["FreeRTOS", "Linux IPC (pipes, shmem)", "Protobuf / MsgPack"],
-      },
-      {
-        label: "Tools",
-        tag: "TOOLS",
-        color: "#94A3B8",
-        items: ["GCC Toolchain", "Make / CMake", "Valgrind", "Wireshark", "Git"],
-      },
-      {
-        label: "Concepts",
-        tag: "CONCEPTS",
-        color: "#FFD700",
-        items: ["Systems Architecture", "Scalable Middleware", "Agri-tech IoT", "Signal Reliability"],
-      },
-    ],
+    accentRgb: "0,229,255",
+    icon: "⟨/⟩",
+    items: ["C", "C++", "Python", "Java", "JavaScript", "TypeScript", "R", "Golang"],
   },
   {
-    reg: "REG_02 // HARDWARE",
-    title: "HARDWARE EMULATION & PHYSICS",
+    id: "core",
+    reg: "SYS_02",
+    label: "Core Concepts",
+    tag: "CORE",
     accent: "#A18AFF",
-    categories: [
-      {
-        label: "Languages",
-        tag: "LANG",
-        color: "#A18AFF",
-        items: ["C", "Python", "VHDL (basic)", "Octave / MATLAB-like"],
-      },
-      {
-        label: "Emulation & Simulation",
-        tag: "SIM",
-        color: "#00E5FF",
-        items: ["QEMU", "Soft-cloning ADC/DAC logic", "Pulse-Height Analysis (PHA)", "MCA Emulation"],
-      },
-      {
-        label: "Physics Domains",
-        tag: "PHYS",
-        color: "#39FF14",
-        items: ["Nuclear Radiation Detection", "Signal Spectroscopy", "Geiger-Müller Counting", "Gamma Spectrum Analysis"],
-      },
-      {
-        label: "Libraries & Tools",
-        tag: "LIBS",
-        color: "#94A3B8",
-        items: ["NumPy / SciPy", "Matplotlib", "ROOT (CERN)", "Custom DSP Filters"],
-      },
-      {
-        label: "Concepts",
-        tag: "CONCEPTS",
-        color: "#FFD700",
-        items: ["Hardware-Software Co-design", "Latency Optimization", "Circuit Emulation", "Digital Signal Processing"],
-      },
+    accentRgb: "161,138,255",
+    icon: "◈",
+    items: [
+      "Software Engineering",
+      "DSA",
+      "OOP",
+      "DBMS",
+      "Code Interpretation",
+      "Network Engineering",
+      "Mathematics",
     ],
   },
   {
-    reg: "REG_03 // KERNEL",
-    title: "LOW-LEVEL OS DEVELOPMENT",
+    id: "frontend",
+    reg: "SYS_03",
+    label: "Frontend",
+    tag: "FE",
+    accent: "#39FF14",
+    accentRgb: "57,255,20",
+    icon: "⬡",
+    items: ["HTML5", "CSS3", "TailwindCSS", "React.js", "React Native", "AngularJS", "Next.js"],
+  },
+  {
+    id: "backend",
+    reg: "SYS_04",
+    label: "Backend & APIs",
+    tag: "BE",
+    accent: "#FFD700",
+    accentRgb: "255,215,0",
+    icon: "⚙",
+    items: ["Flask", "Node.js", "Express.js", "FastAPI", "Streamlit"],
+  },
+  {
+    id: "ai",
+    reg: "SYS_05",
+    label: "AI & Data Science",
+    tag: "AI",
+    accent: "#FF6BFF",
+    accentRgb: "255,107,255",
+    icon: "◎",
+    items: [
+      "NumPy",
+      "Pandas",
+      "TensorFlow",
+      "OpenCV",
+      "Hugging Face",
+      "LangChain",
+      "LangGraph",
+      "GNN",
+      "CNN",
+      "RNN",
+      "Google API",
+      "OpenAI API",
+    ],
+  },
+  {
+    id: "cyber",
+    reg: "SYS_06",
+    label: "Cybersecurity",
+    tag: "SEC",
+    accent: "#FF4444",
+    accentRgb: "255,68,68",
+    icon: "⚠",
+    items: ["Kali Linux", "Metasploit", "ZenMap", "Nmap", "Wireshark"],
+  },
+  {
+    id: "db",
+    reg: "SYS_07",
+    label: "Databases",
+    tag: "DB",
+    accent: "#00FFB3",
+    accentRgb: "0,255,179",
+    icon: "▣",
+    items: ["MySQL", "PostgreSQL", "MongoDB"],
+  },
+  {
+    id: "tools",
+    reg: "SYS_08",
+    label: "Tools & Platforms",
+    tag: "TOOLS",
+    accent: "#FFA500",
+    accentRgb: "255,165,0",
+    icon: "⊞",
+    items: [
+      "OpenRouter",
+      "Antigravity",
+      "VS Code",
+      "Git",
+      "GitHub",
+      "Google AI Studio",
+      "Google Cloud",
+      "MongoDB Cloud",
+      "n8n",
+      "Zapier",
+      "Linux",
+      "GNU Make",
+      "Power BI",
+    ],
+  },
+  {
+    id: "soft",
+    reg: "SYS_09",
+    label: "Professional & Cognitive",
+    tag: "SOFT",
     accent: "#94A3B8",
-    categories: [
-      {
-        label: "Languages",
-        tag: "LANG",
-        color: "#94A3B8",
-        items: ["C (i686-elf-gcc)", "x86 Assembly (NASM)", "Linker Scripts (ld)"],
-      },
-      {
-        label: "Kernel Subsystems",
-        tag: "KERN",
-        color: "#00E5FF",
-        items: ["GDT / IDT / TSS", "Memory Paging (CR0, CR3)", "System Calls (int 0x80)", "Context Switching", "VGA Framebuffer"],
-      },
-      {
-        label: "Toolchain",
-        tag: "TOOL",
-        color: "#39FF14",
-        items: ["i686-elf-gcc Cross Compiler", "NASM Assembler", "GNU ld", "QEMU Emulator", "GDB Remote Debug"],
-      },
-      {
-        label: "OS Concepts",
-        tag: "OS",
-        color: "#A18AFF",
-        items: ["Protected Mode (Ring 0–3)", "Physical / Virtual Memory", "IRQ & PIC Remapping", "ELF Loading", "Multiboot"],
-      },
-      {
-        label: "Security",
-        tag: "SEC",
-        color: "#FFD700",
-        items: ["Memory Safety", "Stack Canaries", "Privilege Separation", "DPL Enforcement"],
-      },
-    ],
-  },
-  {
-    reg: "REG_04 // SPECIALIZED",
-    title: "AI & DATA SCIENCE",
-    accent: "#00E5FF",
-    categories: [
-      {
-        label: "Languages",
-        tag: "LANG",
-        color: "#00E5FF",
-        items: ["Python", "SQL", "JavaScript (Node.js)"],
-      },
-      {
-        label: "ML / AI Frameworks",
-        tag: "AI",
-        color: "#A18AFF",
-        items: ["TensorFlow / Keras", "scikit-learn", "OpenCV", "SpaCy (NLP)", "LangChain / Agentic AI"],
-      },
-      {
-        label: "Data Science",
-        tag: "DATA",
-        color: "#39FF14",
-        items: ["NumPy / Pandas", "Matplotlib / Seaborn", "Feature Engineering", "Model Evaluation & Tuning"],
-      },
-      {
-        label: "Deployment & Edge",
-        tag: "EDGE",
-        color: "#FFD700",
-        items: ["TensorFlow Lite", "ONNX Runtime", "Raspberry Pi Inference", "Docker Containers"],
-      },
-      {
-        label: "Concepts",
-        tag: "CONCEPTS",
-        color: "#94A3B8",
-        items: ["Agentic AI Swarms", "Model Armor / AI Security", "Facial Recognition", "LLM Prompt Engineering", "Edge Compute Optimization"],
-      },
+    accentRgb: "148,163,184",
+    icon: "◉",
+    items: [
+      "Problem Solving",
+      "Logical Reasoning",
+      "Analytical Skills",
+      "Critical Thinking",
+      "Communication",
+      "Presentations",
+      "Time Management",
+      "Student Leadership",
+      "English",
     ],
   },
 ];
 
-function EndlessCodeStream() {
-  const ref = useRef<any>(null);
-  const count = 2000;
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-        // Random lines with "indentation"
-        pos[i * 3] = (Math.random() - 0.5) * 1.5;
-        pos[i * 3 + 1] = (Math.random() - 0.5) * 4;
-        pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-    }
-    return pos;
-  }, []);
-
-  useFrame((state, delta) => {
-    if (ref.current) {
-        const posAttr = ref.current.geometry.attributes.position;
-        for (let i = 0; i < count; i++) {
-            let y = posAttr.getY(i);
-            y -= delta * 1.5; // Constant downward flow
-            if (y < -2) y = 2; // Wrap around
-            posAttr.setY(i, y);
-        }
-        posAttr.needsUpdate = true;
-    }
-  });
+// ─── Individual Skill Badge ─────────────────────────────────────────────────
+function SkillBadge({ name, accent, accentRgb }: { name: string; accent: string; accentRgb: string }) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="#00E5FF" size={0.03} sizeAttenuation={true} depthWrite={false} opacity={0.6} />
-    </Points>
-  );
-}
-
-function SignalWave() {
-  const ref = useRef<any>(null);
-  const count = 200;
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-        pos[i * 3] = (i - count / 2) * 0.02;
-    }
-    return pos;
-  }, []);
-
-  useFrame((state) => {
-    if (ref.current) {
-      const posAttr = ref.current.geometry.attributes.position;
-      for (let i = 0; i < count; i++) {
-        const x = posAttr.getX(i);
-        posAttr.setY(i, Math.sin(x * 5 + state.clock.elapsedTime * 5) * 0.6);
+    <motion.span
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      animate={
+        hovered
+          ? {
+              scale: 1.08,
+              borderColor: accent,
+              boxShadow: `0 0 14px rgba(${accentRgb},0.5), inset 0 0 10px rgba(${accentRgb},0.08)`,
+              color: accent,
+            }
+          : {
+              scale: 1,
+              borderColor: "rgba(255,255,255,0.1)",
+              boxShadow: "none",
+              color: "rgba(209,209,209,0.8)",
+            }
       }
-      posAttr.needsUpdate = true;
-    }
-  });
-
-  return (
-    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="#A18AFF" size={0.06} sizeAttenuation={true} depthWrite={false} opacity={0.8} />
-    </Points>
+      transition={{ duration: 0.2 }}
+      className="inline-flex items-center px-3 py-1.5 rounded-md border font-mono text-[11px] tracking-wider cursor-default select-none"
+      style={{ willChange: "transform, box-shadow" }}
+    >
+      {name}
+    </motion.span>
   );
 }
 
-function CircuitLogic() {
-  const ref = useRef<any>(null);
-  const count = 1000;
-  const [positions] = useState(() => random.inBox(new Float32Array(count * 3), { sides: [2, 2, 2] }) as Float32Array);
+// ─── Category Card ───────────────────────────────────────────────────────────
+function CategoryCard({
+  category,
+  index,
+  isExpanded,
+  onToggle,
+}: {
+  category: (typeof skillCategories)[number];
+  index: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
-  useFrame((state, delta) => {
-    if (ref.current) {
-      ref.current.rotation.y += delta * 0.2;
-      const posAttr = ref.current.geometry.attributes.position;
-      for (let i = 0; i < count; i++) {
-        // Subtle pulsing of "circuit nodes"
-        const x = posAttr.getX(i);
-        const y = posAttr.getY(i);
-        const z = posAttr.getZ(i);
-        const pulse = Math.sin(state.clock.elapsedTime * 2 + x + y) * 0.002;
-        posAttr.setX(i, x + pulse);
-        posAttr.setY(i, y + pulse);
-        posAttr.setZ(i, z + pulse);
-      }
-      posAttr.needsUpdate = true;
-    }
-  });
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
 
   return (
-    <group>
-        <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-            <PointMaterial transparent color="#94A3B8" size={0.05} sizeAttenuation={true} depthWrite={false} opacity={0.8} />
-        </Points>
-    </group>
-  );
-}
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative rounded-xl overflow-hidden glass-panel group cursor-pointer"
+      onClick={onToggle}
+      style={{
+        border: `1px solid ${isHovered ? `rgba(${category.accentRgb},0.35)` : "rgba(255,255,255,0.07)"}`,
+        transition: "border-color 0.3s ease",
+      }}
+    >
+      {/* Radial mouse-follow glow */}
+      {isHovered && (
+        <div
+          className="absolute pointer-events-none rounded-xl"
+          style={{
+            inset: 0,
+            background: `radial-gradient(200px circle at ${mousePos.x}px ${mousePos.y}px, rgba(${category.accentRgb},0.08), transparent 70%)`,
+          }}
+        />
+      )}
 
-function AgenticFace() {
-  const ref = useRef<any>(null);
-  // Procedurally generate a head-like ellipsoid point cloud
-  const count = 3000;
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = 2 * Math.PI * u;
-        const phi = Math.acos(2 * v - 1);
-        
-        const r = 1.0;
-        // Distort into a head shape
-        pos[i * 3] = r * Math.sin(phi) * Math.cos(theta) * 0.8;
-        pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 1.1;
-        pos[i * 3 + 2] = r * Math.cos(phi) * 0.9;
-        
-        // Add "eye" hollows
-        if (Math.abs(pos[i * 3 + 1] - 0.3) < 0.2 && Math.abs(pos[i * 3]) > 0.2 && pos[i * 3 + 2] > 0) {
-            pos[i * 3 + 2] *= 0.8;
+      {/* Top scan line on hover */}
+      <motion.div
+        className="absolute top-0 left-0 right-0 h-[1px]"
+        animate={
+          isHovered
+            ? { opacity: 1, scaleX: 1, boxShadow: `0 0 12px rgba(${category.accentRgb},1)` }
+            : { opacity: 0.2, scaleX: 0.6, boxShadow: "none" }
         }
-    }
-    return pos;
-  }, []);
+        style={{ backgroundColor: category.accent, transformOrigin: "left" }}
+        transition={{ duration: 0.4 }}
+      />
 
-  useFrame((state, delta) => {
-    if (ref.current) {
-      ref.current.rotation.y += delta * 0.5; // Constant rotation
-      ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-    }
-  });
+      {/* Card Header */}
+      <div className="p-5 sm:p-6 flex items-center justify-between">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* Icon + Tag */}
+          <div
+            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 font-mono text-lg"
+            style={{
+              background: `rgba(${category.accentRgb},0.12)`,
+              border: `1px solid rgba(${category.accentRgb},0.3)`,
+              color: category.accent,
+              textShadow: `0 0 10px rgba(${category.accentRgb},0.8)`,
+            }}
+          >
+            {category.icon}
+          </div>
 
-  return (
-    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color="#00E5FF" size={0.03} sizeAttenuation={true} depthWrite={false} opacity={0.6} />
-    </Points>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span
+                className="font-mono text-[9px] tracking-[0.2em] uppercase px-1.5 py-0.5 rounded"
+                style={{
+                  color: category.accent,
+                  background: `rgba(${category.accentRgb},0.1)`,
+                  border: `1px solid rgba(${category.accentRgb},0.2)`,
+                }}
+              >
+                {category.reg}
+              </span>
+              <span className="font-mono text-[9px] text-white/20 tracking-widest">//</span>
+              <span className="font-mono text-[9px] text-white/20 tracking-widest uppercase">{category.tag}</span>
+            </div>
+            <h3 className="font-display font-bold text-sm sm:text-base text-white/90 truncate">
+              {category.label}
+            </h3>
+          </div>
+        </div>
+
+        {/* Count + Toggle */}
+        <div className="flex items-center gap-3 shrink-0 ml-2">
+          <span className="hidden sm:inline font-mono text-xs text-white/30">
+            {String(category.items.length).padStart(2, "0")} MODULES
+          </span>
+          <motion.div
+            animate={{ rotate: isExpanded ? 135 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-7 h-7 rounded-full border flex items-center justify-center font-mono text-sm"
+            style={{
+              borderColor: isExpanded ? category.accent : "rgba(255,255,255,0.15)",
+              color: isExpanded ? category.accent : "rgba(255,255,255,0.4)",
+              boxShadow: isExpanded ? `0 0 10px rgba(${category.accentRgb},0.4)` : "none",
+            }}
+          >
+            +
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Expandable Skill Badges */}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            {/* Separator */}
+            <div
+              className="mx-5 h-[1px]"
+              style={{ background: `linear-gradient(to right, rgba(${category.accentRgb},0.4), transparent)` }}
+            />
+            <div className="p-5 sm:p-6 pt-4 flex flex-wrap gap-2">
+              {category.items.map((item, i) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.03, duration: 0.25 }}
+                >
+                  <SkillBadge name={item} accent={category.accent} accentRgb={category.accentRgb} />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
+// ─── Animated Ticker ─────────────────────────────────────────────────────────
+const tickerItems = [
+  "C/C++", "PYTHON", "TENSORFLOW", "REACT.JS", "NODE.JS",
+  "NEXT.JS", "LANGCHAIN", "LINUX", "POSTGRESQL", "CYBERSECURITY",
+  "OPENAI_API", "HUGGING_FACE", "GOLANG", "TYPESCRIPT", "POWER_BI",
+];
+
+function SkillTicker() {
+  return (
+    <div className="relative overflow-hidden" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
+      <motion.div
+        className="flex gap-8 whitespace-nowrap"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+      >
+        {[...tickerItems, ...tickerItems].map((item, i) => (
+          <span key={i} className="flex items-center gap-4 font-mono text-[10px] tracking-[0.25em] uppercase text-white/30">
+            {item}
+            <span className="w-1 h-1 rounded-full bg-teal/40" />
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Main Section ─────────────────────────────────────────────────────────────
 export default function ExpertiseSection() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeSkill, setActiveSkill] = useState<number | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["lang", "ai"]));
+  const [allExpanded, setAllExpanded] = useState(false);
 
-  const capabilities = [
-    {
-      reg: "REG_01 // INDUSTRIAL",
-      title: "INDUSTRIAL SOFTWARE ENGINEERING",
-      description: "Architecting long-range communication signals to facilitate reliable data exchange in environments where traditional networking fails.",
-      border: "border-l-teal",
-      accent: "#00E5FF",
-      visual: BashAnimation
-    },
-    {
-      reg: "REG_02 // HARDWARE",
-      title: "HARDWARE EMULATION & PHYSICS",
-      description: "Developing 'soft clones' of complex radiation-identification circuits to enable sophisticated nuclear physics experiments.",
-      border: "border-l-lavender",
-      accent: "#A18AFF",
-      visual: SignalWave
-    },
-    {
-      reg: "REG_03 // KERNEL",
-      title: "LOW-LEVEL OS DEVELOPMENT",
-      description: "Building a custom 32-bit x86 operating system from scratch, driven by a 'metal-up' philosophy.",
-      border: "border-l-ash",
-      accent: "#94A3B8",
-      visual: CircuitLogic
-    },
-    {
-      reg: "REG_04 // SPECIALIZED",
-      title: "AI & DATA SCIENCE",
-      description: "Architecting Agentic AI swarms, securing machine learning modules, and leveraging data science for industrial insights.",
-      border: "border-l-white/20",
-      accent: "#00E5FF",
-      visual: AgenticFace
+  const toggle = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (allExpanded) {
+      setExpandedIds(new Set());
+      setAllExpanded(false);
+    } else {
+      setExpandedIds(new Set(skillCategories.map((c) => c.id)));
+      setAllExpanded(true);
     }
-  ];
+  };
+
+  // Sync allExpanded with expandedIds
+  const allCurrentlyExpanded = expandedIds.size === skillCategories.length;
 
   return (
     <section className="relative w-full min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-24 flex flex-col justify-center">
+
+      {/* Background grid pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.025]"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,229,255,0.6) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,229,255,0.6) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+        }}
+      />
+
       {/* HUD Header */}
-      <div className="mb-12 sm:mb-16">
-        <p className="font-mono text-teal text-[10px] tracking-widest uppercase mb-4 opacity-80">
-          -- EXECUTIVE // REGISTRY
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="mb-12 sm:mb-16 z-10 relative"
+      >
+        <p className="font-mono text-teal text-[10px] sm:text-xs tracking-[0.25em] uppercase mb-4 opacity-80">
+          ── SKILL_MATRIX // REGISTRY ──
         </p>
-        <h2 className="font-display font-bold text-3xl sm:text-5xl lg:text-6xl text-white">
-          CORE <span className="text-lavender italic opacity-90">// CAPABILITIES</span>
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 z-10 relative">
-        {capabilities.map((cap, idx) => (
-          <motion.div 
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.1 }}
-            onMouseEnter={() => setHoveredIndex(idx)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            onClick={() => setActiveSkill(idx)}
-            className={`glass-panel p-6 sm:p-8 rounded-xl flex flex-col transition-all duration-500 overflow-hidden relative group cursor-crosshair ${cap.border} ${hoveredIndex === idx ? 'scale-[1.01] sm:scale-[1.02] shadow-[0_0_30px_rgba(0,229,255,0.15)] bg-white/[0.04]' : 'bg-white/[0.02]'}`}
-            style={{ minHeight: '300px' }}
-          >
-            <div className="font-mono text-[9px] sm:text-[10px] text-ash tracking-widest uppercase mb-4 opacity-70">
-              {cap.reg}
-            </div>
-            
-            <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-4 transition-colors duration-300 group-hover:text-teal font-jetbrains">
-              {cap.title}
-            </h3>
-
-            <p className="font-sans text-ash/80 text-xs sm:text-sm leading-relaxed mb-6">
-              {cap.description}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
+            <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
+              SKILL{" "}
+              <span className="text-teal italic opacity-90" style={{ textShadow: "0 0 30px rgba(0,229,255,0.5)" }}>
+                // MATRIX
+              </span>
+            </h2>
+            <p className="font-sans text-white/40 text-sm mt-3 max-w-xl leading-relaxed">
+              A full registry of technical capabilities, tools, and cognitive frameworks — click any module to expand the skill tree.
             </p>
+          </div>
 
-            <div className="mt-auto pt-6 flex items-center justify-between">
-               <div className="w-full h-[1px] bg-white/10 relative overflow-hidden">
-                 <motion.div 
-                   className="absolute top-0 left-0 h-full bg-teal shadow-[0_0_10px_rgba(0,229,255,1)]"
-                   initial={{ x: "-100%" }}
-                   animate={{ x: hoveredIndex === idx ? "0%" : "-100%" }}
-                   transition={{ duration: 0.8, ease: "easeInOut" }}
-                 />
-               </div>
-
-               {/* CTA label */}
-               <motion.span
-                 className="font-mono text-[9px] sm:text-[10px] ml-4 whitespace-nowrap uppercase tracking-widest select-none"
-                 animate={hoveredIndex === idx
-                   ? { color: cap.accent, textShadow: `0 0 14px ${cap.accent}` }
-                   : { color: "rgba(148,163,184,0.4)", textShadow: "none" }
-                 }
-                 transition={{ duration: 0.3 }}
-               >
-                 {hoveredIndex === idx ? "▶ ACCESS_SKILL_LOG" : "TAP_TO_ENGAGE"}
-               </motion.span>
+          {/* Stats + Toggle All */}
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="text-right">
+              <div className="font-mono text-2xl font-bold text-white">
+                {skillCategories.reduce((acc, c) => acc + c.items.length, 0)}
+              </div>
+              <div className="font-mono text-[9px] tracking-widest text-white/30 uppercase">Total Skills</div>
             </div>
-
-            {/* Visual element for the corner */}
-            <div className="absolute -top-12 -right-12 sm:-top-8 sm:-right-8 w-48 h-48 sm:w-64 sm:h-64 opacity-20 sm:opacity-30 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none">
-               <Canvas camera={{ position: [0, 0, 4] }}>
-                 <cap.visual isHovered={hoveredIndex === idx} />
-               </Canvas>
+            <div className="w-[1px] h-10 bg-white/10" />
+            <div className="text-right">
+              <div className="font-mono text-2xl font-bold" style={{ color: "#00E5FF" }}>
+                {skillCategories.length}
+              </div>
+              <div className="font-mono text-[9px] tracking-widest text-white/30 uppercase">Domains</div>
             </div>
-          </motion.div>
+            <div className="w-[1px] h-10 bg-white/10" />
+            <button
+              onClick={toggleAll}
+              className="font-mono text-[10px] tracking-widest uppercase px-4 py-2 rounded-lg border transition-all duration-300"
+              style={{
+                borderColor: allCurrentlyExpanded ? "rgba(0,229,255,0.5)" : "rgba(255,255,255,0.15)",
+                color: allCurrentlyExpanded ? "#00E5FF" : "rgba(255,255,255,0.4)",
+                background: allCurrentlyExpanded ? "rgba(0,229,255,0.08)" : "transparent",
+              }}
+            >
+              {allCurrentlyExpanded ? "COLLAPSE ALL" : "EXPAND ALL"}
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Skill Category Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 z-10 relative">
+        {skillCategories.map((category, idx) => (
+          <CategoryCard
+            key={category.id}
+            category={category}
+            index={idx}
+            isExpanded={expandedIds.has(category.id)}
+            onToggle={() => toggle(category.id)}
+          />
         ))}
       </div>
 
-      {/* Skill Log Overlay */}
-      <SkillLogOverlay
-        data={activeSkill !== null ? skillRegistry[activeSkill] : null}
-        onClose={() => setActiveSkill(null)}
-      />
+      {/* Ticker */}
+      <div className="mt-20 border-t border-white/[0.06] pt-6 overflow-hidden z-10 relative">
+        <SkillTicker />
+      </div>
 
       {/* Experience CTA */}
-      <div className="mt-32 relative z-10">
-        <div className="glass-panel rounded-xl p-8 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-teal/20 transition-colors duration-500">
+      <div className="mt-16 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass-panel rounded-xl p-7 sm:p-8 border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 group hover:border-teal/20 transition-colors duration-500"
+        >
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-ash/50 mb-2">
+            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/30 mb-2">
               [ LOG_TYPE: DEPLOYMENT_HISTORY ]
             </p>
-            <h3 className="font-display font-bold text-2xl text-white">
+            <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
               SERVICE <span className="text-teal italic opacity-80">// LOGS</span>
             </h3>
-            <p className="font-sans text-xs text-ash/60 mt-2 max-w-md leading-relaxed">
+            <p className="font-sans text-xs text-white/40 mt-2 max-w-md leading-relaxed">
               A full chronological record of deployments, internships, and active organizational roles — rendered as a cybernetic timeline.
             </p>
           </div>
@@ -433,19 +493,7 @@ export default function ExpertiseSection() {
           >
             ACCESS TIMELINE <span className="text-lg">→</span>
           </a>
-        </div>
-      </div>
-
-      {/* Stack Registers Footer Ticker */}
-      <div className="mt-24 border-t border-white/10 pt-6 overflow-hidden">
-         <div className="flex items-center gap-12 font-mono text-xs text-ash tracking-[0.2em] uppercase whitespace-nowrap opacity-60">
-            {/* simple repetition for ticker effect */}
-            {['C/C++', 'PYTHON', 'OPENCV', 'MACH_LEARNING', 'REACT/NODE', 'LINUX_OS', 'SYSTEMS_ENG', 'POSIX'].map((tech, i) => (
-              <span key={i} className="flex items-center gap-4">
-                {tech} <span className="w-1.5 h-1.5 rounded-full bg-ash/30" />
-              </span>
-            ))}
-         </div>
+        </motion.div>
       </div>
     </section>
   );
