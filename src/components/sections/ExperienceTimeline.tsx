@@ -136,19 +136,27 @@ function TimelineNode({
   return (
     <div
       ref={ref}
-      className={`relative flex w-full items-start ${isLeft ? "flex-row" : "flex-row-reverse"} mb-12`}
+      className={`relative flex w-full items-start mb-8 sm:mb-12
+        /* Mobile: always left-to-right single column */
+        flex-row
+        /* Desktop: alternate sides */
+        lg:${isLeft ? "flex-row" : "flex-row-reverse"}
+      `}
     >
-      {/* Card */}
+      {/* Card — full-width on mobile, half-width on lg */}
       <motion.div
         initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="w-[calc(50%-2.5rem)] group relative"
-        style={{ [isLeft ? "marginRight" : "marginLeft"]: "2.5rem" }}
+        className={`
+          w-full lg:w-[calc(50%-2.5rem)] group relative
+          pl-10 lg:pl-0
+          ${isLeft ? "lg:mr-10" : "lg:ml-10"}
+        `}
       >
-        {/* Connector line */}
+        {/* Desktop connector line — hidden on mobile */}
         <div
           className="absolute top-6 hidden lg:block"
           style={{
@@ -160,7 +168,7 @@ function TimelineNode({
         />
 
         <motion.div
-          className="rounded-xl border border-white/5 p-6 relative overflow-hidden cursor-default"
+          className="rounded-xl border border-white/5 p-5 sm:p-6 relative overflow-hidden cursor-default"
           style={{ background: hovered ? exp.accentBg : "rgba(255,255,255,0.02)" }}
           animate={{ borderColor: hovered ? `${exp.accent}40` : "rgba(255,255,255,0.05)" }}
           transition={{ duration: 0.3 }}
@@ -190,7 +198,7 @@ function TimelineNode({
           </div>
 
           {/* Role & Company */}
-          <h3 className="font-display font-bold text-lg text-white uppercase tracking-tight mb-0.5 group-hover:text-teal transition-colors duration-300">
+          <h3 className="font-display font-bold text-base sm:text-lg text-white uppercase tracking-tight mb-0.5 group-hover:text-teal transition-colors duration-300">
             {exp.role}
           </h3>
           <p className="font-mono text-[11px] tracking-widest uppercase mb-4" style={{ color: exp.accent, opacity: 0.7 }}>
@@ -225,8 +233,11 @@ function TimelineNode({
         </motion.div>
       </motion.div>
 
-      {/* Center Node */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-4 flex flex-col items-center z-10">
+      {/* Timeline dot — left edge on mobile, center on desktop */}
+      <div className="absolute left-0 lg:left-1/2 -translate-x-1/2 top-4 flex flex-col items-center z-10
+        /* Mobile: shift dot to left edge with small offset */
+        translate-x-[14px] lg:translate-x-[-50%]
+      ">
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={inView ? { scale: 1, opacity: 1 } : {}}
@@ -244,6 +255,7 @@ function TimelineNode({
     </div>
   );
 }
+
 
 export default function ExperienceTimeline() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -291,8 +303,8 @@ export default function ExperienceTimeline() {
           />
         </div>
 
-        {/* Mobile vertical line */}
-        <div className="absolute left-0 top-0 bottom-0 w-[1px] lg:hidden" style={{ background: "rgba(0,229,255,0.15)" }} />
+        {/* Mobile vertical line — aligned with the dot offset */}
+        <div className="absolute left-[14px] top-0 bottom-0 w-[1px] lg:hidden" style={{ background: "rgba(0,229,255,0.15)" }} />
 
         {/* Entries */}
         <div className="relative">
@@ -303,11 +315,11 @@ export default function ExperienceTimeline() {
       </div>
 
       {/* Footer system ticker */}
-      <div className="mt-24 border-t border-white/10 pt-6 overflow-hidden">
-        <div className="flex items-center gap-12 font-mono text-xs text-ash tracking-[0.2em] uppercase whitespace-nowrap opacity-40">
+      <div className="mt-16 sm:mt-24 border-t border-white/10 pt-6 overflow-x-auto">
+        <div className="flex items-center gap-6 sm:gap-12 font-mono text-xs text-ash tracking-[0.2em] uppercase whitespace-nowrap opacity-40 pb-2">
           {["SYSTEM_ACTIVE", "NODES: 8", "STATUS: OPERATIONAL", "UPTIME: 20_YRS", "PROTOCOL: ASYNC_GROWTH"].map(
             (t, i) => (
-              <span key={i} className="flex items-center gap-4">
+              <span key={i} className="flex items-center gap-4 shrink-0">
                 {t} <span className="w-1.5 h-1.5 rounded-full bg-teal/40" />
               </span>
             )

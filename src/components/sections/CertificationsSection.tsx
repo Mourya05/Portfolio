@@ -460,7 +460,7 @@ export default function CertificationsSection() {
           {/* Scrollable tab strip */}
           <div
             className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
-            style={{ scrollbarWidth: "none" }}
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
           >
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;

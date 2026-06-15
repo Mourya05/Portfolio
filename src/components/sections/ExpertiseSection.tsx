@@ -406,7 +406,7 @@ export default function ExpertiseSection() {
         <p className="font-mono text-teal text-[10px] sm:text-xs tracking-[0.25em] uppercase mb-4 opacity-80">
           ── SKILL_MATRIX // REGISTRY ──
         </p>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-6">
           <div>
             <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
               SKILL{" "}
@@ -420,7 +420,7 @@ export default function ExpertiseSection() {
           </div>
 
           {/* Stats + Toggle All */}
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
             <div className="text-right">
               <div className="font-mono text-2xl font-bold text-white">
                 {skillCategories.reduce((acc, c) => acc + c.items.length, 0)}
@@ -437,7 +437,7 @@ export default function ExpertiseSection() {
             <div className="w-[1px] h-10 bg-white/10" />
             <button
               onClick={toggleAll}
-              className="font-mono text-[10px] tracking-widest uppercase px-4 py-2 rounded-lg border transition-all duration-300"
+              className="font-mono text-[10px] tracking-widest uppercase px-4 py-2 rounded-lg border transition-all duration-300 min-h-[40px]"
               style={{
                 borderColor: allCurrentlyExpanded ? "rgba(0,229,255,0.5)" : "rgba(255,255,255,0.15)",
                 color: allCurrentlyExpanded ? "#00E5FF" : "rgba(255,255,255,0.4)",
@@ -467,7 +467,6 @@ export default function ExpertiseSection() {
       <div className="mt-20 border-t border-white/[0.06] pt-6 overflow-hidden z-10 relative">
         <SkillTicker />
       </div>
-
 
     </section>
   );

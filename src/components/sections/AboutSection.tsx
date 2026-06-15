@@ -27,12 +27,12 @@ export default function AboutSection() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen pt-24 pb-16 px-6 lg:px-24 flex flex-col justify-start">
+    <section className="relative w-full min-h-screen pt-16 sm:pt-24 pb-16 px-4 sm:px-6 lg:px-24 flex flex-col justify-start">
       <div className="mb-10">
         <p className="font-mono text-teal text-[10px] tracking-widest uppercase mb-4 opacity-80">
           NEURAL IDENTITY
         </p>
-        <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-white">
+        <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white">
           SYSTEM_PROFILE <span className="text-ash italic opacity-60">// BIO</span>
         </h2>
       </div>
@@ -95,7 +95,7 @@ export default function AboutSection() {
           whileInView={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
           transition={{ duration: 1.0, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift aspect-square sm:aspect-[4/5] lg:aspect-auto order-1 lg:order-2 h-[300px] sm:h-[400px] lg:h-auto"
+          className="glass-panel p-2 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover-lift h-64 sm:h-96 lg:h-auto order-1 lg:order-2"
         >
             {/* Fallback pattern / image */}
             <div className="absolute inset-0 bg-gradient-to-b from-indigo/20 to-obsidian/40 mix-blend-multiply z-10" />
@@ -105,7 +105,7 @@ export default function AboutSection() {
                 alt="Mourya Birru Biometric Scan" 
                 fill 
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover opacity-100 transition-opacity duration-500 animate-glitch filter hue-rotate-[260deg] saturate-[2.5] brightness-[1.5] contrast-[1.1]"
+                className="object-cover object-top opacity-100 transition-opacity duration-500 animate-glitch filter hue-rotate-[260deg] saturate-[2.5] brightness-[1.5] contrast-[1.1]"
                 priority
               />
               <div className="absolute inset-0 bg-lavender/15 mix-blend-hard-light pointer-events-none z-10" />
@@ -133,7 +133,7 @@ export default function AboutSection() {
             $ cat user_intent.txt
           </div>
           
-          <div className="text-ash/90 leading-relaxed whitespace-pre-wrap min-h-[150px] sm:min-h-[200px] text-[10px] sm:text-xs">
+          <div className="text-ash/90 leading-relaxed whitespace-pre-wrap min-h-[100px] sm:min-h-[180px] text-[10px] sm:text-xs">
              {typedText}
              <span className="animate-pulse">_</span>
           </div>
@@ -163,7 +163,7 @@ export default function AboutSection() {
       </div>
 
       {/* Education Registry */}
-      <div className="mt-24 mb-16 relative z-10">
+      <div className="mt-12 sm:mt-24 mb-16 relative z-10">
         <div className="flex items-center gap-4 mb-10">
           <div className="h-[1px] flex-1 bg-white/10" />
           <h3 className="font-mono text-xs text-lavender tracking-[0.3em] uppercase opacity-80">

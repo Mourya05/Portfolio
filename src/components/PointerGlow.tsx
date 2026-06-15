@@ -3,6 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
 export default function PointerGlow() {
+  // Don't render on touch-only devices — no persistent cursor exists
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  }, []);
+
   const ringRef  = useRef<HTMLDivElement>(null);
   const dotRef   = useRef<HTMLDivElement>(null);
   const glowRef  = useRef<HTMLDivElement>(null);
@@ -85,6 +91,9 @@ export default function PointerGlow() {
   const color     = isHover ? "#A18AFF" : "#00E5FF";
   const colorRgb  = isHover ? "161,138,255" : "0,229,255";
   const dotSize   = isClick ? 10 : isHover ? 7 : 5;
+
+  // No custom cursor on touch-only devices
+  if (isTouchDevice) return null;
 
   return (
     <>

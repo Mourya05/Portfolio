@@ -6,6 +6,21 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
+// ─── Touch device detection hook ─────────────────────────────────────────────
+// Uses pointer/hover hardware capability — not viewport width — so Chrome
+// DevTools simulation still renders 3D, while real phones get the placeholder.
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none) and (pointer: coarse)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
 function DrawingAnimation({ isHovered }: { isHovered: boolean }) {
   const ref = useRef<any>(null);
   const count = 2000;
@@ -753,6 +768,7 @@ const projects = [
 
 const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, repoUrl }: any) => {
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
@@ -760,16 +776,34 @@ const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, rep
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="glass-panel p-6 sm:p-8 lg:p-10 rounded-2xl flex flex-col md:flex-row gap-8 lg:gap-10 mt-16 max-w-5xl mx-auto w-full relative z-10 group"
+      className="glass-panel p-5 sm:p-8 lg:p-10 rounded-2xl flex flex-col md:flex-row gap-6 sm:gap-8 lg:gap-10 mt-0 max-w-5xl mx-auto w-full relative z-10 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-full md:w-[45%] h-[250px] sm:h-[350px] md:h-auto aspect-square md:aspect-auto rounded-xl bg-black/40 border border-white/5 relative overflow-hidden flex items-center justify-center shrink-0">
-        <div className="absolute top-4 left-4 font-mono text-[9px] text-teal tracking-widest uppercase z-20 bg-obsidian/60 px-2 py-0.5 rounded">{tag}</div>
+      {/* Visual area — static placeholder on mobile, 3D Canvas on desktop */}
+      <div className="w-full md:w-[45%] h-[200px] sm:h-[300px] md:h-auto md:aspect-square rounded-xl bg-black/40 border border-white/5 relative overflow-hidden flex items-center justify-center shrink-0">
+        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 font-mono text-[9px] text-teal tracking-widest uppercase z-20 bg-obsidian/60 px-2 py-0.5 rounded">{tag}</div>
         <div className="w-full h-full">
-          <Canvas camera={{ position: [0, 0, 3] }}>
-            <Visual isHovered={isHovered} />
-          </Canvas>
+          {isMobile ? (
+            // Lightweight static placeholder — zero WebGL on mobile
+            <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#08080C] via-[#04040A] to-[#000000]">
+              <span
+                className="font-mono font-bold text-4xl tracking-widest"
+                style={{
+                  color: "#00E5FF",
+                  textShadow: "0 0 30px rgba(0,229,255,0.7), 0 0 60px rgba(0,229,255,0.3)",
+                }}
+              >
+                {tag}
+              </span>
+              <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-teal/60 to-transparent" />
+              <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">PROJECT ARCHIVE</span>
+            </div>
+          ) : (
+            <Canvas camera={{ position: [0, 0, 3] }}>
+              <Visual isHovered={isHovered} />
+            </Canvas>
+          )}
         </div>
       </div>
 
@@ -826,7 +860,7 @@ export default function ProjectsSection() {
         </p>
       </div>
 
-      <div className="w-full flex-col flex gap-32 pb-32">
+      <div className="w-full flex-col flex gap-16 sm:gap-24 lg:gap-32 pb-24 sm:pb-32">
         {projects.map((proj, idx) => (
           <ProjectCard key={proj.title} index={idx + 1} {...proj} />
         ))}

@@ -61,23 +61,23 @@ export default function Home() {
 
       {/* ── Contact ── */}
       <section id="contact">
-        <div className="relative w-full flex flex-col px-6 lg:px-24 items-center justify-center min-h-[80vh]">
-          <div className="glass-panel p-10 rounded-2xl flex flex-col items-center max-w-2xl text-center">
-            <h2 className="font-display font-bold text-4xl text-white mb-4">
+        <div className="relative w-full flex flex-col px-4 sm:px-6 lg:px-24 items-center justify-center min-h-[80vh]">
+          <div className="glass-panel p-6 sm:p-10 rounded-2xl flex flex-col items-center max-w-2xl w-full text-center">
+            <h2 className="font-display font-bold text-2xl sm:text-4xl text-white mb-4">
               INITIATE // CONTACT
             </h2>
             <p className="font-sans text-ash text-sm mb-8 leading-relaxed">
               Open to connecting on agentic swarms, data science architectures,
               and neural systems optimization.
             </p>
-            <div className="flex flex-col gap-6 items-center">
+            <div className="flex flex-col gap-6 items-center w-full">
               <a
                 href="mailto:mourya.birru@gmail.com"
-                className="bg-gradient-to-br from-[#A18AFF] to-[#8d7fff] text-obsidian px-8 py-3 rounded-md font-mono text-xs uppercase tracking-widest font-bold hover-lift"
+                className="w-full sm:w-auto bg-gradient-to-br from-[#A18AFF] to-[#8d7fff] text-obsidian px-8 py-4 rounded-md font-mono text-xs uppercase tracking-widest font-bold hover-lift min-h-[48px] flex items-center justify-center"
               >
                 Transmit Signal
               </a>
-              <span className="font-mono text-[10px] text-teal tracking-[0.2em] opacity-60">
+              <span className="font-mono text-[10px] text-teal tracking-[0.2em] opacity-60 break-all px-4">
                 SECURE_CHANNEL: mourya.birru@gmail.com
               </span>
             </div>

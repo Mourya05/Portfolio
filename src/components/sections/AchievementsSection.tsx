@@ -654,8 +654,7 @@ export default function AchievementsSection() {
             </span>
           </div>
 
-          <h1 className="font-display font-black uppercase leading-none tracking-tight mb-5"
-            style={{ fontSize: "clamp(2.4rem, 7vw, 5.5rem)" }}>
+          <h1 className="font-display font-black uppercase leading-none tracking-tight mb-5 text-3xl sm:text-5xl lg:text-6xl xl:text-7xl">
             <span className="text-white">Achievements</span>{" "}
             <span
               className="animate-glitch"
