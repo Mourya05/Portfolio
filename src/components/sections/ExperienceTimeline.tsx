@@ -140,7 +140,7 @@ function TimelineNode({
         /* Mobile: always left-to-right single column */
         flex-row
         /* Desktop: alternate sides */
-        lg:${isLeft ? "flex-row" : "flex-row-reverse"}
+        ${isLeft ? "lg:flex-row" : "lg:flex-row-reverse"}
       `}
     >
       {/* Card — full-width on mobile, half-width on lg */}
