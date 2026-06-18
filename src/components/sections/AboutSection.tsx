@@ -150,7 +150,12 @@ export default function AboutSection() {
       </div>
 
       {/* Lower Capabilities */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 relative z-10">
+         <motion.div whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }} className="glass-panel p-6 rounded-xl border-l-[3px] border-l-lavender">
+           <h4 className="font-display font-medium text-lg text-white mb-2">AI and Data Scientist</h4>
+           <p className="text-xs font-sans text-ash/80 leading-relaxed">Architecting intelligent agentic workflows and real-time data pipelines to extract high-throughput insights from complex systems.</p>
+         </motion.div>
+
          <motion.div whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }} className="glass-panel p-6 rounded-xl border-l-[3px] border-l-lavender">
            <h4 className="font-display font-medium text-lg text-white mb-2">Systems Engineering</h4>
            <p className="text-xs font-sans text-ash/80 leading-relaxed">Developing low-level OS components, memory-safe kernels, and bridging hardware with software.</p>
