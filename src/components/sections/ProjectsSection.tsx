@@ -683,7 +683,338 @@ function BootSequenceAnimation({ isHovered }: { isHovered: boolean }) {
   );
 }
 
+function BayesianRecognitionAnimation({ isHovered }: { isHovered: boolean }) {
+  const [textTexture, setTextTexture] = useState<THREE.CanvasTexture | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const pointsCount = 400;
+  const pointsRef = useRef<any>(null);
+  const laserRef = useRef<any>(null);
+
+  // Characters we cycle through
+  const chars = ["R", "B", "M", "O", "θ", "λ", "Ω"];
+  
+  // Store point positions for characters
+  const charPointsCache = useRef<Record<string, Float32Array>>({});
+
+  // Helper to extract character points on canvas
+  const getPointsForChar = (char: string): Float32Array => {
+    if (charPointsCache.current[char]) {
+      return charPointsCache.current[char];
+    }
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = 64;
+    tempCanvas.height = 64;
+    const tempCtx = tempCanvas.getContext("2d")!;
+    tempCtx.fillStyle = "#000000";
+    tempCtx.fillRect(0, 0, 64, 64);
+    tempCtx.fillStyle = "#ffffff";
+    tempCtx.font = "bold 44px sans-serif";
+    tempCtx.textAlign = "center";
+    tempCtx.textBaseline = "middle";
+    tempCtx.fillText(char, 32, 32);
+
+    const imgData = tempCtx.getImageData(0, 0, 64, 64);
+    const data = imgData.data;
+    const coords: { x: number; y: number }[] = [];
+
+    // Scan for white pixels
+    for (let y = 0; y < 64; y += 2) {
+      for (let x = 0; x < 64; x += 2) {
+        const idx = (y * 64 + x) * 4;
+        if (data[idx] > 127) {
+          // Normalize to range [-1.1, 1.1]
+          const px = (x / 64) * 2.2 - 1.1;
+          const py = -((y / 64) * 2.2 - 1.1); // Invert Y
+          coords.push({ x: px, y: py });
+        }
+      }
+    }
+
+    const positions = new Float32Array(pointsCount * 3);
+    if (coords.length === 0) {
+      // Fallback: random circle
+      for (let i = 0; i < pointsCount; i++) {
+        const angle = (i / pointsCount) * Math.PI * 2;
+        positions[i * 3] = Math.cos(angle) * 0.8;
+        positions[i * 3 + 1] = Math.sin(angle) * 0.8;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 0.05;
+      }
+    } else {
+      for (let i = 0; i < pointsCount; i++) {
+        const pt = coords[i % coords.length];
+        positions[i * 3] = pt.x;
+        positions[i * 3 + 1] = pt.y;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 0.05;
+      }
+    }
+
+    charPointsCache.current[char] = positions;
+    return positions;
+  };
+
+  // State values for Bayesian updating simulation
+  const statsRef = useRef({
+    targetChar: "R",
+    prevChar: "Ω",
+    iteration: 0,
+    probabilities: { R: 0.14, B: 0.14, M: 0.14, O: 0.14, θ: 0.14, λ: 0.14, Ω: 0.16 } as Record<string, number>,
+    noiseLevel: 1.0,
+    converged: false,
+    confidence: 0.14,
+    cycleTime: 0
+  });
+
+  // Initialize Canvas Texture for the background terminal
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    canvasRef.current = canvas;
+    const texture = new THREE.CanvasTexture(canvas);
+    setTextTexture(texture);
+  }, []);
+
+  // Pre-cache characters
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    chars.forEach(c => getPointsForChar(c));
+  }, []);
+
+  // Store the active positions and interpolation
+  const currentPositions = useMemo(() => new Float32Array(pointsCount * 3), []);
+  const targetPositions = useMemo(() => new Float32Array(pointsCount * 3), []);
+  const prevPositions = useMemo(() => new Float32Array(pointsCount * 3), []);
+  const noiseOffsets = useMemo(() => {
+    const offsets = new Float32Array(pointsCount * 3);
+    for (let i = 0; i < pointsCount * 3; i++) {
+      offsets[i] = (Math.random() - 0.5) * 0.8; // Max noise amplitude
+    }
+    return offsets;
+  }, []);
+
+  // Set initial target positions
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const initialTarget = getPointsForChar("R");
+    targetPositions.set(initialTarget);
+    prevPositions.set(initialTarget);
+    currentPositions.set(initialTarget);
+  }, []);
+
+  useFrame((state, delta) => {
+    const clock = state.clock;
+    const time = clock.getElapsedTime();
+    const speed = isHovered ? 2.5 : 1.0;
+
+    // Laser scan line animation
+    if (laserRef.current) {
+      laserRef.current.position.y = Math.sin(time * 2.5 * speed) * 1.25;
+    }
+
+    // Bayesian simulation cycle logic
+    const stats = statsRef.current;
+    stats.cycleTime += delta * speed;
+
+    // Reset cycle every 4 seconds
+    if (stats.cycleTime > 4.0) {
+      stats.cycleTime = 0;
+      stats.iteration = 0;
+      stats.converged = false;
+      stats.prevChar = stats.targetChar;
+      
+      // Select new character that is different from previous
+      let newChar = stats.targetChar;
+      while (newChar === stats.targetChar) {
+        newChar = chars[Math.floor(Math.random() * chars.length)];
+      }
+      stats.targetChar = newChar;
+
+      // Copy current target positions to previous positions
+      prevPositions.set(targetPositions);
+      
+      // Set new target positions
+      const newTarget = getPointsForChar(stats.targetChar);
+      targetPositions.set(newTarget);
+
+      // Re-initialize probability distribution with low priors
+      chars.forEach(c => {
+        stats.probabilities[c] = c === stats.prevChar ? 0.25 : (0.75 / (chars.length - 1));
+      });
+    }
+
+    // Run sequential Bayesian updating steps
+    const step = Math.floor(stats.cycleTime / 0.6);
+    if (step > stats.iteration && !stats.converged) {
+      stats.iteration = step;
+      
+      let sum = 0;
+      chars.forEach(c => {
+        const likelihood = c === stats.targetChar ? 0.9 : 0.1;
+        stats.probabilities[c] = likelihood * stats.probabilities[c];
+        sum += stats.probabilities[c];
+      });
+      // Normalize probabilities
+      chars.forEach(c => {
+        stats.probabilities[c] = stats.probabilities[c] / sum;
+      });
+
+      stats.confidence = stats.probabilities[stats.targetChar];
+      if (stats.confidence >= 0.85) {
+        stats.converged = true;
+      }
+    }
+
+    // Calculate noise level and morph progress
+    stats.noiseLevel = Math.max(0, 1.0 - stats.cycleTime / 2.5);
+    const morphProgress = Math.min(1.0, stats.cycleTime / 2.0);
+
+    // Calculate particle positions
+    if (pointsRef.current) {
+      const positionAttr = pointsRef.current.geometry.attributes.position;
+      const array = positionAttr.array;
+      
+      for (let i = 0; i < pointsCount; i++) {
+        const i3 = i * 3;
+        
+        const bx = prevPositions[i3] + (targetPositions[i3] - prevPositions[i3]) * morphProgress;
+        const by = prevPositions[i3 + 1] + (targetPositions[i3 + 1] - prevPositions[i3 + 1]) * morphProgress;
+        const bz = prevPositions[i3 + 2] + (targetPositions[i3 + 2] - prevPositions[i3 + 2]) * morphProgress;
+        
+        const waveX = Math.sin(time * 15 + i) * 0.08 * stats.noiseLevel;
+        const waveY = Math.cos(time * 13 + i) * 0.08 * stats.noiseLevel;
+
+        array[i3] = bx + noiseOffsets[i3] * stats.noiseLevel + waveX;
+        array[i3 + 1] = by + noiseOffsets[i3 + 1] * stats.noiseLevel + waveY;
+        array[i3 + 2] = bz + noiseOffsets[i3 + 2] * stats.noiseLevel * 0.5;
+      }
+      positionAttr.needsUpdate = true;
+    }
+
+    // Update Terminal Background Canvas Texture
+    if (canvasRef.current && textTexture) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d")!;
+      
+      ctx.fillStyle = "#04040A";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(0, 229, 255, 0.015)";
+      ctx.lineWidth = 1;
+      for (let y = 0; y < canvas.height; y += 6) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      ctx.font = "bold 20px monospace";
+      ctx.fillStyle = "#00E5FF";
+      ctx.fillText("PROB_REC_ENGINE // v0.90", 25, 45);
+      
+      ctx.fillStyle = "rgba(0, 229, 255, 0.2)";
+      ctx.fillRect(25, 60, canvas.width - 50, 2);
+
+      ctx.font = "15px monospace";
+      ctx.fillStyle = "#A18AFF";
+      ctx.fillText(`MODEL: RECURSIVE BAYESIAN UPDATING`, 25, 95);
+      ctx.fillText(`LIKELIHOOD RATIO: 0.90 / 0.10`, 25, 120);
+      ctx.fillText(`CONVERGENCE THRESHOLD: 0.85`, 25, 145);
+
+      ctx.fillStyle = "#00E5FF";
+      ctx.fillText(`ITERATION SEQUENCE: ${stats.iteration} / 4`, 25, 185);
+      ctx.fillText(`NOISE DECAY (SMOOTH): ${(stats.noiseLevel * 100).toFixed(1)}%`, 25, 210);
+
+      ctx.fillText("POSTERIOR PROBABILITY VECTOR:", 25, 250);
+      ctx.fillStyle = "rgba(0, 229, 255, 0.1)";
+      ctx.fillRect(25, 260, canvas.width - 50, 1);
+
+      let yPos = 295;
+      chars.forEach(c => {
+        const prob = stats.probabilities[c] || 0;
+        const isTarget = c === stats.targetChar;
+        
+        ctx.font = isTarget ? "bold 16px monospace" : "15px monospace";
+        ctx.fillStyle = isTarget ? "#39FF14" : "#A18AFF";
+        
+        const label = `P('${c}' | X_seq)`;
+        ctx.fillText(label, 25, yPos);
+
+        const barWidth = Math.floor(prob * 180);
+        ctx.fillStyle = isTarget ? "rgba(57, 255, 20, 0.3)" : "rgba(161, 138, 255, 0.15)";
+        ctx.fillRect(180, yPos - 12, barWidth, 14);
+        ctx.strokeStyle = isTarget ? "#39FF14" : "#A18AFF";
+        ctx.strokeRect(180, yPos - 12, 180, 14);
+
+        ctx.fillStyle = isTarget ? "#39FF14" : "#A18AFF";
+        ctx.fillText(prob.toFixed(4), 380, yPos);
+
+        yPos += 28;
+      });
+
+      ctx.fillStyle = "rgba(0, 229, 255, 0.2)";
+      ctx.fillRect(25, 480, canvas.width - 50, 2);
+
+      ctx.font = "bold 16px monospace";
+      if (stats.converged) {
+        ctx.fillStyle = "#39FF14";
+        ctx.fillText(`MAP ESTIMATE: '${stats.targetChar}' [CONVERGED P = ${stats.confidence.toFixed(4)}]`, 25, 502);
+      } else {
+        ctx.fillStyle = "#00E5FF";
+        ctx.fillText(`ESTIMATING... BEST ESTIMATE: '${stats.targetChar}' [P = ${stats.confidence.toFixed(4)}]`, 25, 502);
+      }
+
+      textTexture.needsUpdate = true;
+    }
+  });
+
+  return (
+    <group>
+      <ambientLight intensity={0.4} />
+      
+      <mesh position={[0, 0, -0.6]}>
+        <planeGeometry args={[2.6, 2.6]} />
+        <meshBasicMaterial color="#04040A" />
+      </mesh>
+      {textTexture && (
+        <mesh position={[0, 0, -0.59]}>
+          <planeGeometry args={[2.6, 2.6]} />
+          <meshBasicMaterial map={textTexture} transparent opacity={0.9} />
+        </mesh>
+      )}
+      
+      <Points ref={pointsRef} positions={currentPositions} stride={3} frustumCulled={false} position={[0, 0, 0.1]}>
+        <PointMaterial 
+          transparent 
+          color={isHovered ? "#39FF14" : "#00E5FF"} 
+          size={isHovered ? 0.055 : 0.04} 
+          sizeAttenuation={true} 
+          depthWrite={false} 
+          blending={THREE.AdditiveBlending} 
+        />
+      </Points>
+
+      <mesh ref={laserRef} position={[0, 0, 0.15]}>
+        <planeGeometry args={[2.0, 0.03]} />
+        <meshBasicMaterial color="#00E5FF" transparent opacity={0.7} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
+      </mesh>
+      
+      <gridHelper args={[2.6, 12, "#A18AFF", "#221155"]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.58]} />
+    </group>
+  );
+}
+
 const projects = [
+  {
+    title: "Probabilistic Character Recognition Engine",
+    tags: ["R", "Bayesian Stats", "MAP Estimation"],
+    description: "Developed a probabilistic character recognition engine in R using recursive Bayesian updating to solve sequential classification problems. Engineered a stochastic smoothing function (0.9/0.1 likelihood) and MAP estimation to handle noisy, contradictory inputs in real time, optimizing convergence at a 0.85 confidence threshold with a scalable data ingestion pipeline.",
+    visual: BayesianRecognitionAnimation,
+    tag: "PROB_ENGINE",
+    repoUrl: "https://github.com/Mourya05/Probabilistic-Character-Recognition-Engine.git"
+  },
   {
     title: "Hobby-OS",
     tags: ["C", "x86 Assembly", "QEMU", "Makefile"],

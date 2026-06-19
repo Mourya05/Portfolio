@@ -20,6 +20,9 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Mourya Birru | Mourya's Domain",
   description: "Portfolio of Mourya Birru. AI Engineer and Data Scientist. Exploring Agentic AI & Low-Level Systems.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 import Navigation from "@/components/Navigation";
