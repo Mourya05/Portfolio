@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const MUSIC_ENABLED = false; // Set to true to enable background music
+const MUSIC_ENABLED = true; // Set to true to enable background music
 
 export default function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);

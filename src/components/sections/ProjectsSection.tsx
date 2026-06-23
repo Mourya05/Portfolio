@@ -1006,7 +1006,335 @@ function BayesianRecognitionAnimation({ isHovered }: { isHovered: boolean }) {
   );
 }
 
+function GMCounterAnimation({ isHovered }: { isHovered: boolean }) {
+  const [textTexture, setTextTexture] = useState<THREE.CanvasTexture | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pointsRef = useRef<any>(null);
+  const tubeRef = useRef<any>(null);
+  const pulseGroupRef = useRef<any>(null);
+  
+  const particleCount = 80;
+  
+  // Keep track of particle positions, velocities, and lifetimes
+  const particles = useMemo(() => {
+    const data = [];
+    const sourceX = -0.9;
+    const sourceY = -0.5;
+    const destX = 0.7;
+    const destY = 0.4;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const spread = 0.25;
+      data.push({
+        x: sourceX,
+        y: sourceY,
+        z: 0,
+        vx: (destX - sourceX) + (Math.random() - 0.5) * spread,
+        vy: (destY - sourceY) + (Math.random() - 0.5) * spread,
+        vz: (Math.random() - 0.5) * spread,
+        life: Math.random(), // initial random offset
+        speed: 0.3 + Math.random() * 0.5
+      });
+    }
+    return data;
+  }, []);
+
+  const currentPositions = useMemo(() => new Float32Array(particleCount * 3), []);
+
+  // History for oscilloscope
+  const scopeHistory = useRef<number[]>(Array(30).fill(20));
+
+  // Pulse rings inside the GM tube
+  const pulseRings = useRef<any[]>([]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    canvasRef.current = canvas;
+    const texture = new THREE.CanvasTexture(canvas);
+    setTextTexture(texture);
+  }, []);
+
+  useFrame((state, delta) => {
+    const time = state.clock.elapsedTime;
+    const speedMultiplier = isHovered ? 3.0 : 1.0;
+    
+    // Rotate the GM Tube slightly
+    if (tubeRef.current) {
+      tubeRef.current.rotation.x = 0.2 + Math.sin(time * 0.5) * 0.1;
+      tubeRef.current.rotation.y = -0.4 + Math.cos(time * 0.5) * 0.1;
+    }
+
+    // Animate the particles streaming from source to detector
+    const sourceX = -0.9;
+    const sourceY = -0.5;
+    const sourceZ = 0;
+
+    const destX = 0.7;
+    const destY = 0.4;
+
+    if (pointsRef.current) {
+      const positionAttr = pointsRef.current.geometry.attributes.position;
+      const array = positionAttr.array as any;
+
+      for (let i = 0; i < particleCount; i++) {
+        const p = particles[i];
+        p.life += delta * p.speed * speedMultiplier;
+        if (p.life > 1.0) {
+          p.life = 0;
+          const spread = 0.25;
+          p.vx = (destX - sourceX) + (Math.random() - 0.5) * spread;
+          p.vy = (destY - sourceY) + (Math.random() - 0.5) * spread;
+          p.vz = (Math.random() - 0.5) * spread;
+        }
+
+        const t = p.life;
+        const x = sourceX + p.vx * t;
+        const y = sourceY + p.vy * t + Math.sin(t * Math.PI) * 0.08;
+        const z = sourceZ + p.vz * t;
+
+        const i3 = i * 3;
+        array[i3] = x;
+        array[i3 + 1] = y;
+        array[i3 + 2] = z;
+      }
+      positionAttr.needsUpdate = true;
+    }
+
+    // Animate the detection pulse rings in the tube
+    pulseRings.current.forEach((ring, idx) => {
+      if (ring) {
+        const scaleVal = 1.0 + ((time * 3 * speedMultiplier + idx * 0.5) % 1.5);
+        ring.scale.set(scaleVal, scaleVal, scaleVal);
+        
+        const opacityVal = Math.max(0, 1.0 - (scaleVal - 1.0) / 1.5);
+        if (ring.material) {
+          ring.material.opacity = opacityVal * 0.6;
+        }
+      }
+    });
+
+    // Update the Canvas Dashboard Texture
+    if (canvasRef.current && textTexture) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d')!;
+      
+      ctx.fillStyle = '#050B0B';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.03)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Scanline overlay
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.02)';
+      for (let y = 0; y < canvas.height; y += 4) {
+        ctx.fillRect(0, y, canvas.width, 2);
+      }
+
+      // Title
+      ctx.font = 'bold 20px monospace';
+      ctx.fillStyle = '#00E5FF';
+      ctx.fillText('NUCLEONIX GM-TAB v0.81', 30, 45);
+      
+      // Separator
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.15)';
+      ctx.fillRect(30, 60, canvas.width - 60, 2);
+
+      // Status info
+      ctx.font = '13px monospace';
+      ctx.fillStyle = '#39FF14';
+      ctx.fillText('● BLE CONNECTED [nRF52810]', 30, 90);
+      ctx.fillStyle = '#00E5FF';
+      ctx.fillText('● SUPABASE LICENSED: OK', 270, 90);
+
+      // Helipot delta-HV simulation
+      const hvSteps = [600, 750, 900, 960, 1000, 1050, 1100, 1200];
+      const stepIdx = Math.floor((time * 0.25) % hvSteps.length);
+      const currentHV = hvSteps[stepIdx];
+
+      ctx.fillStyle = '#A18AFF';
+      ctx.fillText(`HV HELIPOT: ${currentHV}V / 1200V`, 30, 125);
+      ctx.fillText(`STEPS: ITERATION ${stepIdx + 1}/${hvSteps.length} [d-HV +50V]`, 30, 145);
+
+      // HV Progress bar
+      ctx.strokeStyle = '#A18AFF';
+      ctx.strokeRect(30, 160, 200, 12);
+      ctx.fillStyle = 'rgba(161, 138, 255, 0.3)';
+      ctx.fillRect(32, 162, Math.floor((currentHV / 1200) * 196), 8);
+
+      // Labeling and Time
+      const labels = ['SAMPLE_A', 'STANDARD_REF', 'BACKGROUND_BG'];
+      const activeLabelIdx = Math.floor((time * 0.1) % labels.length);
+      const activeLabel = labels[activeLabelIdx];
+
+      ctx.fillStyle = '#00E5FF';
+      ctx.fillText(`LABEL: ${activeLabel}`, 270, 125);
+      ctx.fillText(`PRESET TIME: ${(time % 100).toFixed(1)}s / 100s`, 270, 145);
+
+      // CPS & CPM
+      const baseCPS = isHovered ? 180 : 35;
+      const noiseVal = Math.sin(time * 5) * 5 + (Math.random() - 0.5) * 8;
+      const currentCPS = Math.max(0, Math.floor(baseCPS + noiseVal));
+      const currentCPM = currentCPS * 60;
+
+      ctx.font = 'bold 36px monospace';
+      ctx.fillStyle = '#00E5FF';
+      ctx.fillText(`${currentCPS}`, 30, 240);
+      ctx.font = '14px monospace';
+      ctx.fillStyle = '#88A0A0';
+      ctx.fillText('CPS (COUNTS/SEC)', 30, 260);
+
+      ctx.font = 'bold 36px monospace';
+      ctx.fillStyle = '#39FF14';
+      ctx.fillText(`${currentCPM.toLocaleString()}`, 270, 240);
+      ctx.font = '14px monospace';
+      ctx.fillStyle = '#88A0A0';
+      ctx.fillText('CPM (COUNTS/MIN)', 270, 260);
+
+      // Oscilloscope box
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.2)';
+      ctx.strokeRect(30, 290, canvas.width - 60, 180);
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.02)';
+      ctx.fillRect(30, 290, canvas.width - 60, 180);
+
+      ctx.font = 'bold 12px monospace';
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.5)';
+      ctx.fillText('REAL-TIME RAD-PULSE OSCILLOSCOPE', 40, 310);
+
+      // Oscilloscope grid
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let ox = 30; ox < canvas.width - 30; ox += 40) {
+        ctx.beginPath(); ctx.moveTo(ox, 290); ctx.lineTo(ox, 470); ctx.stroke();
+      }
+      for (let oy = 290; oy < 470; oy += 30) {
+        ctx.beginPath(); ctx.moveTo(30, oy); ctx.lineTo(canvas.width - 30, oy); ctx.stroke();
+      }
+
+      // History update
+      const updateInterval = 4;
+      if (Math.floor(state.clock.elapsedTime * 60) % updateInterval === 0) {
+        scopeHistory.current.push(currentCPS);
+        if (scopeHistory.current.length > 50) {
+          scopeHistory.current.shift();
+        }
+      }
+
+      // Draw line
+      ctx.strokeStyle = '#39FF14';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      
+      const width = canvas.width - 60;
+      const stepX = width / (scopeHistory.current.length - 1);
+      const startX = 30;
+      const startY = 470;
+      const height = 140;
+      const maxVal = isHovered ? 250 : 60;
+
+      scopeHistory.current.forEach((val, index) => {
+        const xPos = startX + index * stepX;
+        const normalized = Math.min(1.0, val / maxVal);
+        const yPos = startY - normalized * height;
+        if (index === 0) {
+          ctx.moveTo(xPos, yPos);
+        } else {
+          ctx.lineTo(xPos, yPos);
+        }
+      });
+      ctx.stroke();
+
+      textTexture.needsUpdate = true;
+    }
+  });
+
+  return (
+    <group>
+      <mesh position={[0, 0, -0.6]}>
+        <planeGeometry args={[2.6, 2.6]} />
+        <meshBasicMaterial color="#050B0B" />
+      </mesh>
+      {textTexture && (
+        <mesh position={[0, 0, -0.59]}>
+          <planeGeometry args={[2.6, 2.6]} />
+          <meshBasicMaterial map={textTexture} transparent opacity={0.95} />
+        </mesh>
+      )}
+
+      <gridHelper args={[2.6, 12, "#00E5FF", "#002b30"]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.58]} />
+
+      {/* Radiation Source */}
+      <group position={[-0.9, -0.5, 0]}>
+        <mesh>
+          <sphereGeometry args={[0.12, 16, 16]} />
+          <meshBasicMaterial color="#A18AFF" wireframe />
+        </mesh>
+        <mesh rotation={[0, 0, -Math.PI / 4]} position={[0.05, 0.05, 0]}>
+          <cylinderGeometry args={[0.15, 0.18, 0.25, 8]} />
+          <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.4} />
+        </mesh>
+      </group>
+
+      {/* GM Detector Tube */}
+      <group ref={tubeRef} position={[0.7, 0.4, 0]} rotation={[0, 0, Math.PI / 6]}>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.3, 0.3, 1.0, 16, 4]} />
+          <meshBasicMaterial color="#00E5FF" wireframe transparent opacity={0.3} blending={THREE.AdditiveBlending} />
+        </mesh>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.01, 0.01, 1.1, 8]} />
+          <meshBasicMaterial color="#FFFFFF" />
+        </mesh>
+        <mesh position={[-0.5, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.31, 0.31, 0.05, 8]} />
+          <meshBasicMaterial color="#A18AFF" wireframe />
+        </mesh>
+        <mesh position={[0.5, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.31, 0.31, 0.05, 8]} />
+          <meshBasicMaterial color="#A18AFF" wireframe />
+        </mesh>
+        <group ref={pulseGroupRef}>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} ref={(el) => { pulseRings.current[i] = el; }} rotation={[0, Math.PI / 2, 0]}>
+              <torusGeometry args={[0.25, 0.02, 8, 16]} />
+              <meshBasicMaterial color="#39FF14" transparent opacity={0.6} blending={THREE.AdditiveBlending} />
+            </mesh>
+          ))}
+        </group>
+      </group>
+
+      <Points ref={pointsRef} positions={currentPositions} stride={3} frustumCulled={false} position={[0, 0, 0.05]}>
+        <PointMaterial
+          transparent
+          color={isHovered ? "#39FF14" : "#A18AFF"}
+          size={isHovered ? 0.06 : 0.045}
+          sizeAttenuation={true}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </Points>
+    </group>
+  );
+}
+
 const projects = [
+  {
+    title: "Tab-Based GM Counting System",
+    tags: ["React Native", "Node.js", "REST APIs", "Expo", "SQLite", "BLE", "Arduino", "Supabase"],
+    description: "A professional, tablet-optimized radiation monitoring mobile application built for Nucleonix scintillation detectors. It retrieves the unique Android Device ID to authenticate access via Supabase-driven Device Based Access Control, acting as a hardware license gate. Once authorized, the app connects to an Arduino-based hardware detector via BLE using the Nordic UART Service (NUS) for real-time CPS/CPM data acquisition. Features an industrial dashboard with 0–1200V helipot stepping control, Sample/Standard/Background labeling, on-device SQLite storage, Node.js REST API backend integration, and SheetJS spreadsheet exports.",
+    visual: GMCounterAnimation,
+    tag: "GM_CORE",
+    repoUrl: "https://github.com/NucleonixGCET/Tab-Based-GM-Counting-System.git"
+  },
   {
     title: "Probabilistic Character Recognition Engine",
     tags: ["R", "Bayesian Stats", "MAP Estimation"],

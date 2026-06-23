@@ -17,6 +17,30 @@ interface ExperienceEntry {
 
 const experiences: ExperienceEntry[] = [
   {
+    date: "FEB 2026 – JUN 2026",
+    company: "NUCLEONIX SYSTEMS",
+    role: "Mobile Application Developer Intern",
+    type: "INTERNSHIP",
+    accent: "#FF9F1C",
+    accentBg: "rgba(255,159,28,0.08)",
+    logId: "S_009",
+    skills: [
+      "React Native",
+      "Node.js",
+      "REST APIs",
+      "Expo",
+      "SQLite",
+      "Nordic UART (NUS)",
+      "Arduino",
+      "BLE Integration",
+      "Supabase",
+      "Device Access Control",
+      "Real-Time Deployment"
+    ],
+    description:
+      "Contributed to the development and real-time deployment of the tablet-optimized radiation monitoring mobile application (TAB-Based GM Counting System). Programmed secure client access by retrieving the unique Android Device ID and authenticating it via Supabase-driven Device Based Access Control, integrated Nordic UART Service (NUS) BLE communication with Arduino-based hardware detectors, built backend support with Node.js/REST APIs, and implemented on-device SQLite database structures.",
+  },
+  {
     date: "APR 2026 – MAY 2026",
     company: "AVASAN CHAKRA",
     role: "Software Development Engineer Intern",
@@ -317,7 +341,7 @@ export default function ExperienceTimeline() {
       {/* Footer system ticker */}
       <div className="mt-16 sm:mt-24 border-t border-white/10 pt-6 overflow-x-auto">
         <div className="flex items-center gap-6 sm:gap-12 font-mono text-xs text-ash tracking-[0.2em] uppercase whitespace-nowrap opacity-40 pb-2">
-          {["SYSTEM_ACTIVE", "NODES: 8", "STATUS: OPERATIONAL", "UPTIME: 20_YRS", "PROTOCOL: ASYNC_GROWTH"].map(
+          {["SYSTEM_ACTIVE", "NODES: 9", "STATUS: OPERATIONAL", "UPTIME: 20_YRS", "PROTOCOL: ASYNC_GROWTH"].map(
             (t, i) => (
               <span key={i} className="flex items-center gap-4 shrink-0">
                 {t} <span className="w-1.5 h-1.5 rounded-full bg-teal/40" />
