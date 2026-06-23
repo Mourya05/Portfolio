@@ -30,6 +30,7 @@ import Footer from "@/components/Footer";
 import PointerGlow from "@/components/PointerGlow";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import ParticleBackground from "@/components/ParticleBackground";
+import SciFiIntroScreen from "@/components/SciFiIntroScreen";
 
 export default function RootLayout({
   children,
@@ -41,12 +42,13 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-teal/30 overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-background text-[#E2E8F0] font-sans selection:bg-teal/30 overflow-x-hidden">
         {/* Static dark gradient — CSS fallback if JS is disabled */}
         <div className="fixed inset-0 bg-gradient-to-br from-[#000000] via-[#040406] to-[#08080C] pointer-events-none z-0" />
         {/* Canvas particle-network (z-[2], renders its own dark base) */}
         <ParticleBackground />
         <PointerGlow />
+        <SciFiIntroScreen />
         <BackgroundMusic />
         <Navigation />
         <Footer />
