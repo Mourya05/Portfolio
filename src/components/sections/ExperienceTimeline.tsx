@@ -19,7 +19,7 @@ const experiences: ExperienceEntry[] = [
   {
     date: "FEB 2026 – JUN 2026",
     company: "NUCLEONIX SYSTEMS",
-    role: "Mobile Application Developer Intern",
+    role: "R&D Engineering Intern, Embedded Systems",
     type: "INTERNSHIP",
     accent: "#FF9F1C",
     accentBg: "rgba(255,159,28,0.08)",
