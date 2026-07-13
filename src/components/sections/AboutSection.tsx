@@ -183,7 +183,7 @@ export default function AboutSection() {
               title: "Geethanjali College of Engineering and Technology",
               period: "2023 – 2027",
               degree: "Bachelor of Technology (B.Tech) in Computer Science and Engineering",
-              grade: "8.25 / 10.0 GPA",
+              grade: "8.22 / 10.0 GPA",
               border: "border-l-lavender"
             },
             {
