@@ -42,7 +42,7 @@ export default function Home() {
       </section>
 
       {/* ── Records: Achievements + Certifications ── */}
-      <section id="records">
+      <section id="records" className="relative w-full">
         <AchievementsSection />
 
         {/* Divider */}
