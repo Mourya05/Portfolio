@@ -22,49 +22,24 @@ function useIsMobile() {
 /* ─── Skill Data ──────────────────────────────────────────────────────────── */
 const CATEGORIES = [
   {
-    id: "lang", label: "Programming Languages", tag: "LANG",
-    accent: "#00E5FF", rgb: "0,229,255", pct: 92,
-    items: ["C", "C++", "Python", "Java", "JavaScript", "TypeScript", "R", "Golang"],
+    id: "systems", label: "Systems & Embedded", tag: "SYS",
+    accent: "#00E5FF", rgb: "0,229,255",
+    items: ["C", "C++", "x86 Assembly / NASM", "Linux Systems Programming", "POSIX", "BLE / Nordic UART", "Arduino", "Memory Management", "GDT / IDT / Paging", "QEMU", "Makefiles"],
   },
   {
-    id: "ai", label: "AI & Data Science", tag: "AI",
-    accent: "#FF6BFF", rgb: "255,107,255", pct: 90,
-    items: ["NumPy", "Pandas", "TensorFlow", "OpenCV", "Hugging Face", "LangChain", "LangGraph", "GNN", "CNN", "RNN", "OpenAI API"],
-  },
-  {
-    id: "frontend", label: "Frontend", tag: "FE",
-    accent: "#39FF14", rgb: "57,255,20", pct: 85,
-    items: ["HTML5", "CSS3", "TailwindCSS", "React.js", "React Native", "AngularJS", "Next.js"],
-  },
-  {
-    id: "backend", label: "Backend & APIs", tag: "BE",
-    accent: "#FFD700", rgb: "255,215,0", pct: 83,
-    items: ["Flask", "Node.js", "Express.js", "FastAPI", "Streamlit"],
-  },
-  {
-    id: "core", label: "Core Concepts", tag: "CORE",
-    accent: "#A18AFF", rgb: "161,138,255", pct: 88,
-    items: ["DSA", "OOP", "DBMS", "Software Engineering", "Network Engineering", "Mathematics"],
-  },
-  {
-    id: "cyber", label: "Cybersecurity", tag: "SEC",
-    accent: "#FF4444", rgb: "255,68,68", pct: 78,
-    items: ["Kali Linux", "Metasploit", "ZenMap", "Nmap", "Wireshark"],
+    id: "lang", label: "Languages & Web", tag: "LANG",
+    accent: "#A18AFF", rgb: "161,138,255",
+    items: ["Python", "TypeScript", "React Native", "Node.js", "R"],
   },
   {
     id: "db", label: "Databases", tag: "DB",
-    accent: "#00FFB3", rgb: "0,255,179", pct: 80,
-    items: ["MySQL", "PostgreSQL", "MongoDB"],
+    accent: "#00FFB3", rgb: "0,255,179",
+    items: ["PostgreSQL", "SQLite"],
   },
   {
-    id: "tools", label: "Tools & Cloud", tag: "TOOLS",
-    accent: "#FFA500", rgb: "255,165,0", pct: 87,
-    items: ["Git", "GitHub", "Google Cloud", "VS Code", "n8n", "Power BI", "Linux", "GNU Make"],
-  },
-  {
-    id: "soft", label: "Professional", tag: "SOFT",
-    accent: "#94A3B8", rgb: "148,163,184", pct: 95,
-    items: ["Problem Solving", "Logical Reasoning", "Critical Thinking", "Leadership", "Communication"],
+    id: "tools", label: "Tools & Infrastructure", tag: "TOOLS",
+    accent: "#FFA500", rgb: "255,165,0",
+    items: ["Git", "GitHub", "GNU Make", "Linux"],
   },
 ];
 
@@ -72,7 +47,7 @@ const NODE_CONFIGS = CATEGORIES.map((cat, i) => ({
   ...cat,
   baseAngle:   (i / CATEGORIES.length) * Math.PI * 2,
   orbitRadius: i % 2 === 0 ? 2.0 : 2.55,
-  inclination: [0.28, -0.22, 0.48, -0.28, 0.18, -0.42, 0.33, -0.14, 0.38][i],
+  inclination: [0.28, -0.22, 0.48, -0.28][i] ?? 0.18,
   orbitSpeed:  0.055 + i * 0.004,
 }));
 
@@ -525,14 +500,14 @@ export default function ExpertiseSection() {
             className="font-mono text-[9px] tracking-[0.35em] uppercase"
             style={{ color: "rgba(0,229,255,0.6)" }}
           >
-            SKILL_MATRIX // NEURAL_CORE :: v3.0
+            SKILL_MATRIX // Technical Skills
           </span>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end gap-5">
           <div>
             <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-none tracking-tight text-white">
-              SKILL{" "}
+              Technical{" "}
               <span
                 style={{
                   background:            "linear-gradient(135deg,#00E5FF,#A18AFF)",
@@ -541,7 +516,7 @@ export default function ExpertiseSection() {
                   filter:                "drop-shadow(0 0 24px rgba(0,229,255,0.5))",
                 }}
               >
-                MATRIX
+                Skills
               </span>
             </h2>
             <p className="font-sans text-white/35 text-sm mt-2 max-w-xs leading-relaxed">
@@ -647,7 +622,7 @@ export default function ExpertiseSection() {
               />
 
               <div className="font-mono text-[7px] tracking-[0.2em] text-white/25 mb-3">
-                {activeCat.pct}% PROFICIENCY · {activeCat.items.length} SKILLS
+                {activeCat.items.length} skills
               </div>
 
               <div className="flex flex-wrap gap-1.5">

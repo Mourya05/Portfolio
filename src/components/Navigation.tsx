@@ -8,13 +8,13 @@ import Link from "next/link";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const navItems = [
-  { name: "HOME",       href: "#home",       sectionId: "home"       },
-  { name: "ABOUT",      href: "#about",      sectionId: "about"      },
-  { name: "SKILLS",     href: "#skills",     sectionId: "skills"     },
-  { name: "EXPERIENCE", href: "#experience", sectionId: "experience" },
-  { name: "PROJECTS",   href: "#projects",   sectionId: "projects"   },
-  { name: "RECORDS",    href: "#records",    sectionId: "records"    },
-  { name: "CONTACT",    href: "#contact",    sectionId: "contact"    },
+  { name: "Home",         href: "#home",         sectionId: "home"       },
+  { name: "About",        href: "#about",        sectionId: "about"      },
+  { name: "Skills",       href: "#skills",       sectionId: "skills"     },
+  { name: "Experience",   href: "#experience",   sectionId: "experience" },
+  { name: "Projects",     href: "#projects",     sectionId: "projects"   },
+  { name: "Achievements", href: "#records",      sectionId: "records"    },
+  { name: "Contact",      href: "#contact",      sectionId: "contact"    },
 ];
 
 // ─── Smooth-scroll helper ─────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ export default function Navigation() {
           }}
           className="font-display font-bold text-lg md:text-xl tracking-wider text-white"
         >
-          Mourya&apos;s Domain
+          Mourya Birru
         </a>
 
         {/* Desktop Links */}
@@ -149,14 +149,14 @@ export default function Navigation() {
           >
             {isHome ? (
               <span className="bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian font-mono text-xs px-6 py-2.5 rounded-full hover-lift uppercase font-bold tracking-widest inline-block">
-                INITIATE
+                Contact
               </span>
             ) : (
               <Link
                 href="/#contact"
                 className="bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian font-mono text-xs px-6 py-2.5 rounded-full hover-lift uppercase font-bold tracking-widest inline-block"
               >
-                INITIATE
+                Contact
               </Link>
             )}
           </button>
@@ -220,14 +220,12 @@ export default function Navigation() {
                 className="mt-8"
               >
                 <span className="bg-gradient-to-br from-teal to-lavender text-obsidian font-mono text-sm px-10 py-4 rounded-full font-bold tracking-[0.2em] inline-block">
-                  INITIATE_COMMS
+                  Contact
                 </span>
               </button>
             </div>
 
-            <div className="absolute bottom-10 font-mono text-[10px] text-ash tracking-widest opacity-40">
-              -- SECURE_DOMAIN_V2.0 --
-            </div>
+
           </motion.div>
         )}
       </AnimatePresence>

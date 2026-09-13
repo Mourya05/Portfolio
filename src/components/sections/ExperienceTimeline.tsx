@@ -289,14 +289,14 @@ export default function ExperienceTimeline() {
       {/* Header */}
       <div className="mb-16 sm:mb-24">
         <p className="font-mono text-teal text-[10px] tracking-widest uppercase mb-4 opacity-80">
-          [ LOG_TYPE: DEPLOYMENT_HISTORY ]
+          Experience
         </p>
         <h2 className="font-display font-bold text-3xl sm:text-5xl lg:text-6xl text-white">
-          DEPLOYMENT{" "}
-          <span className="text-lavender italic opacity-90">// TIMELINE</span>
+          Experience Timeline{" "}
+          <span className="text-lavender italic opacity-90">// Chronological</span>
         </h2>
         <p className="font-sans text-ash/60 text-sm mt-4 max-w-xl leading-relaxed">
-          A chronological log of active engagements, internship deployments, and organizational roles — each entry a node in the growth matrix.
+          A chronological record of internships, engineering roles, and professional engagements.
         </p>
       </div>
 
@@ -341,7 +341,7 @@ export default function ExperienceTimeline() {
       {/* Footer system ticker */}
       <div className="mt-16 sm:mt-24 border-t border-white/10 pt-6 overflow-x-auto">
         <div className="flex items-center gap-6 sm:gap-12 font-mono text-xs text-ash tracking-[0.2em] uppercase whitespace-nowrap opacity-40 pb-2">
-          {["SYSTEM_ACTIVE", "NODES: 9", "STATUS: OPERATIONAL", "UPTIME: 20_YRS", "PROTOCOL: ASYNC_GROWTH"].map(
+          {["INTERNSHIPS: 4", "ROLES: 3", "MEMBERSHIPS: 2", "STATUS: ACTIVE"].map(
             (t, i) => (
               <span key={i} className="flex items-center gap-4 shrink-0">
                 {t} <span className="w-1.5 h-1.5 rounded-full bg-teal/40" />

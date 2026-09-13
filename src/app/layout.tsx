@@ -18,8 +18,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mourya Birru | Mourya's Domain",
-  description: "Portfolio of Mourya Birru. AI Engineer and Data Scientist. Exploring Agentic AI & Low-Level Systems.",
+  title: "Mourya Birru | Systems & Embedded Engineer",
+  description: "Portfolio of Mourya Birru — Systems & Embedded Software Engineer specializing in BLE hardware integration, x86 OS development, POSIX systems programming, and industrial IoT.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -48,7 +48,7 @@ export default function RootLayout({
         {/* Canvas particle-network (z-[2], renders its own dark base) */}
         <ParticleBackground />
         <PointerGlow />
-        <SciFiIntroScreen />
+        {/* SciFiIntroScreen disabled — removed to improve recruiter first impression */}
         <BackgroundMusic />
         <Navigation />
         <Footer />

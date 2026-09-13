@@ -119,9 +119,9 @@ const TIER_CONFIG: Record<
   Tier,
   { label: string; badge: string; badgeRgb: string; prefix: string; clearance: string; lightIntensity: number }
 > = {
-  legendary: { label: "LEGENDARY", badge: "#FFD700", badgeRgb: "255,215,0",   prefix: "◆", clearance: "ALPHA", lightIntensity: 3.5 },
-  epic:      { label: "EPIC",      badge: "#A18AFF", badgeRgb: "161,138,255", prefix: "◈", clearance: "BETA",  lightIntensity: 2.5 },
-  rare:      { label: "RARE",      badge: "#00E5FF", badgeRgb: "0,229,255",   prefix: "◇", clearance: "GAMMA", lightIntensity: 1.8 },
+  legendary: { label: "International", badge: "#FFD700", badgeRgb: "255,215,0",   prefix: "★", clearance: "", lightIntensity: 3.5 },
+  epic:      { label: "National",      badge: "#A18AFF", badgeRgb: "161,138,255", prefix: "◆", clearance: "", lightIntensity: 2.5 },
+  rare:      { label: "College",       badge: "#00E5FF", badgeRgb: "0,229,255",   prefix: "●", clearance: "", lightIntensity: 1.8 },
 };
 
 /* ─── Z-Arc Position Math ─────────────────────────────────────────────────── */
@@ -578,7 +578,7 @@ function MobileAchievements() {
                   borderRadius:  3,
                 }}
               >
-                {tier.prefix} {tier.label}
+                {ach.categoryTag}
               </span>
               <span style={{ fontFamily: "monospace", fontSize: "8px", color: "rgba(255,255,255,0.2)" }}>
                 {ach.year}
@@ -734,22 +734,21 @@ export default function AchievementsSection() {
               className="font-mono text-[9px] tracking-[0.35em] uppercase"
               style={{ color: "rgba(255,215,0,0.65)" }}
             >
-              HALL_OF_FAME · CLASSIFIED_RECORDS · {new Date().getFullYear()}
+              Honors &amp; Awards
             </span>
           </div>
-          <h1 className="font-display font-black uppercase leading-none tracking-tight mb-4 text-3xl">
-            <span className="text-white">Achievements</span>{" "}
-            <span
-              className="animate-glitch"
-              style={{
-                background: "linear-gradient(135deg,#FFD700 0%,#00E5FF 50%,#A18AFF 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              &amp; Records
-            </span>
-          </h1>
+            <h1 className="font-display font-black uppercase leading-none tracking-tight mb-4 text-3xl">
+              <span className="text-white">Honors</span>{" "}
+              <span
+                style={{
+                  background: "linear-gradient(135deg,#FFD700 0%,#00E5FF 50%,#A18AFF 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                &amp; Awards
+              </span>
+            </h1>
         </div>
         <MobileAchievements />
       </section>
@@ -783,23 +782,22 @@ export default function AchievementsSection() {
             className="font-mono text-[9px] tracking-[0.35em] uppercase"
             style={{ color: "rgba(255,215,0,0.65)" }}
           >
-            HALL_OF_FAME · CLASSIFIED_RECORDS · {new Date().getFullYear()}
+            Honors &amp; Awards
           </span>
         </div>
 
-        <h1 className="font-display font-black uppercase leading-none tracking-tight mb-4 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
-          <span className="text-white">Achievements</span>{" "}
-          <span
-            className="animate-glitch"
-            style={{
-              background:           "linear-gradient(135deg,#FFD700 0%,#00E5FF 50%,#A18AFF 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor:  "transparent",
-            }}
-          >
-            &amp; Records
-          </span>
-        </h1>
+          <h1 className="font-display font-black uppercase leading-none tracking-tight mb-4 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl">
+            <span className="text-white">Honors</span>{" "}
+            <span
+              style={{
+                background:           "linear-gradient(135deg,#FFD700 0%,#00E5FF 50%,#A18AFF 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor:  "transparent",
+              }}
+            >
+              &amp; Awards
+            </span>
+          </h1>
 
         {/* Stats console bar */}
         <div
@@ -852,7 +850,7 @@ export default function AchievementsSection() {
             className="font-mono text-[8px] tracking-[0.25em] uppercase"
             style={{ color: `rgba(${active.accentRgb},0.7)` }}
           >
-            {tier.prefix} {tier.label} · {active.categoryTag} · {active.year}
+            {active.categoryTag} · {active.year}
           </span>
         </div>
       </div>

@@ -245,8 +245,8 @@ export default function HeroSection() {
         >
           <h1 className="font-display font-bold text-3xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.1] tracking-[-0.02em] text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
             MOURYA BIRRU.<br />
-            <span className="text-lavender neon-text-lavender">4TH YR CSE.</span><br />
-            AI &amp; DATA SCIENCE.
+            <span className="text-lavender neon-text-lavender">SYSTEMS &amp;</span><br />
+            <span className="text-lavender neon-text-lavender">EMBEDDED ENGINEER.</span>
           </h1>
         </motion.div>
 
@@ -256,7 +256,8 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
         >
-          4th year CSE student at Geethanjali College of Engineering and Technology
+          4th-year CSE student at GCET &middot; Hyderabad &mdash; specializing in
+          bare-metal OS, BLE hardware integration, and Linux systems programming.
         </motion.p>
 
         {/* Buttons */}
