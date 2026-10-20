@@ -54,6 +54,70 @@
   box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.6), 0 0 15px rgba(161, 138, 255, 0.1);
 }
 
+@keyframes repository-glitch {
+  0%, 100% { transform: translate(0) scale(1.02); filter: none; }
+  20% { transform: translate(-2px, 1px) scale(1.02); filter: hue-rotate(35deg) contrast(1.35); }
+  40% { transform: translate(2px, -1px) scale(1.02); filter: saturate(1.8) contrast(1.25); }
+  60% { transform: translate(-1px, 0) scale(1.02); filter: hue-rotate(-35deg) contrast(1.5); }
+  80% { transform: translate(1px, 1px) scale(1.02); filter: none; }
+}
+
+.project-repo-glitch {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.project-repo-glitch::before,
+.project-repo-glitch::after {
+  content: attr(data-glitch);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.project-repo-glitch::before {
+  color: var(--color-teal);
+  text-shadow: 2px 0 var(--color-teal);
+}
+
+.project-repo-glitch::after {
+  color: #39ff14;
+  text-shadow: -2px 0 #39ff14;
+}
+
+.project-repo-glitch:hover {
+  animation: repository-glitch 0.55s steps(2, end);
+}
+
+.project-repo-glitch:hover::before,
+.project-repo-glitch:hover::after {
+  opacity: 0.8;
+  animation: repository-glitch 0.55s steps(2, end);
+}
+
+.project-repo-glitch:hover::before {
+  clip-path: inset(18% 0 58% 0);
+}
+
+.project-repo-glitch:hover::after {
+  clip-path: inset(62% 0 14% 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-repo-glitch:hover,
+  .project-repo-glitch:hover::before,
+  .project-repo-glitch:hover::after {
+    animation: none;
+  }
+}
+
 /* Base styles */
 *,
 *::before,

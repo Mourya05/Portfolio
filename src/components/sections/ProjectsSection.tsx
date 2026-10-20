@@ -1091,8 +1091,189 @@ function NeuralMeshAnimation({ isHovered }: { isHovered: boolean }) {
   );
 }
 
+// ─── StrataKV Telemetry Animation ─────────────────────────────────────────────
+function StrataKVTelemetryAnimation({ isHovered }: { isHovered: boolean }) {
+  const [textTexture, setTextTexture] = useState<THREE.CanvasTexture | null>(null);
+  const textTextureRef = useRef<THREE.CanvasTexture | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rackRef = useRef<THREE.Group>(null);
+  const pointsRef = useRef<THREE.Points>(null);
+
+  const particleCount = 72;
+  const currentPositions = useMemo(() => new Float32Array(particleCount * 3), []);
+  const particleSeeds = useMemo(() => Array.from({ length: particleCount }, (_, index) => ({
+    offset: (index * 0.61803398875) % 1,
+    speed: 0.3 + ((index * 37) % 100) / 100 * 0.7,
+    lane: (((index * 53) % 100) / 100 - 0.5) * 0.9,
+  })), []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    canvasRef.current = canvas;
+
+    const texture = new THREE.CanvasTexture(canvas);
+    textTextureRef.current = texture;
+    const renderFrame = window.requestAnimationFrame(() => setTextTexture(texture));
+
+    return () => {
+      window.cancelAnimationFrame(renderFrame);
+      textTextureRef.current = null;
+      texture.dispose();
+    };
+  }, []);
+
+  useFrame((state, delta) => {
+    const time = state.clock.elapsedTime;
+    const speed = isHovered ? 2.8 : 1.0;
+
+    if (rackRef.current) {
+      rackRef.current.rotation.x = -0.18 + Math.sin(time * 0.45 * speed) * 0.05;
+      rackRef.current.rotation.y = 0.45 + Math.cos(time * 0.35 * speed) * 0.12;
+    }
+
+    if (pointsRef.current) {
+      const positionAttr = pointsRef.current.geometry.attributes.position;
+      const array = positionAttr.array as Float32Array;
+
+      particleSeeds.forEach((particle, index) => {
+        const progress = (particle.offset + time * particle.speed * 0.15 * speed) % 1;
+        const i3 = index * 3;
+        array[i3] = -1.15 + progress * 2.3;
+        array[i3 + 1] = particle.lane + Math.sin(time * 2 + index) * 0.04;
+        array[i3 + 2] = 0.18 + Math.sin(progress * Math.PI) * 0.12;
+      });
+
+      positionAttr.needsUpdate = true;
+    }
+
+    if (canvasRef.current && textTextureRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const accent = isHovered ? "#39FF14" : "#00E5FF";
+      const accentSoft = isHovered ? "rgba(57, 255, 20, 0.22)" : "rgba(0, 229, 255, 0.2)";
+
+      ctx.fillStyle = "#03070A";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(0, 229, 255, 0.035)";
+      ctx.lineWidth = 1;
+      for (let y = 0; y < canvas.height; y += 6) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      ctx.font = "bold 18px monospace";
+      ctx.fillStyle = accent;
+      ctx.fillText("STRATAKV // INFERENCE TELEMETRY", 22, 38);
+
+      ctx.fillStyle = "rgba(0, 229, 255, 0.22)";
+      ctx.fillRect(22, 52, canvas.width - 44, 2);
+
+      ctx.font = "13px monospace";
+      ctx.fillStyle = "#A18AFF";
+      ctx.fillText("DEVICE : GTX 1050 Ti   |   VRAM : 4.0 GB", 22, 84);
+      ctx.fillStyle = "#00B0CC";
+      ctx.fillText("MODEL  : 1.1B PARAMS  |   PRECISION : BF16", 22, 108);
+
+      ctx.fillStyle = accent;
+      ctx.fillText("[TIMING] load_ms          = 11676.25", 22, 148);
+      ctx.fillText("[TIMING] pure_decode_tps  = 34.13", 22, 174);
+      ctx.fillStyle = "#A18AFF";
+      ctx.fillText("[MEMORY] vector_loads     = 128-bit", 22, 200);
+      ctx.fillText("[KERNEL] warp_gemv        = __shfl_down_sync", 22, 226);
+      ctx.fillText("[VRAM]   scratchpad       = PERSISTENT / 0 ALLOCS", 22, 252);
+      ctx.fillStyle = "#00B0CC";
+      ctx.fillText("[CPU]    bf16_to_fp32     = MULTITHREADED", 22, 278);
+
+      ctx.fillStyle = "rgba(0, 229, 255, 0.14)";
+      ctx.fillRect(22, 304, canvas.width - 44, 1);
+
+      ctx.font = "bold 12px monospace";
+      ctx.fillStyle = "#88A0A0";
+      ctx.fillText("DECODE PIPELINE UTILIZATION", 22, 329);
+      ctx.strokeStyle = accent;
+      ctx.strokeRect(22, 341, canvas.width - 44, 12);
+      ctx.fillStyle = accentSoft;
+      ctx.fillRect(24, 343, Math.floor((isHovered ? 0.96 : 0.82) * (canvas.width - 48)), 8);
+
+      ctx.font = "12px monospace";
+      ctx.fillStyle = accent;
+      ctx.fillText(`STATUS : ${isHovered ? "HOT PATH / STREAMING" : "READY / BARE-METAL"}`, 22, 390);
+      ctx.fillStyle = "#88A0A0";
+      ctx.fillText(`FRAME  : ${(time * 60).toFixed(0).padStart(6, "0")}   ΔT : ${(delta * 1000).toFixed(2)}ms`, 22, 416);
+      ctx.fillStyle = accent;
+      ctx.fillText("root@stratakv:~$ run --model 1.1B --device cuda_0_", 22, 462);
+      ctx.fillRect(22 + ctx.measureText("root@stratakv:~$ run --model 1.1B --device cuda_0_").width + 5, 450, 8, 14);
+
+      textTextureRef.current.needsUpdate = true;
+    }
+  });
+
+  return (
+    <group>
+      <mesh position={[0, 0, -0.7]}>
+        <planeGeometry args={[2.6, 2.6]} />
+        <meshBasicMaterial color="#03070A" />
+      </mesh>
+      {textTexture && (
+        <mesh position={[0, 0, -0.68]}>
+          <planeGeometry args={[2.6, 2.6]} />
+          <meshBasicMaterial map={textTexture} transparent opacity={0.96} />
+        </mesh>
+      )}
+
+      <gridHelper args={[2.6, 13, "#00E5FF", "#03272E"]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.66]} />
+
+      <group ref={rackRef} position={[0.72, -0.22, 0.34]}>
+        <mesh>
+          <boxGeometry args={[0.58, 0.9, 0.58]} />
+          <meshBasicMaterial color={isHovered ? "#39FF14" : "#00E5FF"} wireframe transparent opacity={0.65} blending={THREE.AdditiveBlending} />
+        </mesh>
+        {[0, 1, 2].map((slot) => (
+          <mesh key={slot} position={[0, -0.28 + slot * 0.28, 0.02]}>
+            <boxGeometry args={[0.42, 0.12, 0.42]} />
+            <meshBasicMaterial color="#A18AFF" wireframe transparent opacity={0.7} />
+          </mesh>
+        ))}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.42, 0.012, 8, 32]} />
+          <meshBasicMaterial color="#39FF14" transparent opacity={0.55} blending={THREE.AdditiveBlending} />
+        </mesh>
+      </group>
+
+      <Points ref={pointsRef} positions={currentPositions} stride={3} frustumCulled={false}>
+        <PointMaterial
+          transparent
+          color={isHovered ? "#39FF14" : "#00E5FF"}
+          size={isHovered ? 0.045 : 0.03}
+          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </Points>
+    </group>
+  );
+}
+
 // ─── Project Data ─────────────────────────────────────────────────────────────
 const projects = [
+  {
+    title: "StrataKV - Bare-Metal LLM Inference Engine",
+    tags: ["C++17", "CUDA", "MSVC", "CMake"],
+    description: "A zero-dependency, bare-metal C++ and CUDA inference engine built from first principles. Bypasses heavy frameworks to maximize physical memory bandwidth on consumer hardware.\n\nRunning 1.1B parameters on a 4GB GTX 1050 Ti: 34.13 Tokens/Sec decode throughput, 11.6-second total load time (fully multithreaded Safetensors decoding), and 128-bit vectorized memory loads.\n\nCore features: warp-collaborative GEMV decode loops (using __shfl_down_sync), zero-allocation persistent VRAM scratchpads, and CPU multithreading for BF16 to FP32 conversions.",
+    visual: StrataKVTelemetryAnimation,
+    tag: "STRATAKV",
+    repoUrl: "https://github.com/Mourya05/StrataKV.git",
+    featured: true,
+  },
   {
     title: "NeuralMesh | Mempool Threat Topology & GNN Anomaly Engine",
     tags: ["PyTorch Geometric", "Graph Attention Networks", "FastAPI", "WebSockets", "Redis", "WebGL / Three.js"],
@@ -1153,7 +1334,7 @@ const projects = [
 ];
 
 // ─── Project Card ─────────────────────────────────────────────────────────────
-const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, repoUrl, demoUrl }: any) => {
+const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, repoUrl, demoUrl, featured }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useIsMobile();
 
@@ -1163,7 +1344,7 @@ const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, rep
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="glass-panel p-5 sm:p-8 lg:p-10 rounded-2xl flex flex-col md:flex-row gap-6 sm:gap-8 lg:gap-10 mt-0 max-w-5xl mx-auto w-full relative z-10 group"
+      className={`glass-panel p-5 sm:p-8 lg:p-10 rounded-2xl flex flex-col md:flex-row gap-6 sm:gap-8 lg:gap-10 mt-0 max-w-5xl mx-auto w-full relative z-10 group ${featured ? "border-teal/25 shadow-[0_10px_50px_rgba(0,229,255,0.12)]" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -1172,19 +1353,30 @@ const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, rep
         <div className="absolute top-3 sm:top-4 left-3 sm:left-4 font-mono text-[9px] text-teal tracking-widest uppercase z-20 bg-obsidian/60 px-2 py-0.5 rounded">{tag}</div>
         <div className="w-full h-full">
           {isMobile ? (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#08080C] via-[#04040A] to-[#000000]">
-              <span
-                className="font-mono font-bold text-4xl tracking-widest"
-                style={{
-                  color: "#00E5FF",
-                  textShadow: "0 0 30px rgba(0,229,255,0.7), 0 0 60px rgba(0,229,255,0.3)",
-                }}
-              >
-                {tag}
-              </span>
-              <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-teal/60 to-transparent" />
-              <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">Project</span>
-            </div>
+            featured ? (
+              <div className="w-full h-full flex flex-col justify-center gap-3 bg-[#03070A] px-5 sm:px-8 font-mono" aria-label="StrataKV telemetry preview">
+                <div className="text-[10px] text-teal tracking-[0.16em] uppercase">STRATAKV // TELEMETRY</div>
+                <div className="h-px w-full bg-teal/20" />
+                <pre className="whitespace-pre-wrap text-[9px] sm:text-[10px] leading-relaxed text-lavender">
+                  {"[TIMING] load_ms         = 11676.25\n[TIMING] pure_decode_tps = 34.13\n[MEMORY] vector_loads    = 128-bit\n[VRAM]   scratchpad      = PERSISTENT"}
+                </pre>
+                <div className="text-[9px] text-green-400/80">STATUS : READY / BARE-METAL</div>
+              </div>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#08080C] via-[#04040A] to-[#000000]">
+                <span
+                  className="font-mono font-bold text-4xl tracking-widest"
+                  style={{
+                    color: "#00E5FF",
+                    textShadow: "0 0 30px rgba(0,229,255,0.7), 0 0 60px rgba(0,229,255,0.3)",
+                  }}
+                >
+                  {tag}
+                </span>
+                <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-teal/60 to-transparent" />
+                <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">Project</span>
+              </div>
+            )
           ) : (
             <Canvas camera={{ position: [0, 0, 3] }}>
               <Visual isHovered={isHovered} />
@@ -1194,6 +1386,16 @@ const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, rep
       </div>
 
       <div className="w-full md:w-[55%] flex flex-col justify-center">
+        {featured && (
+          <div className="flex items-center gap-3 mb-5">
+            <span className="font-mono text-[9px] text-obsidian bg-teal px-2.5 py-1 rounded-sm tracking-[0.2em] uppercase font-bold">
+              Featured Build
+            </span>
+            <span className="font-mono text-[9px] text-teal/70 tracking-[0.2em] uppercase">
+              GPU / Inference
+            </span>
+          </div>
+        )}
         <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
           {tags.map((t: string) => (
             <span key={t} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full font-mono text-[9px] text-lavender tracking-wider uppercase">
@@ -1218,7 +1420,10 @@ const ProjectCard = ({ index, title, tags, description, visual: Visual, tag, rep
             className="flex-1 sm:flex-none"
             aria-label={`View GitHub source for ${title}`}
           >
-            <button className="w-full sm:w-auto bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian px-8 py-3 rounded-md font-mono text-[10px] uppercase tracking-widest font-bold hover-lift">
+            <button
+              className={`w-full sm:w-auto bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian px-8 py-3 rounded-md font-mono text-[10px] uppercase tracking-widest font-bold hover-lift ${featured ? "project-repo-glitch" : ""}`}
+              data-glitch="GitHub Source"
+            >
               GitHub Source
             </button>
           </a>
