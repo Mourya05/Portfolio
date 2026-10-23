@@ -1,33 +1,42 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Sora, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
-const inter = Inter({
-  variable: "--font-inter",
+const sora = Sora({
+  variable: "--font-heading",
   subsets: ["latin"],
+  weight: ["300", "400", "600", "700"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Mourya Birru | CS Student, Systems & Software",
+  title: "Mourya Birru | CS Student · AI/ML, Data Science & Software",
   description:
-    "Mourya Birru — final-year CS student at GCET, Hyderabad. Building low-level systems and hardware-connected software. Open to SDE, systems, and embedded internships.",
+    "Final-year CS student at GCET, Hyderabad, building machine learning and software projects, from an LLM inference engine in CUDA to full-stack apps. Open to AI/ML, data science and SDE roles.",
   metadataBase: new URL("https://mourya-birru.me"),
   alternates: {
     canonical: "https://mourya-birru.me",
   },
   openGraph: {
-    title: "Mourya Birru | CS Student, Systems & Software",
+    title: "Mourya Birru | CS Student · AI/ML, Data Science & Software",
     description:
-      "Final-year CS student building low-level systems and hardware-connected software. Open to SDE, systems, and embedded internships.",
+      "Final-year CS student at GCET, Hyderabad, building machine learning and software projects, from an LLM inference engine in CUDA to full-stack apps. Open to AI/ML, data science and SDE roles.",
     type: "website",
     url: "https://mourya-birru.me",
     siteName: "Mourya Birru",
@@ -36,15 +45,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mourya Birru — CS Student, Systems & Software",
+        alt: "Mourya Birru — CS Student · AI/ML, Data Science & Software",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mourya Birru | CS Student, Systems & Software",
+    title: "Mourya Birru | CS Student · AI/ML, Data Science & Software",
     description:
-      "Final-year CS student building low-level systems and hardware-connected software.",
+      "Final-year CS student at GCET, Hyderabad, building machine learning and software projects, from an LLM inference engine in CUDA to full-stack apps. Open to AI/ML, data science and SDE roles.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -53,7 +62,24 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08090b",
+  themeColor: "#07060c",
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Mourya Birru",
+  url: "https://mourya-birru.me",
+  description:
+    "Final-year Computer Science student at GCET, Hyderabad, building machine learning and software projects.",
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Geethanjali College of Engineering and Technology",
+  },
+  sameAs: [
+    "https://github.com/mourya05",
+    "https://linkedin.com/in/mourya-birru",
+  ],
 };
 
 export default function RootLayout({
@@ -64,9 +90,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${sora.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} h-full`}
     >
-      <body className="bg-grid min-h-full flex flex-col">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--text)]">
         <Navigation />
         <main id="main-content" className="relative z-10 w-full flex-1 flex flex-col">
           {children}

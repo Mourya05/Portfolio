@@ -1,261 +1,412 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { FaGithub } from "react-icons/fa";
+import Image from "next/image";
+import { FaGithub } from "react-icons/fa6";
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
-interface FeaturedProject {
+interface Project {
   title:       string;
+  label:       string;
   description: string;
   tags:        string[];
   github:      string;
-  demo?:       string;
+  image:       string;
+  metric?:     { main: string; sub: string };
+  overlayTag?: string;
 }
 
-interface OtherProject {
+interface CompactProject {
   title:  string;
   blurb:  string;
   tags:   string[];
   github: string;
-  note?:  string;
+  image?: string;
 }
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
-const featured: FeaturedProject[] = [
-  {
-    title: "StrataKV — LLM Inference Engine",
-    description:
-      "A from-scratch LLM inference engine in C++ and CUDA, built without ML frameworks. Runs Llama 2 (1.1B parameters) on a GTX 1050 Ti (4 GB VRAM), achieving 34.13 tokens/sec decode and an 11.6 s model load time. Uses vectorized loads and warp-level GEMV to keep memory bandwidth in check.",
-    tags: ["C++17", "CUDA", "GEMV", "Llama 2", "Linux"],
-    github: "https://github.com/Mourya05/StrataKV",
+const featuredProject: Project = {
+  title: "StrataKV — LLM Inference Engine",
+  label: "ML systems",
+  description:
+    "From-scratch LLM inference engine in C++ and CUDA, built without ML frameworks. Runs Llama 2 (1.1B) on a 4 GB GTX 1050 Ti, achieving 34.13 tokens/sec decode and an 11.6 s model load time using vectorized loads and warp-level GEMV.",
+  tags: ["C++", "CUDA", "LLM Inference", "Systems"],
+  github: "https://github.com/Mourya05/StrataKV",
+  image: "/projects/StrataKV.png",
+  metric: {
+    main: "34.13 tok/s",
+    sub: "Llama 2 (1.1B) · 4 GB GTX 1050 Ti",
   },
+};
+
+const gridProjects: Project[] = [
   {
-    title: "Hobby OS — x86 Kernel",
+    title: "NeuralMesh",
+    label: "Prototype",
     description:
-      "A 32-bit x86 hobby kernel written in C and NASM. Implements GDT, IDT, PIC, PIT, paging, a simple heap allocator, VGA text output, keyboard IRQ, and int 0x80 system calls. Boots and runs on QEMU.",
-    tags: ["C", "NASM", "x86", "QEMU", "GDT", "IDT", "Paging"],
-    github: "https://github.com/Mourya05/hobby-os",
+      "Graph attention network (PyTorch Geometric) over pending Ethereum transactions to flag suspicious MEV patterns, paired with a FastAPI backend and WebGL visualizer.",
+    tags: ["PyTorch Geometric", "FastAPI", "GAT", "Python", "WebGL"],
+    github: "https://github.com/Mourya05/neuralmesh",
+    image: "/projects/NeuralMesh.png",
+    overlayTag: "GAT Threat Visualizer",
   },
   {
     title: "Tab-Based GM Counting System",
+    label: "Mobile App",
     description:
-      "A tablet-optimized radiation monitoring app built during my internship at Nucleonix Systems. Integrates Nordic UART Service (NUS) BLE communication with Arduino-based GM detectors, device-based access control via Supabase, on-device SQLite storage, and a Node.js/REST backend. [TODO: confirm exactly what I built vs the team]",
-    tags: ["React Native", "BLE/NUS", "Arduino", "SQLite", "Supabase", "Node.js", "Expo"],
+      "Tablet app for a Geiger-Muller radiation detector built during my Nucleonix internship. Integrates Nordic UART Service (NUS) BLE communication, on-device SQLite storage, and a Node.js/Supabase backend.",
+    tags: ["React Native", "BLE", "SQLite", "Node.js", "Supabase"],
     github: "https://github.com/Mourya05/gm-counting-system",
+    image: "/projects/Nucloenix_screen.png",
+    overlayTag: "Nucleonix BLE Tablet UI",
+  },
+  {
+    title: "Probabilistic Character Recognition",
+    label: "Machine Learning",
+    description:
+      "Character recognition via recursive Bayesian updating in R. Features Maximum A Posteriori (MAP) estimation and a 0.85 posterior stopping threshold.",
+    tags: ["R", "Bayesian Inference", "MAP", "Statistics"],
+    github: "https://github.com/Mourya05/probabilistic-char-recognition",
+    image: "/projects/Prob_Char_recog.png",
+    overlayTag: "Bayesian MAP Engine (R)",
+  },
+  {
+    title: "Student Attendance System",
+    label: "Computer Vision",
+    description:
+      "Automated attendance pipeline using OpenCV and face recognition for identity verification, logging timestamped records into a SQL database.",
+    tags: ["Python", "OpenCV", "Face Recognition", "SQL"],
+    github: "https://github.com/Mourya05/attendance-system",
+    image: "/projects/Student_Attendance.png",
+    overlayTag: "OpenCV Facial Verification",
+  },
+];
+
+const compactProjects: CompactProject[] = [
+  {
+    title: "Air Canvas",
+    blurb: "Real-time motion tracking app allowing drawing via finger landmarks with OpenCV and MediaPipe.",
+    tags: ["Python", "OpenCV", "MediaPipe"],
+    github: "https://github.com/Mourya05",
+    image: "/projects/Air_Canvas.png",
+  },
+  {
+    title: "Hobby OS",
+    blurb: "Custom 32-bit x86 operating system kernel with paging, heap allocator, and system calls.",
+    tags: ["C", "NASM", "x86", "Systems"],
+    github: "https://github.com/Mourya05/hobby-os",
+    image: "/projects/Hobby_OS.png",
+  },
+  {
+    title: "Eat-IQ",
+    blurb: "Nutrition tracking application with daily caloric, macro, and hydration dashboards.",
+    tags: ["React", "Node.js", "SQLite"],
+    github: "https://github.com/Mourya05/eat-iq",
   },
   {
     title: "Custom POSIX Shell",
-    description:
-      "A Unix-like shell written in C. Supports fork/exec process creation, pipes, I/O redirection, signal handling, background jobs, and built-in commands (cd, exit, history).",
-    tags: ["C", "POSIX", "fork/exec", "Pipes", "Signals"],
+    blurb: "Minimal Unix shell in C supporting process management, pipelines, and I/O redirection.",
+    tags: ["C", "POSIX", "Systems"],
     github: "https://github.com/Mourya05/custom-shell",
   },
 ];
 
-const other: OtherProject[] = [
-  {
-    title: "NeuralMesh",
-    blurb: "Prototype applying a graph attention network to Ethereum mempool transactions.",
-    tags: ["Python", "PyTorch", "Graph Attention Network", "Ethereum"],
-    github: "https://github.com/Mourya05/neuralmesh",
-    note: "[TODO: dataset, precision/recall, latency measurement] — prototype status",
-  },
-  {
-    title: "Probabilistic Character Recognition",
-    blurb: "Bayesian inference applied to character classification, implemented in R.",
-    tags: ["R", "Bayesian Inference", "Statistics"],
-    github: "https://github.com/Mourya05/probabilistic-char-recognition",
-  },
-  {
-    title: "Student Attendance System",
-    blurb: "Automated attendance using OpenCV and face_recognition for facial encoding and matching.",
-    tags: ["Python", "OpenCV", "face_recognition", "SQL"],
-    github: "https://github.com/Mourya05/attendance-system",
-  },
-  {
-    title: "Eat-IQ",
-    blurb: "Nutrition tracking app with daily caloric, macro, and hydration dashboards.",
-    tags: ["React", "Node.js", "SQLite"],
-    github: "https://github.com/Mourya05/eat-iq",
-  },
-];
+/* ─── Chamfered Spotlight Wrapper ────────────────────────────────────────── */
+function ChamferSpotlightCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+  }
 
-/* ─── Sub-components ─────────────────────────────────────────────────────── */
-function FeaturedCard({ project }: { project: FeaturedProject }) {
   return (
-    <article
-      className="card reveal"
-      style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}
+    <div
+      onMouseMove={handleMouseMove}
+      className={`chamfer-card spotlight-card ${className}`}
     >
-      <h3 style={{ fontWeight: 600, fontSize: "1rem", color: "var(--text)", lineHeight: 1.3 }}>
-        {project.title}
-      </h3>
-
-      <p style={{ fontSize: "14px", color: "var(--muted)", lineHeight: 1.7, flexGrow: 1 }}>
-        {project.description}
-      </p>
-
-      {/* Tech tags */}
-      <div className="flex flex-wrap gap-2">
-        {project.tags.map((t) => (
-          <span key={t} className="tag">{t}</span>
-        ))}
+      <div className="chamfer-card-inner flex flex-col h-full">
+        {children}
       </div>
-
-      {/* Actions */}
-      <div className="flex items-center gap-3">
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-outline flex items-center gap-2"
-          style={{ fontSize: "13px", padding: "7px 16px" }}
-          aria-label={`View ${project.title} on GitHub`}
-        >
-          <FaGithub size={14} />
-          GitHub
-        </a>
-        {project.demo && (
-          <a
-            href={project.demo}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-outline"
-            style={{ fontSize: "13px", padding: "7px 16px" }}
-            aria-label={`View live demo of ${project.title}`}
-          >
-            Demo
-          </a>
-        )}
-      </div>
-    </article>
+    </div>
   );
 }
 
-/* ─── Main Section ───────────────────────────────────────────────────────── */
-export default function ProjectsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 60);
-            });
-          }
-        });
-      },
-      { threshold: 0.04 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+function ProjectCover({ project }: { project: Project }) {
+  const isTerminal = project.image.includes("StrataKV");
 
   return (
-    <section
-      id="projects-inner"
-      ref={sectionRef}
-      style={{ paddingTop: "96px", paddingBottom: "96px" }}
+    <div
+      className="relative w-full aspect-[16/10] overflow-hidden select-none bg-[#050608] flex flex-col"
+      style={{
+        borderBottom: "1px solid var(--border)",
+      }}
     >
-      <div className="section-wrap">
-        {/* Header */}
-        <div className="reveal" style={{ marginBottom: "48px" }}>
-          <p className="section-label" style={{ marginBottom: "12px" }}>Projects</p>
-          <h2
+      {/* Background Subtle Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-20 pointer-events-none z-10"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        }}
+      />
+
+      {isTerminal ? (
+        <div className="relative w-full h-full flex flex-col z-10 bg-[#05050a]">
+          {/* Terminal Window Header */}
+          <div className="h-7 px-3 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
+              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
+              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
+            </div>
+            <span className="mono text-[10px] text-[var(--muted)]">
+              MINGW64 · stratakv_cli.exe
+            </span>
+            <span className="w-8" />
+          </div>
+
+          {/* Terminal Content: Full image visible via object-contain without cropping */}
+          <div className="relative flex-1 w-full flex items-center justify-center p-3 sm:p-5">
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-2 sm:p-4"
+              priority
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Actual Project Image */}
+          <div className="relative w-full h-full">
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover object-center"
+            />
+          </div>
+
+          {/* Faint Violet Gradient over bottom of screenshot for palette unity */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none z-10"
             style={{
-              fontSize: "clamp(1.6rem, 4vw, 2.5rem)",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--text)",
-              lineHeight: 1.15,
+              background:
+                "linear-gradient(to top, rgba(7, 6, 12, 0.95) 0%, rgba(124, 58, 237, 0.12) 35%, transparent 75%)",
             }}
-          >
-            Featured work
-          </h2>
+          />
+        </>
+      )}
+
+      {/* Floating Status / Metric Chip */}
+      {project.metric ? (
+        <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2 px-3 py-1.5 backdrop-blur-md bg-[rgba(16,13,25,0.85)] border border-[var(--border-strong)]">
+          <span className="mono text-xs font-semibold text-[var(--accent)]">
+            {project.metric.main}
+          </span>
+          <span className="mono text-[10px] text-[var(--muted)]">
+            · {project.metric.sub}
+          </span>
+        </div>
+      ) : project.overlayTag ? (
+        <div className="absolute bottom-3 left-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 backdrop-blur-md bg-[rgba(16,13,25,0.85)] border border-[var(--border-strong)]">
+          <span className="w-1.5 h-1.5 bg-[var(--accent)]" />
+          <span className="mono text-[10px] font-medium text-[var(--text)]">
+            {project.overlayTag}
+          </span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export default function ProjectsSection() {
+  return (
+    <section id="projects" className="py-20 lg:py-28">
+      <div className="section-wrap">
+        
+        {/* 4.3 Eyebrow: Chamfered square + Label + Hairline */}
+        <div className="flex items-center gap-3 mb-3">
+          <span
+            className="w-2 h-2 shrink-0 bg-[var(--accent)]"
+            style={{
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+            }}
+          />
+          <span className="mono text-xs uppercase tracking-widest text-[var(--muted)]">
+            Projects
+          </span>
+          <div className="flex-1 h-[1px] bg-[var(--border)] ml-2" />
         </div>
 
-        {/* Featured projects grid */}
-        <div
-          className="grid gap-6"
+        <h2
+          className="tracking-tight text-white font-semibold mb-12"
           style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 480px), 1fr))",
-            marginBottom: "72px",
+            fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)",
+            lineHeight: 1.1,
           }}
         >
-          {featured.map((p) => (
-            <FeaturedCard key={p.title} project={p} />
+          Featured Work
+        </h2>
+
+        {/* 1. Featured Project: Full Width (Cover Left 55%, Text Right 45% on desktop) */}
+        <div className="mb-10">
+          <ChamferSpotlightCard className="w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] items-stretch">
+              {/* Cover Left */}
+              <div className="flex items-center justify-center border-b lg:border-b-0 lg:border-r border-[var(--border)]">
+                <ProjectCover project={featuredProject} />
+              </div>
+              
+              {/* Text Right */}
+              <div className="p-6 sm:p-8 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <span className="mono text-[11px] text-[var(--accent)] uppercase tracking-wider font-semibold">
+                      {featuredProject.label}
+                    </span>
+                    <a
+                      href={featuredProject.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mono text-xs text-[var(--muted)] hover:text-white inline-flex items-center gap-1.5 transition-colors"
+                      aria-label="View StrataKV on GitHub"
+                    >
+                      <FaGithub size={14} />
+                      <span>Code</span>
+                    </a>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-semibold text-white mb-3">
+                    {featuredProject.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed mb-6">
+                    {featuredProject.description}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border)]">
+                  {featuredProject.tags.map((t) => (
+                    <span key={t} className="tag">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ChamferSpotlightCard>
+        </div>
+
+        {/* 2. Grid Projects: 2 Columns on Desktop, Equal Heights */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          {gridProjects.map((p) => (
+            <ChamferSpotlightCard key={p.title} className="flex flex-col h-full">
+              {/* 16:10 Cover Tile */}
+              <ProjectCover project={p} />
+
+              {/* Card Body */}
+              <div className="p-6 flex flex-col flex-1 justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="mono text-[11px] text-[var(--muted)] uppercase tracking-wider">
+                      {p.label}
+                    </span>
+                    <a
+                      href={p.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mono text-xs text-[var(--muted)] hover:text-white inline-flex items-center gap-1.5 transition-colors"
+                      aria-label={`View ${p.title} on GitHub`}
+                    >
+                      <FaGithub size={13} />
+                      <span>Code</span>
+                    </a>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {p.title}
+                  </h3>
+                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
+                    {p.description}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border)]">
+                  {p.tags.map((t) => (
+                    <span key={t} className="tag">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </ChamferSpotlightCard>
           ))}
         </div>
 
-        {/* Other work */}
-        <div className="reveal">
-          <h3
-            className="mono"
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              marginBottom: "20px",
-            }}
-          >
-            Other work
+        {/* 3. More Projects: Chamfered Box Rows */}
+        <div>
+          <h3 className="mono text-xs uppercase tracking-widest text-[var(--muted)] mb-4">
+            More Projects
           </h3>
-          <div className="flex flex-col" style={{ gap: "0" }}>
-            {other.map((p, idx) => (
-              <div
-                key={p.title}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto",
-                  alignItems: "start",
-                  gap: "16px",
-                  padding: "16px 0",
-                  borderTop: idx === 0 ? "1px solid var(--border)" : "none",
-                  borderBottom: "1px solid var(--border)",
-                }}
-              >
-                <div>
-                  <div className="flex flex-wrap items-baseline gap-3" style={{ marginBottom: "4px" }}>
-                    <span style={{ fontWeight: 600, fontSize: "14px", color: "var(--text)" }}>
-                      {p.title}
-                    </span>
-                    {p.note && (
-                      <span className="mono" style={{ fontSize: "10px", color: "var(--muted)" }}>
-                        prototype
-                      </span>
+          <div className="chamfer-card">
+            <div className="chamfer-card-inner divide-y divide-[var(--border)]">
+              {compactProjects.map((cp) => (
+                <div
+                  key={cp.title}
+                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--surface-2)] transition-colors"
+                >
+                  <div className="flex items-start sm:items-center gap-4">
+                    {cp.image && (
+                      <div className="relative w-12 h-12 overflow-hidden shrink-0 border border-[var(--border)] hidden sm:block bg-[#050608]">
+                        <Image
+                          src={cp.image}
+                          alt={cp.title}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </div>
                     )}
+                    <div className="flex flex-col sm:max-w-lg">
+                      <h4 className="text-sm font-semibold text-white">
+                        {cp.title}
+                      </h4>
+                      <p className="text-xs text-[var(--muted)] mt-1">
+                        {cp.blurb}
+                      </p>
+                    </div>
                   </div>
-                  <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: 1.6, marginBottom: "8px" }}>
-                    {p.blurb}
-                  </p>
-                  {p.note && (
-                    <p style={{ fontSize: "12px", color: "var(--muted)", fontStyle: "italic", marginBottom: "8px" }}>
-                      {p.note}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tags.map((t) => (
-                      <span key={t} className="tag">{t}</span>
-                    ))}
+
+                  <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
+                    <div className="flex flex-wrap gap-1.5">
+                      {cp.tags.map((t) => (
+                        <span key={t} className="tag text-[10px] py-0.5 px-2">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <a
+                      href={cp.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--muted)] hover:text-white transition-colors"
+                      aria-label={`View ${cp.title} on GitHub`}
+                    >
+                      <FaGithub size={15} />
+                    </a>
                   </div>
                 </div>
-                <a
-                  href={p.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover-accent"
-                  style={{ color: "var(--muted)", marginTop: "2px" }}
-                  aria-label={`View ${p.title} on GitHub`}
-                >
-                  <FaGithub size={18} />
-                </a>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
+
       </div>
     </section>
   );

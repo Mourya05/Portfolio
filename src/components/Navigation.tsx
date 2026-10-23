@@ -15,7 +15,7 @@ const navItems = [
 function scrollTo(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - 72;
+  const top = el.getBoundingClientRect().top + window.scrollY - 68;
   window.scrollTo({ top, behavior: "smooth" });
 }
 
@@ -27,8 +27,12 @@ function useActiveSection(ids: string[]) {
       const el = document.getElementById(id);
       if (!el) return;
       const o = new IntersectionObserver(
-        ([e]) => { if (e.isIntersecting) setActive(id); },
-        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+        ([e]) => {
+          if (e.isIntersecting) {
+            setActive(id);
+          }
+        },
+        { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
       );
       o.observe(el);
       obs.push(o);
@@ -43,7 +47,6 @@ export default function Navigation() {
   const ids = navItems.map((i) => i.id);
   const active = useActiveSection(ids);
 
-  // Close mobile menu on resize
   useEffect(() => {
     const handler = () => { if (window.innerWidth >= 768) setOpen(false); };
     window.addEventListener("resize", handler);
@@ -55,20 +58,20 @@ export default function Navigation() {
       <header
         className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: "rgba(8,9,11,0.85)",
+          background: "rgba(7, 6, 12, 0.9)",
           backdropFilter: "blur(16px)",
           borderBottom: "1px solid var(--border)",
         }}
       >
         <div
           className="flex items-center justify-between"
-          style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 24px", height: "60px" }}
+          style={{ maxWidth: "1120px", margin: "0 auto", padding: "0 24px", height: "64px" }}
         >
           {/* Logo */}
           <a
             href="#home"
             onClick={(e) => { e.preventDefault(); scrollTo("home"); }}
-            className="font-semibold text-base hover-accent"
+            className="font-semibold text-base transition-colors hover:text-white"
             style={{ color: "var(--text)", textDecoration: "none", letterSpacing: "-0.01em" }}
             aria-label="Back to top"
           >
@@ -76,19 +79,20 @@ export default function Navigation() {
           </a>
 
           {/* Desktop nav */}
-          <nav aria-label="Main navigation" className="hidden md:flex items-center gap-8">
+          <nav aria-label="Main navigation" className="hidden md:flex items-center gap-7">
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={item.href}
                 onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
                 className={cn(
-                  "mono text-xs tracking-wider transition-colors duration-150",
-                  active === item.id
-                    ? "nav-active"
-                    : "hover-accent"
+                  "mono text-xs tracking-wider transition-colors duration-150 py-1",
+                  active === item.id ? "text-[var(--accent)] font-medium" : "text-[var(--muted)] hover:text-white"
                 )}
-                style={{ color: active === item.id ? "var(--accent)" : "var(--muted)", textDecoration: "none" }}
+                style={{
+                  textDecoration: "none",
+                  borderBottom: active === item.id ? "1.5px solid var(--accent)" : "1.5px solid transparent",
+                }}
                 aria-current={active === item.id ? "page" : undefined}
               >
                 {item.name}
@@ -99,7 +103,7 @@ export default function Navigation() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
+            className="md:hidden flex flex-col gap-1.5 p-2 text-white"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
           >
@@ -132,7 +136,7 @@ export default function Navigation() {
       {open && (
         <div
           className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center gap-8"
-          style={{ background: "rgba(8,9,11,0.97)", backdropFilter: "blur(16px)" }}
+          style={{ background: "rgba(7, 6, 12, 0.98)", backdropFilter: "blur(16px)" }}
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
@@ -146,7 +150,7 @@ export default function Navigation() {
                 setOpen(false);
                 setTimeout(() => scrollTo(item.id), 50);
               }}
-              className="text-3xl font-semibold hover-accent transition-colors"
+              className="text-2xl font-medium tracking-tight transition-colors"
               style={{
                 color: active === item.id ? "var(--accent)" : "var(--text)",
                 textDecoration: "none",

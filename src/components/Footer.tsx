@@ -1,43 +1,43 @@
-import Link from "next/link";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa6";
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer
-      className="w-full"
-      style={{ borderTop: "1px solid var(--border)", marginTop: "96px" }}
+      className="w-full border-t border-[var(--border)]"
+      style={{
+        background: "var(--bg)",
+      }}
     >
       <div
-        className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8"
-        style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "32px 24px" }}
+        className="section-wrap flex flex-col sm:flex-row items-center justify-between gap-4 py-8"
       >
-        <p className="mono text-xs" style={{ color: "var(--muted)" }}>
-          © 2024 Mourya Birru. Final-year CS student at GCET, Hyderabad.
+        <p className="mono text-xs text-[var(--muted)] text-center sm:text-left">
+          © {currentYear} Mourya Birru. Final-year CS student at GCET, Hyderabad.
         </p>
 
         <div className="flex items-center gap-6">
-          <Link
-            href="https://github.com/Mourya05"
+          <a
+            href="https://github.com/mourya05"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover-accent flex items-center gap-2 text-sm transition-colors"
-            style={{ color: "var(--muted)", textDecoration: "none" }}
+            className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white transition-colors mono"
             aria-label="GitHub profile"
           >
-            <FaGithub size={16} />
-            <span className="mono text-xs">GitHub</span>
-          </Link>
-          <Link
-            href="https://www.linkedin.com/in/mourya-birru-8336342a7/"
+            <FaGithub size={14} />
+            <span>GitHub</span>
+          </a>
+          <a
+            href="https://linkedin.com/in/mourya-birru"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover-accent flex items-center gap-2 text-sm transition-colors"
-            style={{ color: "var(--muted)", textDecoration: "none" }}
+            className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white transition-colors mono"
             aria-label="LinkedIn profile"
           >
-            <FaLinkedin size={16} />
-            <span className="mono text-xs">LinkedIn</span>
-          </Link>
+            <FaLinkedin size={14} />
+            <span>LinkedIn</span>
+          </a>
         </div>
       </div>
     </footer>

@@ -1,197 +1,176 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
+/* ─── 3 Skill Groups (Strict Order: ML & Data, Software, Systems & Tools) ─── */
 const skillGroups = [
   {
-    label: "Languages",
-    items: ["C", "C++", "Python", "Java", "JavaScript", "R", "SQL", "x86 Assembly (NASM)"],
-  },
-  {
-    label: "Systems & Hardware",
-    items: ["Linux / POSIX", "BLE / Nordic UART (NUS)", "Arduino", "QEMU", "CUDA", "GDT / IDT / Paging"],
+    label: "ML & Data",
+    items: [
+      "Python",
+      "PyTorch",
+      "PyTorch Geometric",
+      "OpenCV",
+      "R",
+      "Bayesian inference",
+      "SQL",
+    ],
   },
   {
     label: "Software",
-    items: ["React Native", "Node.js", "REST APIs", "SQLite", "Supabase", "React", "Expo"],
+    items: [
+      "React",
+      "React Native",
+      "Node.js",
+      "FastAPI",
+      "REST APIs",
+      "SQLite",
+      "Supabase",
+      "Redis",
+    ],
   },
   {
-    label: "Tools",
-    items: ["Git", "GitHub", "GNU Make", "Docker"],
+    label: "Systems & Tools",
+    items: [
+      "C",
+      "C++",
+      "CUDA",
+      "x86 Assembly",
+      "Linux/POSIX",
+      "BLE",
+      "Git",
+      "Docker",
+    ],
   },
 ];
 
+/* ─── Highlights (Two-column rows: title left, context right) ─────────────── */
+const highlights = [
+  {
+    title: "GATE CSE 2026",
+    context: "AIR 9602",
+  },
+  {
+    title: "CTF Hackathon, Best Student",
+    context: "Supraja Technologies (2025)",
+  },
+  {
+    title: "Agentation 2025 Finalist",
+    context: "Agentic AI Hackathon, Malla Reddy University",
+  },
+  {
+    title: "Smart Interviews GCET-2027-R",
+    context: "Rank 1 (college-wide competitive programming)",
+  },
+];
+
+/* ─── Certifications ─────────────────────────────────────────────────────── */
+const certifications = [
+  { name: "CCNA: Introduction to Networks", issuer: "Cisco" },
+  { name: "Advanced Programming in C", issuer: "Cisco" },
+  { name: "MongoDB Associate Developer", issuer: "MongoDB" },
+];
+
 export default function ExpertiseSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 60);
-            });
-          }
-        });
-      },
-      { threshold: 0.08 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      id="skills-inner"
-      ref={sectionRef}
-      style={{ paddingTop: "96px", paddingBottom: "96px" }}
-    >
+    <section id="skills" className="py-20 lg:py-28">
       <div className="section-wrap">
-        {/* Header */}
-        <div className="reveal" style={{ marginBottom: "48px" }}>
-          <p className="section-label" style={{ marginBottom: "12px" }}>Skills</p>
-          <h2
+        
+        {/* 4.3 Eyebrow: Chamfered square + Label + Hairline */}
+        <div className="flex items-center gap-3 mb-3">
+          <span
+            className="w-2 h-2 shrink-0 bg-[var(--accent)]"
             style={{
-              fontSize: "clamp(1.6rem, 4vw, 2.5rem)",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--text)",
-              lineHeight: 1.15,
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             }}
-          >
-            Technical skills
-          </h2>
+          />
+          <span className="mono text-xs uppercase tracking-widest text-[var(--muted)]">
+            Skills
+          </span>
+          <div className="flex-1 h-[1px] bg-[var(--border)] ml-2" />
         </div>
 
-        {/* Skill groups */}
-        <div
-          className="grid gap-8"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))" }}
+        <h2
+          className="tracking-tight text-white font-semibold mb-14"
+          style={{
+            fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)",
+            lineHeight: 1.1,
+          }}
         >
+          Technical Stack
+        </h2>
+
+        {/* 1. Skills: Chamfered Boxes for the 3 Groups */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {skillGroups.map((group) => (
-            <div key={group.label} className="reveal">
-              <h3
-                className="mono"
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "var(--accent)",
-                  marginBottom: "14px",
-                }}
-              >
-                {group.label}
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    style={{
-                      fontSize: "14px",
-                      color: "var(--muted)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: "4px",
-                        height: "4px",
-                        borderRadius: "50%",
-                        background: "var(--accent)",
-                        flexShrink: 0,
-                        opacity: 0.6,
-                      }}
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div key={group.label} className="chamfer-card">
+              <div className="chamfer-card-inner p-6 flex flex-col h-full">
+                <h3 className="mono text-xs uppercase tracking-widest text-[var(--accent)] mb-4 font-semibold">
+                  {group.label}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {group.items.map((item) => (
+                    <span key={item} className="tag">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Highlights (replaces Achievements carousel) */}
-        <div className="reveal" style={{ marginTop: "72px" }}>
-          <h3
-            className="mono"
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              marginBottom: "16px",
-            }}
-          >
-            Highlights
-          </h3>
-          <div className="flex flex-col" style={{ gap: "0" }}>
-            {[
-              "GATE CSE 2026 — AIR 9602",
-              "IEEE Xtreme 18.0 — [TODO: confirm rank out of total teams and exact platform]",
-              "CTF Hackathon — Best Student Award, Supraja Technologies (2025)",
-              "Ramanujan Mathematical Competition — National Finalist [TODO: confirm round/year details]",
-              "Agentation 2025 — Finalist, Agentic AI Hackathon, Malla Reddy University",
-              "Smart Interviews GCET-2027-R — Rank 1 (college-wide competitive programming)",
-            ].map((item, idx, arr) => (
-              <div
-                key={idx}
-                style={{
-                  fontSize: "14px",
-                  color: "var(--muted)",
-                  padding: "10px 0",
-                  borderTop: idx === 0 ? "1px solid var(--border)" : "none",
-                  borderBottom: "1px solid var(--border)",
-                  lineHeight: 1.5,
-                  fontStyle: item.includes("[TODO") ? "italic" : "normal",
-                }}
-              >
-                {item}
+        {/* 2. Highlights & Certifications: 2 Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          
+          {/* Highlights: Two-column rows in chamfered card */}
+          <div>
+            <h3 className="mono text-xs uppercase tracking-widest text-[var(--muted)] mb-4">
+              Highlights
+            </h3>
+            <div className="chamfer-card">
+              <div className="chamfer-card-inner divide-y divide-[var(--border)]">
+                {highlights.map((h) => (
+                  <div
+                    key={h.title}
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[var(--surface-2)] transition-colors"
+                  >
+                    <span className="text-sm font-semibold text-white">
+                      {h.title}
+                    </span>
+                    <span className="mono text-xs text-[var(--muted)] shrink-0 sm:text-right">
+                      {h.context}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
+
+          {/* Certifications: Chamfered card */}
+          <div>
+            <h3 className="mono text-xs uppercase tracking-widest text-[var(--muted)] mb-4">
+              Certifications
+            </h3>
+            <div className="chamfer-card">
+              <div className="chamfer-card-inner divide-y divide-[var(--border)]">
+                {certifications.map((cert) => (
+                  <div
+                    key={cert.name}
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[var(--surface-2)] transition-colors"
+                  >
+                    <span className="text-sm font-medium text-white">
+                      {cert.name}
+                    </span>
+                    <span className="mono text-xs text-[var(--muted)] shrink-0">
+                      {cert.issuer}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* Certifications (replaces Credential Vault) */}
-        <div className="reveal" style={{ marginTop: "48px" }}>
-          <h3
-            className="mono"
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              marginBottom: "16px",
-            }}
-          >
-            Certifications
-          </h3>
-          <div className="flex flex-col" style={{ gap: "0" }}>
-            {[
-              { name: "CCNA: Introduction to Networks", issuer: "Cisco" },
-              { name: "Advanced Programming in C", issuer: "Cisco" },
-              { name: "MongoDB Associate Developer", issuer: "MongoDB" },
-            ].map((cert, idx) => (
-              <div
-                key={cert.name}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "16px",
-                  padding: "10px 0",
-                  borderTop: idx === 0 ? "1px solid var(--border)" : "none",
-                  borderBottom: "1px solid var(--border)",
-                }}
-              >
-                <span style={{ fontSize: "14px", color: "var(--text)" }}>{cert.name}</span>
-                <span className="mono" style={{ fontSize: "11px", color: "var(--muted)", flexShrink: 0 }}>{cert.issuer}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

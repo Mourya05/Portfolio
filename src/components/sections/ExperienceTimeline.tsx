@@ -1,27 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 interface Experience {
-  company:  string;
-  role:     string;
-  period:   string;
-  tags:     string[];
-  bullets:  string[];
+  company: string;
+  role:    string;
+  period:  string;
+  tags:    string[];
+  bullets: string[];
 }
 
 const experiences: Experience[] = [
   {
     company: "Nucleonix Systems",
-    role:    "R&D Intern — Embedded Systems",
+    role:    "R&D Intern, Embedded Systems",
     period:  "Feb 2026 – Jun 2026",
     tags:    ["React Native", "BLE/NUS", "Arduino", "SQLite", "Supabase", "Node.js", "Expo"],
     bullets: [
       "Contributed to the Tab-Based GM Counting System — a tablet app for real-time radiation monitoring.",
       "Integrated Nordic UART Service (NUS) BLE communication between the app and Arduino-based GM detector hardware.",
-      "Built device-based access control using Android Device ID authenticated via Supabase.",
-      "Implemented on-device SQLite storage and Node.js/REST backend support.",
-      "[TODO: confirm exactly what I built vs the broader team]",
     ],
   },
   {
@@ -32,7 +27,6 @@ const experiences: Experience[] = [
     bullets: [
       "Two-month remote internship at a startup focused on sustainable solutions for high-rise buildings.",
       "Worked on algorithmic problem-solving and software development tasks.",
-      "[TODO: add one concrete deliverable]",
     ],
   },
   {
@@ -43,8 +37,6 @@ const experiences: Experience[] = [
     bullets: [
       "Four-month on-site internship in Vijayawada.",
       "Gained hands-on exposure to offensive and defensive security methodologies in simulated environments.",
-      "Worked with Kali Linux tools and OSINT reconnaissance workflows.",
-      "Documented findings in vulnerability reports.",
     ],
   },
   {
@@ -53,9 +45,7 @@ const experiences: Experience[] = [
     period:  "Apr 2025 – Jun 2025",
     tags:    ["Generative AI", "Python", "Prompt Engineering"],
     bullets: [
-      "Three-month internship at a space-tech AI organisation.",
-      "Contributed to AI research and development pipelines.",
-      "[TODO: add one concrete deliverable]",
+      "Three-month internship at a space-tech AI organisation. Contributed to AI research and development pipelines.",
     ],
   },
 ];
@@ -69,139 +59,119 @@ const community = [
 ];
 
 export default function ExperienceTimeline() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 80);
-            });
-          }
-        });
-      },
-      { threshold: 0.04 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      id="experience-inner"
-      ref={sectionRef}
-      style={{ paddingTop: "96px", paddingBottom: "96px" }}
-    >
+    <section id="experience" className="py-20 lg:py-28">
       <div className="section-wrap">
-        {/* Header */}
-        <div className="reveal" style={{ marginBottom: "48px" }}>
-          <p className="section-label" style={{ marginBottom: "12px" }}>Experience</p>
-          <h2
+        
+        {/* 4.3 Eyebrow: Chamfered square + Label + Hairline */}
+        <div className="flex items-center gap-3 mb-3">
+          <span
+            className="w-2 h-2 shrink-0 bg-[var(--accent)]"
             style={{
-              fontSize: "clamp(1.6rem, 4vw, 2.5rem)",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--text)",
-              lineHeight: 1.15,
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             }}
-          >
-            Internships
-          </h2>
+          />
+          <span className="mono text-xs uppercase tracking-widest text-[var(--muted)]">
+            Experience
+          </span>
+          <div className="flex-1 h-[1px] bg-[var(--border)] ml-2" />
         </div>
 
-        {/* Experience list */}
-        <div className="flex flex-col" style={{ gap: "24px", marginBottom: "72px" }}>
-          {experiences.map((exp) => (
-            <article
+        <h2
+          className="tracking-tight text-white font-semibold mb-14"
+          style={{
+            fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)",
+            lineHeight: 1.1,
+          }}
+        >
+          Internships
+        </h2>
+
+        {/* Plain Rows: 3-column grid (Date 160px | Spine with Square Marker | Content) */}
+        <div className="flex flex-col gap-10 mb-20">
+          {experiences.map((exp, idx) => (
+            <div
               key={exp.company + exp.period}
-              className="card reveal"
-              style={{ padding: "24px" }}
+              className="grid grid-cols-1 md:grid-cols-[160px_24px_1fr] gap-y-2 md:gap-x-6 items-start"
             >
-              {/* Header row */}
-              <div
-                className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2"
-                style={{ marginBottom: "12px" }}
-              >
-                <div>
-                  <h3 style={{ fontWeight: 600, color: "var(--text)", lineHeight: 1.3, marginBottom: "2px" }}>
+              {/* Date Column: 160px on desktop, right-aligned to spine */}
+              <div className="md:text-right pt-0.5">
+                <span className="mono text-xs text-[var(--muted)] block">
+                  {exp.period}
+                </span>
+              </div>
+
+              {/* Spine with Square Marker (Desktop) */}
+              <div className="hidden md:flex flex-col items-center self-stretch relative">
+                <span
+                  className="w-2 h-2 bg-[var(--accent)] shrink-0 mt-1"
+                  style={{
+                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                  }}
+                />
+                {idx < experiences.length - 1 && (
+                  <span className="w-[1px] bg-[var(--border)] flex-1 mt-2.5" />
+                )}
+              </div>
+
+              {/* Content Right */}
+              <div className="w-full">
+                <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-white">
                     {exp.role}
                   </h3>
-                  <p style={{ fontSize: "14px", color: "var(--accent)" }}>
-                    {exp.company}
-                  </p>
+                  <span className="text-sm font-medium text-[var(--muted)]">
+                    · {exp.company}
+                  </span>
                 </div>
-                <p
-                  className="mono shrink-0"
-                  style={{ fontSize: "11px", color: "var(--muted)", letterSpacing: "0.05em", paddingTop: "2px" }}
-                >
-                  {exp.period}
-                </p>
+
+                {/* Bullets */}
+                <ul className="flex flex-col gap-1.5 mb-4 text-sm text-[var(--muted)] leading-relaxed list-none p-0">
+                  {exp.bullets.map((b, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[var(--accent)] shrink-0 mt-0.5">–</span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Neutral Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {exp.tags.map((t) => (
+                    <span key={t} className="tag">{t}</span>
+                  ))}
+                </div>
               </div>
 
-              {/* Bullets */}
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
-                {exp.bullets.map((b, i) => (
-                  <li key={i} style={{ fontSize: "14px", color: "var(--muted)", lineHeight: 1.65, display: "flex", gap: "10px" }}>
-                    <span style={{ color: "var(--accent)", flexShrink: 0, marginTop: "2px" }}>–</span>
-                    <span style={b.startsWith("[TODO") ? { fontStyle: "italic" } : {}}>{b}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2">
-                {exp.tags.map((t) => (
-                  <span key={t} className="tag">{t}</span>
-                ))}
-              </div>
-            </article>
+            </div>
           ))}
         </div>
 
-        {/* Community */}
-        <div className="reveal">
-          <h3
-            className="mono"
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              marginBottom: "16px",
-            }}
-          >
+        {/* Plain Community Section */}
+        <div>
+          <h3 className="mono text-xs uppercase tracking-widest text-[var(--muted)] mb-4">
             Community
           </h3>
-          <div className="flex flex-col" style={{ gap: "0" }}>
-            {community.map((c, idx) => (
-              <div
-                key={c.org + c.period}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto",
-                  alignItems: "center",
-                  gap: "16px",
-                  padding: "12px 0",
-                  borderTop: idx === 0 ? "1px solid var(--border)" : "none",
-                  borderBottom: "1px solid var(--border)",
-                }}
-              >
-                <div>
-                  <span style={{ fontSize: "14px", color: "var(--text)" }}>{c.role}</span>
-                  <span style={{ fontSize: "14px", color: "var(--muted)" }}> — {c.org}</span>
-                </div>
-                <span
-                  className="mono shrink-0"
-                  style={{ fontSize: "11px", color: "var(--muted)" }}
+          <div className="chamfer-card">
+            <div className="chamfer-card-inner divide-y divide-[var(--border)]">
+              {community.map((c) => (
+                <div
+                  key={c.org + c.period}
+                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[var(--surface-2)] transition-colors"
                 >
-                  {c.period}
-                </span>
-              </div>
-            ))}
+                  <div>
+                    <span className="text-sm font-medium text-white">{c.role}</span>
+                    <span className="text-sm text-[var(--muted)]"> — {c.org}</span>
+                  </div>
+                  <span className="mono text-xs text-[var(--muted)] shrink-0">
+                    {c.period}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
       </div>
     </section>
   );
