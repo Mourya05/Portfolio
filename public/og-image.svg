@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Mourya Birru — Systems &amp; Embedded Software Engineer</title>
+  <desc id="desc">A dark technical portfolio card with a stylized CUDA and kernel project visual.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050508"/>
+      <stop offset="1" stop-color="#120d25"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#A18AFF"/>
+      <stop offset="1" stop-color="#00E5FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity=".18" stroke="#00E5FF" fill="none">
+    <path d="M760 110h280v90H760zM820 245h220v90H820zM735 380h305v90H735z"/>
+    <path d="M760 155h-90v180h150M820 290h-90v135h5M735 425h-120v-270h145"/>
+  </g>
+  <g fill="#00E5FF" opacity=".8">
+    <circle cx="670" cy="155" r="5"/><circle cx="730" cy="335" r="5"/><circle cx="615" cy="425" r="5"/>
+  </g>
+  <rect x="84" y="92" width="10" height="446" rx="5" fill="url(#accent)"/>
+  <text x="130" y="210" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="62" font-weight="700">MOURYA BIRRU</text>
+  <text x="134" y="292" fill="#A18AFF" font-family="Arial, sans-serif" font-size="36" font-weight="700">SYSTEMS &amp; EMBEDDED</text>
+  <text x="134" y="338" fill="#A18AFF" font-family="Arial, sans-serif" font-size="36" font-weight="700">SOFTWARE ENGINEER</text>
+  <text x="134" y="414" fill="#D1D1D1" font-family="monospace" font-size="22">kernel development · CUDA inference · BLE integration</text>
+  <text x="134" y="490" fill="#00E5FF" font-family="monospace" font-size="18">mourya-birru.me</text>
+</svg>

@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function RecordsPage() { redirect("/#records"); }
+export default function RecordsPage() { redirect("/#skills"); }

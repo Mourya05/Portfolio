@@ -1,124 +1,45 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--color-obsidian);
-  --color-foreground: var(--color-white);
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --bg:       #08090b;
+  --surface:  #0f1115;
+  --border:   #1c2027;
+  --text:     #e6e8eb;
+  --muted:    #8b929c;
+  --accent:   #5eead4;
 
-  --color-obsidian: #000000;
-  --color-indigo: #08080C;
-  --color-teal: #00E5FF;
-  --color-lavender: #A18AFF;
-  --color-ash: #D1D1D1;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  --radius:   7px;
+  --max-w:    1100px;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-accent:     var(--accent);
+  --color-muted:      var(--muted);
+  --color-surface:    var(--surface);
+  --color-border:     var(--border);
+
+  --color-obsidian:   #08090b;
+  --color-teal:       #5eead4;
+  --color-ash:        #8b929c;
 
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
-  --font-display: var(--font-space-grotesk);
-
-  --shadow-ambient: 0px 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-@utility glass-panel {
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-}
-
-@keyframes cyber-glitch {
-  0% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; opacity: 0.9; }
-  80% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; opacity: 1; }
-  81.5% { clip-path: inset(10% 0 85% 0); transform: translate(-15px, 2px); filter: contrast(150%) hue-rotate(90deg); }
-  82% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-  84.5% { clip-path: inset(70% 0 20% 0); transform: translate(15px, -2px); filter: invert(0.1) contrast(200%); }
-  85% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-  88% { clip-path: inset(44% 0 54% 0); transform: translate(-10px, 5px); }
-  88.5% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-  92% { clip-path: inset(5% 0 93% 0); transform: translate(10px, -5px); filter: saturate(3); }
-  93% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-  96.5% { clip-path: inset(25% 0 65% 0); transform: translate(-20px, 2px) skewX(10deg); filter: contrast(150%) brightness(1.2); }
-  97% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-}
-
-.animate-glitch {
-  animation: cyber-glitch 4s infinite linear;
-}
-
-.hover-lift {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: scale(1.02);
-  box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.6), 0 0 15px rgba(161, 138, 255, 0.1);
-}
-
-@keyframes repository-glitch {
-  0%, 100% { transform: translate(0) scale(1.02); filter: none; }
-  20% { transform: translate(-2px, 1px) scale(1.02); filter: hue-rotate(35deg) contrast(1.35); }
-  40% { transform: translate(2px, -1px) scale(1.02); filter: saturate(1.8) contrast(1.25); }
-  60% { transform: translate(-1px, 0) scale(1.02); filter: hue-rotate(-35deg) contrast(1.5); }
-  80% { transform: translate(1px, 1px) scale(1.02); filter: none; }
-}
-
-.project-repo-glitch {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.project-repo-glitch::before,
-.project-repo-glitch::after {
-  content: attr(data-glitch);
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 0;
-  font: inherit;
-  letter-spacing: inherit;
-}
-
-.project-repo-glitch::before {
-  color: var(--color-teal);
-  text-shadow: 2px 0 var(--color-teal);
-}
-
-.project-repo-glitch::after {
-  color: #39ff14;
-  text-shadow: -2px 0 #39ff14;
-}
-
-.project-repo-glitch:hover {
-  animation: repository-glitch 0.55s steps(2, end);
-}
-
-.project-repo-glitch:hover::before,
-.project-repo-glitch:hover::after {
-  opacity: 0.8;
-  animation: repository-glitch 0.55s steps(2, end);
-}
-
-.project-repo-glitch:hover::before {
-  clip-path: inset(18% 0 58% 0);
-}
-
-.project-repo-glitch:hover::after {
-  clip-path: inset(62% 0 14% 0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-repo-glitch:hover,
-  .project-repo-glitch:hover::before,
-  .project-repo-glitch:hover::after {
-    animation: none;
-  }
-}
-
-/* Base styles */
+/* ─── Base Reset ─────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -126,66 +47,161 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x:     hidden;
   scroll-behavior: smooth;
+  color-scheme:   dark;
 }
 
 body {
-  background-color: var(--color-obsidian);
-  color: var(--color-white);
-  overflow-x: hidden;
-  /* Prevent content-wider-than-viewport issues on iOS */
-  max-width: 100vw;
+  background-color: var(--bg);
+  color:            var(--text);
+  font-family:      var(--font-inter), system-ui, sans-serif;
+  line-height:      1.65;
+  overflow-x:       hidden;
+  max-width:        100vw;
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utility: prevent canvas from eating touch scroll events */
-.touch-none-canvas canvas {
-  touch-action: none;
-  pointer-events: none;
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--bg); }
+::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ─── Focus ──────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline:        2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius:  3px;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-obsidian); 
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(209, 209, 209, 0.2); 
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-teal); 
+/* ─── Typography helpers ─────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
 }
 
-/* Page Transition Effects */
-@keyframes binary-flicker {
-  0%, 100% { opacity: 0; }
-  20%, 80% { opacity: 0.4; }
-  45%, 55% { opacity: 0.1; }
+/* ─── Card / Surface ─────────────────────────────────────────────────────── */
+.card {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  border-radius: var(--radius);
 }
 
-@keyframes scanline-roll {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+/* ─── Section layout ─────────────────────────────────────────────────────── */
+.section-wrap {
+  width:   100%;
+  max-width: var(--max-w);
+  margin:  0 auto;
+  padding: 0 var(--space-6);
 }
 
-.animate-binary {
-  animation: binary-flicker 0.4s ease-in-out forwards;
+@media (min-width: 768px) {
+  .section-wrap { padding: 0 var(--space-8); }
 }
 
-.scanline-overlay {
+/* ─── Scroll-reveal animation ────────────────────────────────────────────── */
+.reveal {
+  opacity:   0;
+  transform: translateY(18px);
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+}
+.reveal.visible {
+  opacity:   1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.visible {
+    opacity:   1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ─── Hover transition helpers ───────────────────────────────────────────── */
+.hover-accent {
+  transition: color 150ms ease-out;
+}
+.hover-accent:hover {
+  color: var(--accent);
+}
+
+/* ─── Faint background grid (static) ────────────────────────────────────── */
+.bg-grid::before {
+  content:  "";
   position: fixed;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(0, 255, 65, 0.05) 50.5%,
-    rgba(0, 255, 65, 0.05) 51%,
-    transparent 51.5%
-  );
-  background-size: 100% 4px;
+  inset:    0;
+  z-index:  -1;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.04;
   pointer-events: none;
-  z-index: 100;
+}
+
+/* ─── Section label ──────────────────────────────────────────────────────── */
+.section-label {
+  font-family:    var(--font-jetbrains-mono), monospace;
+  font-size:      11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color:          var(--accent);
+  opacity:        0.8;
+}
+
+/* ─── Tech tag pill ──────────────────────────────────────────────────────── */
+.tag {
+  display:       inline-block;
+  font-family:   var(--font-jetbrains-mono), monospace;
+  font-size:     11px;
+  padding:       2px 9px;
+  border-radius: 4px;
+  background:    rgba(94, 234, 212, 0.06);
+  border:        1px solid rgba(94, 234, 212, 0.18);
+  color:         var(--accent);
+  white-space:   nowrap;
+}
+
+/* ─── Button styles ──────────────────────────────────────────────────────── */
+.btn-primary {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         10px 24px;
+  border-radius:   var(--radius);
+  background:      var(--accent);
+  color:           #08090b;
+  font-weight:     600;
+  font-size:       14px;
+  text-decoration: none;
+  transition:      opacity 150ms ease-out, background 150ms ease-out;
+  white-space:     nowrap;
+}
+.btn-primary:hover { opacity: 0.88; }
+
+.btn-outline {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         9px 23px;
+  border-radius:   var(--radius);
+  border:          1px solid var(--border);
+  color:           var(--text);
+  font-size:       14px;
+  text-decoration: none;
+  background:      transparent;
+  transition:      border-color 150ms ease-out, color 150ms ease-out;
+  white-space:     nowrap;
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color:        var(--accent);
+}
+
+/* ─── Nav underline indicator ────────────────────────────────────────────── */
+.nav-active {
+  color: var(--accent) !important;
 }

@@ -1,36 +1,60 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Mourya Birru | Systems & Embedded Engineer",
-  description: "Portfolio of Mourya Birru — Systems & Embedded Software Engineer specializing in BLE hardware integration, x86 OS development, POSIX systems programming, and industrial IoT.",
+  title: "Mourya Birru | CS Student, Systems & Software",
+  description:
+    "Mourya Birru — final-year CS student at GCET, Hyderabad. Building low-level systems and hardware-connected software. Open to SDE, systems, and embedded internships.",
+  metadataBase: new URL("https://mourya-birru.me"),
+  alternates: {
+    canonical: "https://mourya-birru.me",
+  },
+  openGraph: {
+    title: "Mourya Birru | CS Student, Systems & Software",
+    description:
+      "Final-year CS student building low-level systems and hardware-connected software. Open to SDE, systems, and embedded internships.",
+    type: "website",
+    url: "https://mourya-birru.me",
+    siteName: "Mourya Birru",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Mourya Birru — CS Student, Systems & Software",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mourya Birru | CS Student, Systems & Software",
+    description:
+      "Final-year CS student building low-level systems and hardware-connected software.",
+    images: ["/og-image.png"],
+  },
   icons: {
     icon: "/favicon.ico",
   },
 };
 
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import PointerGlow from "@/components/PointerGlow";
-import BackgroundMusic from "@/components/BackgroundMusic";
-import ParticleBackground from "@/components/ParticleBackground";
-import SciFiIntroScreen from "@/components/SciFiIntroScreen";
+export const viewport: Viewport = {
+  themeColor: "#08090b",
+};
 
 export default function RootLayout({
   children,
@@ -40,31 +64,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-background text-[#E2E8F0] font-sans selection:bg-teal/30 overflow-x-hidden">
-        {/* Static dark gradient — CSS fallback if JS is disabled */}
-        <div className="fixed inset-0 bg-gradient-to-br from-[#000000] via-[#040406] to-[#08080C] pointer-events-none z-0" />
-        {/* Canvas particle-network (z-[2], renders its own dark base) */}
-        <ParticleBackground />
-        <PointerGlow />
-        {/* SciFiIntroScreen disabled — removed to improve recruiter first impression */}
-        <BackgroundMusic />
+      <body className="bg-grid min-h-full flex flex-col">
         <Navigation />
-        <Footer />
-        <div className="relative z-10 w-full flex-1 flex flex-col pt-24">
+        <main id="main-content" className="relative z-10 w-full flex-1 flex flex-col">
           {children}
-        </div>
-
-        {/* Global Glitch Filter Definition */}
-        <svg className="hidden h-0 w-0" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <filter id="page-glitch">
-              <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="1" result="noise" />
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" />
-            </filter>
-          </defs>
-        </svg>
+        </main>
+        <Footer />
       </body>
     </html>
   );

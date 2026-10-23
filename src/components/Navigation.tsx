@@ -1,234 +1,162 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-// ─── Nav items ────────────────────────────────────────────────────────────────
 const navItems = [
-  { name: "Home",         href: "#home",         sectionId: "home"       },
-  { name: "About",        href: "#about",        sectionId: "about"      },
-  { name: "Skills",       href: "#skills",       sectionId: "skills"     },
-  { name: "Experience",   href: "#experience",   sectionId: "experience" },
-  { name: "Projects",     href: "#projects",     sectionId: "projects"   },
-  { name: "Achievements", href: "#records",      sectionId: "records"    },
-  { name: "Contact",      href: "#contact",      sectionId: "contact"    },
+  { name: "Home",       href: "#home",       id: "home"       },
+  { name: "About",      href: "#about",      id: "about"      },
+  { name: "Projects",   href: "#projects",   id: "projects"   },
+  { name: "Experience", href: "#experience", id: "experience" },
+  { name: "Skills",     href: "#skills",     id: "skills"     },
+  { name: "Contact",    href: "#contact",    id: "contact"    },
 ];
 
-// ─── Smooth-scroll helper ─────────────────────────────────────────────────────
-function scrollToSection(id: string) {
+function scrollTo(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  const navH = 96; // nav bar height + gap
-  const top = el.getBoundingClientRect().top + window.scrollY - navH;
+  const top = el.getBoundingClientRect().top + window.scrollY - 72;
   window.scrollTo({ top, behavior: "smooth" });
 }
 
-// ─── Scroll-spy hook ──────────────────────────────────────────────────────────
-function useActiveSection(ids: string[]): string {
+function useActiveSection(ids: string[]) {
   const [active, setActive] = useState(ids[0]);
-
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-
+    const obs: IntersectionObserver[] = [];
     ids.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(id);
-        },
-        {
-          rootMargin: "-40% 0px -55% 0px", // fires when section crosses the middle band
-          threshold: 0,
-        }
+      const o = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) setActive(id); },
+        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
       );
-
-      observer.observe(el);
-      observers.push(observer);
+      o.observe(el);
+      obs.push(o);
     });
-
-    return () => observers.forEach((o) => o.disconnect());
+    return () => obs.forEach((o) => o.disconnect());
   }, [ids]);
-
   return active;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function Navigation() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const ids = navItems.map((i) => i.id);
+  const active = useActiveSection(ids);
 
-  // Only run scroll-spy on the home page
-  const isHome = pathname === "/";
-  const sectionIds = navItems.map((i) => i.sectionId);
-  const activeSection = useActiveSection(isHome ? sectionIds : []);
-
-  // For non-home pages keep the old path-based active logic
-  function isActive(item: (typeof navItems)[number]) {
-    if (isHome) return activeSection === item.sectionId;
-    // Fallback for any remaining separate pages
-    return pathname.startsWith("/" + item.sectionId);
-  }
-
-  function handleNavClick(
-    e: React.MouseEvent,
-    item: (typeof navItems)[number]
-  ) {
-    if (isHome) {
-      e.preventDefault();
-      setIsOpen(false);
-      scrollToSection(item.sectionId);
-    } else {
-      // Navigate to home then scroll once loaded
-      setIsOpen(false);
-    }
-  }
-
-  // href: on home page use "#id", on other pages use "/#id"
-  function resolveHref(item: (typeof navItems)[number]) {
-    return isHome ? item.href : `/${item.href}`;
-  }
+  // Close mobile menu on resize
+  useEffect(() => {
+    const handler = () => { if (window.innerWidth >= 768) setOpen(false); };
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50 glass-panel rounded-full px-6 py-4 flex items-center justify-between"
+      <header
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          background: "rgba(8,9,11,0.85)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid var(--border)",
+        }}
       >
-        {/* Logo */}
-        <a
-          href={isHome ? "#home" : "/"}
-          onClick={(e) => {
-            if (isHome) {
-              e.preventDefault();
-              scrollToSection("home");
-            }
-          }}
-          className="font-display font-bold text-lg md:text-xl tracking-wider text-white"
+        <div
+          className="flex items-center justify-between"
+          style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 24px", height: "60px" }}
         >
-          Mourya Birru
-        </a>
+          {/* Logo */}
+          <a
+            href="#home"
+            onClick={(e) => { e.preventDefault(); scrollTo("home"); }}
+            className="font-semibold text-base hover-accent"
+            style={{ color: "var(--text)", textDecoration: "none", letterSpacing: "-0.01em" }}
+            aria-label="Back to top"
+          >
+            Mourya Birru
+          </a>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex gap-8 items-center">
+          {/* Desktop nav */}
+          <nav aria-label="Main navigation" className="hidden md:flex items-center gap-8">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.href}
+                onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
+                className={cn(
+                  "mono text-xs tracking-wider transition-colors duration-150",
+                  active === item.id
+                    ? "nav-active"
+                    : "hover-accent"
+                )}
+                style={{ color: active === item.id ? "var(--accent)" : "var(--muted)", textDecoration: "none" }}
+                aria-current={active === item.id ? "page" : undefined}
+              >
+                {item.name}
+              </a>
+            ))}
+          </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="md:hidden flex flex-col gap-1.5 p-2"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
+            <span
+              className="block w-5 h-0.5 transition-all duration-200"
+              style={{
+                background: "var(--text)",
+                transform: open ? "rotate(45deg) translateY(6px)" : "",
+              }}
+            />
+            <span
+              className="block w-5 h-0.5 transition-all duration-200"
+              style={{
+                background: "var(--text)",
+                opacity: open ? 0 : 1,
+              }}
+            />
+            <span
+              className="block w-5 h-0.5 transition-all duration-200"
+              style={{
+                background: "var(--text)",
+                transform: open ? "rotate(-45deg) translateY(-6px)" : "",
+              }}
+            />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile menu */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center gap-8"
+          style={{ background: "rgba(8,9,11,0.97)", backdropFilter: "blur(16px)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
           {navItems.map((item) => (
             <a
-              key={item.name}
-              href={resolveHref(item)}
-              onClick={(e) => handleNavClick(e, item)}
-              className={cn(
-                "relative font-mono text-xs tracking-widest transition-colors duration-300 cursor-pointer",
-                isActive(item) ? "text-white" : "text-ash hover:text-white"
-              )}
+              key={item.id}
+              href={item.href}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpen(false);
+                setTimeout(() => scrollTo(item.id), 50);
+              }}
+              className="text-3xl font-semibold hover-accent transition-colors"
+              style={{
+                color: active === item.id ? "var(--accent)" : "var(--text)",
+                textDecoration: "none",
+              }}
             >
               {item.name}
-              {isActive(item) && (
-                <motion.div
-                  layoutId="nav-underline"
-                  className="absolute left-0 right-0 -bottom-2 h-[2px] bg-teal shadow-[0_0_8px_rgba(0,229,255,0.8)]"
-                />
-              )}
             </a>
           ))}
         </div>
-
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => {
-              if (isHome) {
-                scrollToSection("contact");
-              }
-            }}
-            className="hidden sm:block"
-          >
-            {isHome ? (
-              <span className="bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian font-mono text-xs px-6 py-2.5 rounded-full hover-lift uppercase font-bold tracking-widest inline-block">
-                Contact
-              </span>
-            ) : (
-              <Link
-                href="/#contact"
-                className="bg-gradient-to-br from-lavender to-[#8d7fff] text-obsidian font-mono text-xs px-6 py-2.5 rounded-full hover-lift uppercase font-bold tracking-widest inline-block"
-              >
-                Contact
-              </Link>
-            )}
-          </button>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 z-50"
-          >
-            <motion.span
-              animate={{ rotate: isOpen ? 45 : 0, y: isOpen ? 8 : 0 }}
-              className="w-6 h-0.5 bg-white rounded-full block"
-            />
-            <motion.span
-              animate={{ opacity: isOpen ? 0 : 1 }}
-              className="w-6 h-0.5 bg-white rounded-full block"
-            />
-            <motion.span
-              animate={{ rotate: isOpen ? -45 : 0, y: isOpen ? -8 : 0 }}
-              className="w-6 h-0.5 bg-white rounded-full block"
-            />
-          </button>
-        </div>
-      </motion.nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-obsidian/95 backdrop-blur-2xl md:hidden flex flex-col items-center justify-center"
-          >
-            <div className="flex flex-col gap-8 items-center">
-              {navItems.map((item, idx) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.07 }}
-                >
-                  <a
-                    href={resolveHref(item)}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className={cn(
-                      "font-display text-4xl font-bold tracking-tighter transition-colors cursor-pointer",
-                      isActive(item) ? "text-teal" : "text-white"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                </motion.div>
-              ))}
-
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  if (isHome) scrollToSection("contact");
-                }}
-                className="mt-8"
-              >
-                <span className="bg-gradient-to-br from-teal to-lavender text-obsidian font-mono text-sm px-10 py-4 rounded-full font-bold tracking-[0.2em] inline-block">
-                  Contact
-                </span>
-              </button>
-            </div>
-
-
-          </motion.div>
-        )}
-      </AnimatePresence>
+      )}
     </>
   );
 }
