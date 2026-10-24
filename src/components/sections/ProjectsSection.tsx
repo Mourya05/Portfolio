@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import { FaGithub } from "react-icons/fa6";
+import { useEffect, useRef, useState } from "react";
 
-/* ─── Types ──────────────────────────────────────────────────────────────── */
+/* ─── Types ──────────────────────────────────────────────────────────────────── */
+interface StatItem { label: string; value: number; unit: string; decimals: number }
+
 interface Project {
   title:       string;
   label:       string;
@@ -11,7 +14,7 @@ interface Project {
   tags:        string[];
   github:      string;
   image:       string;
-  metric?:     { main: string; sub: string };
+  stats?:      StatItem[];
   overlayTag?: string;
 }
 
@@ -23,19 +26,20 @@ interface CompactProject {
   image?: string;
 }
 
-/* ─── Data ───────────────────────────────────────────────────────────────── */
+/* ─── Data ───────────────────────────────────────────────────────────────────── */
 const featuredProject: Project = {
   title: "StrataKV — LLM Inference Engine",
-  label: "ML systems",
+  label: "ML Systems",
   description:
     "From-scratch LLM inference engine in C++ and CUDA, built without ML frameworks. Runs Llama 2 (1.1B) on a 4 GB GTX 1050 Ti, achieving 34.13 tokens/sec decode and an 11.6 s model load time using vectorized loads and warp-level GEMV.",
   tags: ["C++", "CUDA", "LLM Inference", "Systems"],
   github: "https://github.com/Mourya05/StrataKV",
   image: "/projects/StrataKV.png",
-  metric: {
-    main: "34.13 tok/s",
-    sub: "Llama 2 (1.1B) · 4 GB GTX 1050 Ti",
-  },
+  stats: [
+    { label: "Decode speed",   value: 34.13, unit: "tok/s",  decimals: 2 },
+    { label: "Model load",     value: 11.6,  unit: "s",      decimals: 1 },
+    { label: "Model size",     value: 1.1,   unit: "B params · 4 GB GPU", decimals: 1 },
+  ],
 };
 
 const gridProjects: Project[] = [
@@ -110,71 +114,156 @@ const compactProjects: CompactProject[] = [
   },
 ];
 
-/* ─── Chamfered Spotlight Wrapper ────────────────────────────────────────── */
-function ChamferSpotlightCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+/* ─── Count-up hook ──────────────────────────────────────────────────────────── */
+function useCountUp(target: number, duration = 1800, decimals = 2) {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [started]);
+
+  useEffect(() => {
+    if (!started) return;
+    // respect reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setCount(target);
+      return;
+    }
+    const startTime = performance.now();
+    function step(now: number) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(parseFloat((eased * target).toFixed(decimals)));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, [started, target, duration, decimals]);
+
+  return { count, ref };
+}
+
+/* ─── In-view hook ───────────────────────────────────────────────────────────── */
+function useInView(threshold = 0.12) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, visible };
+}
+
+/* ─── Spotlight wrapper ──────────────────────────────────────────────────────── */
+function SpotlightProjectCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
-    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
   }
-
   return (
-    <div
-      onMouseMove={handleMouseMove}
-      className={`chamfer-card spotlight-card ${className}`}
-    >
-      <div className="chamfer-card-inner flex flex-col h-full">
-        {children}
-      </div>
+    <div onMouseMove={handleMouseMove} className={`project-card spotlight-card ${className}`}>
+      <div className="project-card-inner flex flex-col h-full">{children}</div>
     </div>
   );
 }
 
+/* ─── StrataKV stat row ──────────────────────────────────────────────────────── */
+function StrataStat({ stat, isFirst }: { stat: StatItem; isFirst: boolean }) {
+  const { count, ref } = useCountUp(stat.value, 1800, stat.decimals);
+  return (
+    <div ref={ref} className="flex flex-col gap-0.5">
+      <div className="flex items-baseline gap-1.5 flex-wrap">
+        <span
+          className="mono font-bold"
+          style={{
+            fontSize: isFirst ? "clamp(2rem, 4vw, 2.8rem)" : "clamp(1.4rem, 2.5vw, 1.8rem)",
+            lineHeight: 1,
+            background: isFirst ? "linear-gradient(90deg, var(--violet-hi), var(--crimson))" : undefined,
+            WebkitBackgroundClip: isFirst ? "text" : undefined,
+            WebkitTextFillColor: isFirst ? "transparent" : undefined,
+            backgroundClip: isFirst ? "text" : undefined,
+            color: isFirst ? "transparent" : "var(--violet-hi)",
+          }}
+        >
+          {count.toFixed(stat.decimals)}
+        </span>
+        <span
+          className="mono font-semibold"
+          style={{
+            fontSize: isFirst ? "14px" : "12px",
+            color: isFirst ? "var(--red)" : "var(--muted)",
+            borderBottom: isFirst ? "1.5px solid var(--red)" : "none",
+            lineHeight: 1.2,
+            paddingBottom: isFirst ? "1px" : 0,
+          }}
+        >
+          {stat.unit}
+        </span>
+      </div>
+      <span className="mono" style={{ fontSize: "11px", color: "var(--muted)" }}>
+        {stat.label}
+      </span>
+    </div>
+  );
+}
+
+/* ─── Image cover with tint overlay ──────────────────────────────────────────── */
 function ProjectCover({ project }: { project: Project }) {
   const isTerminal = project.image.includes("StrataKV");
 
   return (
     <div
-      className="relative w-full aspect-[16/10] overflow-hidden select-none bg-[#050608] flex flex-col"
+      className="relative w-full overflow-hidden select-none"
       style={{
+        aspectRatio: "16/10",
+        background: "#050608",
         borderBottom: "1px solid var(--border)",
       }}
     >
-      {/* Background Subtle Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-20 pointer-events-none z-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
-          backgroundSize: "20px 20px",
-        }}
-      />
-
       {isTerminal ? (
-        <div className="relative w-full h-full flex flex-col z-10 bg-[#05050a]">
-          {/* Terminal Window Header */}
-          <div className="h-7 px-3 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]">
+        /* Terminal window */
+        <div className="relative w-full h-full flex flex-col bg-[#05050a]">
+          {/* Title bar */}
+          <div
+            className="h-7 px-3 flex items-center justify-between"
+            style={{
+              borderBottom: "1px solid var(--border)",
+              background: "var(--surface)",
+            }}
+          >
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
-              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
-              <span className="w-2 h-2 rounded-full bg-[#352b4d]" />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#352b4d" }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#352b4d" }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#352b4d" }} />
             </div>
-            <span className="mono text-[10px] text-[var(--muted)]">
+            <span className="mono" style={{ fontSize: "10px", color: "var(--muted)" }}>
               MINGW64 · stratakv_cli.exe
             </span>
             <span className="w-8" />
           </div>
 
-          {/* Terminal Content: Full image visible via object-contain without cropping */}
-          <div className="relative flex-1 w-full flex items-center justify-center p-3 sm:p-5">
+          {/* Screenshot with blinking cursor */}
+          <div className="relative flex-1 w-full flex items-center justify-center p-3 sm:p-5 blink-cursor">
             <Image
               src={project.image}
               alt={project.title}
@@ -187,7 +276,7 @@ function ProjectCover({ project }: { project: Project }) {
         </div>
       ) : (
         <>
-          {/* Actual Project Image */}
+          {/* Photo with consistent saturation */}
           <div className="relative w-full h-full">
             <Image
               src={project.image}
@@ -195,163 +284,191 @@ function ProjectCover({ project }: { project: Project }) {
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover object-center"
+              style={{ filter: "saturate(0.82)" }}
             />
           </div>
 
-          {/* Faint Violet Gradient over bottom of screenshot for palette unity */}
+          {/* Bottom fade + violet tint layer */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 pointer-events-none z-10"
+            className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to top, rgba(7, 6, 12, 0.95) 0%, rgba(124, 58, 237, 0.12) 35%, transparent 75%)",
+                "linear-gradient(to top, rgba(5,5,8,0.92) 0%, rgba(139,92,246,0.10) 40%, transparent 75%)",
+            }}
+          />
+
+          {/* Violet colour tint — kills over-saturated screenshots */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "rgba(139,92,246,0.10)",
+              mixBlendMode: "color",
             }}
           />
         </>
       )}
 
-      {/* Floating Status / Metric Chip */}
-      {project.metric ? (
-        <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2 px-3 py-1.5 backdrop-blur-md bg-[rgba(16,13,25,0.85)] border border-[var(--border-strong)]">
-          <span className="mono text-xs font-semibold text-[var(--accent)]">
-            {project.metric.main}
-          </span>
-          <span className="mono text-[10px] text-[var(--muted)]">
-            · {project.metric.sub}
-          </span>
-        </div>
-      ) : project.overlayTag ? (
-        <div className="absolute bottom-3 left-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 backdrop-blur-md bg-[rgba(16,13,25,0.85)] border border-[var(--border-strong)]">
-          <span className="w-1.5 h-1.5 bg-[var(--accent)]" />
-          <span className="mono text-[10px] font-medium text-[var(--text)]">
+      {/* Overlay tag for grid cards */}
+      {project.overlayTag && (
+        <div
+          className="absolute bottom-3 left-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 backdrop-blur-md"
+          style={{
+            background: "rgba(13,11,20,0.86)",
+            border: "1px solid var(--border-strong)",
+          }}
+        >
+          <span className="w-1.5 h-1.5" style={{ background: "var(--violet)" }} />
+          <span className="mono" style={{ fontSize: "10px", fontWeight: 500, color: "var(--text)" }}>
             {project.overlayTag}
           </span>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
 
+/* ─── Main section ───────────────────────────────────────────────────────────── */
 export default function ProjectsSection() {
+  const { ref: gridRef, visible: gridVisible } = useInView(0.08);
+
   return (
-    <section id="projects" className="py-20 lg:py-28">
+    <section id="projects" className="py-28 lg:py-36">
       <div className="section-wrap">
-        
-        {/* 4.3 Eyebrow: Chamfered square + Label + Hairline */}
+
+        {/* Eyebrow */}
         <div className="flex items-center gap-3 mb-3">
-          <span
-            className="w-2 h-2 shrink-0 bg-[var(--accent)]"
-            style={{
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-            }}
-          />
-          <span className="mono text-xs uppercase tracking-widest text-[var(--muted)]">
-            Projects
-          </span>
-          <div className="flex-1 h-[1px] bg-[var(--border)] ml-2" />
+          <span className="w-2 h-2 shrink-0" style={{ background: "var(--violet)", clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)" }} />
+          <span className="eyebrow">Projects</span>
+          <div className="flex-1 h-px ml-2" style={{ background: "var(--border)" }} />
         </div>
 
         <h2
-          className="tracking-tight text-white font-semibold mb-12"
-          style={{
-            fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)",
-            lineHeight: 1.1,
-          }}
+          className="section-heading tracking-tight font-semibold mb-14"
+          style={{ fontSize: "clamp(2.4rem, 4.5vw, 3.6rem)", lineHeight: 1.08, color: "white" }}
         >
           Featured Work
         </h2>
 
-        {/* 1. Featured Project: Full Width (Cover Left 55%, Text Right 45% on desktop) */}
-        <div className="mb-10">
-          <ChamferSpotlightCard className="w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] items-stretch">
-              {/* Cover Left */}
-              <div className="flex items-center justify-center border-b lg:border-b-0 lg:border-r border-[var(--border)]">
-                <ProjectCover project={featuredProject} />
+        {/* 1. Featured — full-width */}
+        <div className="mb-12">
+          <SpotlightProjectCard className="w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] items-stretch">
+              {/* Cover left */}
+              <div className="flex items-stretch border-b lg:border-b-0 lg:border-r" style={{ borderColor: "var(--border)" }}>
+                <div className="w-full">
+                  <ProjectCover project={featuredProject} />
+                </div>
               </div>
-              
-              {/* Text Right */}
-              <div className="p-6 sm:p-8 flex flex-col justify-between">
+
+              {/* Text right */}
+              <div className="p-7 sm:p-9 flex flex-col justify-between gap-6">
                 <div>
-                  <div className="flex items-center justify-between gap-3 mb-3">
-                    <span className="mono text-[11px] text-[var(--accent)] uppercase tracking-wider font-semibold">
-                      {featuredProject.label}
-                    </span>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <span className="label-pill">{featuredProject.label}</span>
                     <a
                       href={featuredProject.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mono text-xs text-[var(--muted)] hover:text-white inline-flex items-center gap-1.5 transition-colors"
+                      className="mono inline-flex items-center gap-1.5 transition-colors"
+                      style={{ fontSize: "13px", color: "var(--muted)", textDecoration: "none" }}
                       aria-label="View StrataKV on GitHub"
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "white"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
                     >
                       <FaGithub size={14} />
                       <span>Code</span>
                     </a>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-semibold text-white mb-3">
+                  <h3 className="font-semibold text-white mb-4" style={{ fontSize: "clamp(1.15rem, 2vw, 1.4rem)" }}>
                     {featuredProject.title}
                   </h3>
-                  <p className="text-sm sm:text-base text-[var(--muted)] leading-relaxed mb-6">
+                  <p className="leading-relaxed mb-7" style={{ fontSize: "16px", color: "var(--muted)" }}>
                     {featuredProject.description}
                   </p>
+
+                  {/* Stat row — three large mono numbers */}
+                  {featuredProject.stats && (
+                    <div
+                      className="grid gap-5 py-6 px-5 mb-2"
+                      style={{
+                        gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                        background: "rgba(139,92,246,0.06)",
+                        border: "1px solid rgba(139,92,246,0.18)",
+                      }}
+                    >
+                      {featuredProject.stats.map((s, i) => (
+                        <StrataStat key={s.label} stat={s} isFirst={i === 0} />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border)]">
+                <div className="flex flex-wrap gap-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
                   {featuredProject.tags.map((t) => (
-                    <span key={t} className="tag">{t}</span>
+                    <span key={t} className="tag tag-systems">{t}</span>
                   ))}
                 </div>
               </div>
             </div>
-          </ChamferSpotlightCard>
+          </SpotlightProjectCard>
         </div>
 
-        {/* 2. Grid Projects: 2 Columns on Desktop, Equal Heights */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-          {gridProjects.map((p) => (
-            <ChamferSpotlightCard key={p.title} className="flex flex-col h-full">
-              {/* 16:10 Cover Tile */}
-              <ProjectCover project={p} />
+        {/* 2. Grid — staggered fade */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-7 mb-18"
+          style={{ marginBottom: "72px" }}
+        >
+          {gridProjects.map((p, idx) => (
+            <div
+              key={p.title}
+              className={`in-view-fade stagger-${idx + 1} ${gridVisible ? "visible" : ""}`}
+            >
+              <SpotlightProjectCard className="flex flex-col h-full">
+                <ProjectCover project={p} />
 
-              {/* Card Body */}
-              <div className="p-6 flex flex-col flex-1 justify-between">
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="mono text-[11px] text-[var(--muted)] uppercase tracking-wider">
-                      {p.label}
-                    </span>
-                    <a
-                      href={p.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mono text-xs text-[var(--muted)] hover:text-white inline-flex items-center gap-1.5 transition-colors"
-                      aria-label={`View ${p.title} on GitHub`}
-                    >
-                      <FaGithub size={13} />
-                      <span>Code</span>
-                    </a>
+                <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="label-pill">{p.label}</span>
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mono inline-flex items-center gap-1.5 transition-colors"
+                        style={{ fontSize: "13px", color: "var(--muted)", textDecoration: "none" }}
+                        aria-label={`View ${p.title} on GitHub`}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "white"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
+                      >
+                        <FaGithub size={13} />
+                        <span>Code</span>
+                      </a>
+                    </div>
+                    <h3 className="font-semibold text-white mb-2" style={{ fontSize: "1.1rem" }}>
+                      {p.title}
+                    </h3>
+                    <p className="leading-relaxed mb-6" style={{ fontSize: "15px", color: "var(--muted)" }}>
+                      {p.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {p.title}
-                  </h3>
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-                    {p.description}
-                  </p>
-                </div>
 
-                <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--border)]">
-                  {p.tags.map((t) => (
-                    <span key={t} className="tag">{t}</span>
-                  ))}
+                  <div className="flex flex-wrap gap-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+                    {p.tags.map((t) => (
+                      <span key={t} className="tag">{t}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </ChamferSpotlightCard>
+              </SpotlightProjectCard>
+            </div>
           ))}
         </div>
 
-        {/* 3. More Projects: Chamfered Box Rows */}
+        {/* 3. More Projects */}
         <div>
-          <h3 className="mono text-xs uppercase tracking-widest text-[var(--muted)] mb-4">
+          <h3 className="eyebrow mb-4" style={{ color: "var(--muted)" }}>
             More Projects
           </h3>
           <div className="chamfer-card">
@@ -359,25 +476,23 @@ export default function ProjectsSection() {
               {compactProjects.map((cp) => (
                 <div
                   key={cp.title}
-                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--surface-2)] transition-colors"
+                  className="more-row flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  style={{ padding: "16px 20px" }}
                 >
                   <div className="flex items-start sm:items-center gap-4">
                     {cp.image && (
-                      <div className="relative w-12 h-12 overflow-hidden shrink-0 border border-[var(--border)] hidden sm:block bg-[#050608]">
-                        <Image
-                          src={cp.image}
-                          alt={cp.title}
-                          fill
-                          sizes="48px"
-                          className="object-cover"
-                        />
+                      <div
+                        className="relative w-12 h-12 overflow-hidden shrink-0 hidden sm:block"
+                        style={{ border: "1px solid var(--border)", background: "#050608" }}
+                      >
+                        <Image src={cp.image} alt={cp.title} fill sizes="48px" className="object-cover" />
                       </div>
                     )}
                     <div className="flex flex-col sm:max-w-lg">
-                      <h4 className="text-sm font-semibold text-white">
+                      <h4 className="more-row-title font-semibold transition-colors" style={{ fontSize: "14px", color: "white" }}>
                         {cp.title}
                       </h4>
-                      <p className="text-xs text-[var(--muted)] mt-1">
+                      <p className="more-row-blurb mt-1 transition-colors" style={{ fontSize: "13px", color: "var(--muted)" }}>
                         {cp.blurb}
                       </p>
                     </div>
@@ -386,19 +501,20 @@ export default function ProjectsSection() {
                   <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
                     <div className="flex flex-wrap gap-1.5">
                       {cp.tags.map((t) => (
-                        <span key={t} className="tag text-[10px] py-0.5 px-2">
-                          {t}
-                        </span>
+                        <span key={t} className="tag" style={{ fontSize: "11px", padding: "2px 8px" }}>{t}</span>
                       ))}
                     </div>
                     <a
                       href={cp.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[var(--muted)] hover:text-white transition-colors"
+                      style={{ color: "var(--muted)" }}
+                      className="transition-colors"
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "white"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
                       aria-label={`View ${cp.title} on GitHub`}
                     >
-                      <FaGithub size={15} />
+                      <FaGithub size={16} />
                     </a>
                   </div>
                 </div>

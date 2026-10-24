@@ -27,11 +27,7 @@ function useActiveSection(ids: string[]) {
       const el = document.getElementById(id);
       if (!el) return;
       const o = new IntersectionObserver(
-        ([e]) => {
-          if (e.isIntersecting) {
-            setActive(id);
-          }
-        },
+        ([e]) => { if (e.isIntersecting) setActive(id); },
         { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
       );
       o.observe(el);
@@ -58,7 +54,7 @@ export default function Navigation() {
       <header
         className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: "rgba(7, 6, 12, 0.9)",
+          background: "rgba(5, 5, 8, 0.92)",
           backdropFilter: "blur(16px)",
           borderBottom: "1px solid var(--border)",
         }}
@@ -80,24 +76,40 @@ export default function Navigation() {
 
           {/* Desktop nav */}
           <nav aria-label="Main navigation" className="hidden md:flex items-center gap-7">
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.href}
-                onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
-                className={cn(
-                  "mono text-xs tracking-wider transition-colors duration-150 py-1",
-                  active === item.id ? "text-[var(--accent)] font-medium" : "text-[var(--muted)] hover:text-white"
-                )}
-                style={{
-                  textDecoration: "none",
-                  borderBottom: active === item.id ? "1.5px solid var(--accent)" : "1.5px solid transparent",
-                }}
-                aria-current={active === item.id ? "page" : undefined}
-              >
-                {item.name}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const isActive = active === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
+                  className={cn(
+                    "mono text-xs tracking-wider transition-colors duration-150 py-1",
+                    isActive ? "font-medium" : "text-[var(--muted)]"
+                  )}
+                  style={{
+                    textDecoration: "none",
+                    color: isActive ? "var(--violet-hi)" : undefined,
+                    borderBottom: isActive
+                      ? "1.5px solid var(--crimson)"
+                      : "1.5px solid transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)";
+                    }
+                  }}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {item.name}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Mobile hamburger */}
@@ -109,24 +121,15 @@ export default function Navigation() {
           >
             <span
               className="block w-5 h-0.5 transition-all duration-200"
-              style={{
-                background: "var(--text)",
-                transform: open ? "rotate(45deg) translateY(6px)" : "",
-              }}
+              style={{ background: "var(--text)", transform: open ? "rotate(45deg) translateY(6px)" : "" }}
             />
             <span
               className="block w-5 h-0.5 transition-all duration-200"
-              style={{
-                background: "var(--text)",
-                opacity: open ? 0 : 1,
-              }}
+              style={{ background: "var(--text)", opacity: open ? 0 : 1 }}
             />
             <span
               className="block w-5 h-0.5 transition-all duration-200"
-              style={{
-                background: "var(--text)",
-                transform: open ? "rotate(-45deg) translateY(-6px)" : "",
-              }}
+              style={{ background: "var(--text)", transform: open ? "rotate(-45deg) translateY(-6px)" : "" }}
             />
           </button>
         </div>
@@ -136,7 +139,7 @@ export default function Navigation() {
       {open && (
         <div
           className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center gap-8"
-          style={{ background: "rgba(7, 6, 12, 0.98)", backdropFilter: "blur(16px)" }}
+          style={{ background: "rgba(5, 5, 8, 0.98)", backdropFilter: "blur(16px)" }}
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
@@ -152,7 +155,7 @@ export default function Navigation() {
               }}
               className="text-2xl font-medium tracking-tight transition-colors"
               style={{
-                color: active === item.id ? "var(--accent)" : "var(--text)",
+                color: active === item.id ? "var(--crimson)" : "var(--text)",
                 textDecoration: "none",
               }}
             >

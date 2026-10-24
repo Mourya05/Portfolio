@@ -10,6 +10,8 @@ const staticKeywords = [
   "Full-Stack",
 ];
 
+const tickerItems = Array.from({ length: 6 }, () => staticKeywords).flat();
+
 export default function HeroSection() {
   function scrollToProjects(e: React.MouseEvent) {
     e.preventDefault();
@@ -22,234 +24,268 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative flex flex-col justify-between overflow-hidden bg-[var(--bg)]"
+      className="relative flex flex-col justify-between overflow-hidden"
       style={{
         minHeight: "calc(100svh - 64px)",
         paddingTop: "64px",
+        background: "transparent",
       }}
     >
-      {/* 56px fine line-grid at ~3% opacity with radial mask fade */}
+      {/* Fine line-grid overlay — subtle, masked */}
       <div
         aria-hidden="true"
         className="cyber-line-grid absolute inset-0 pointer-events-none"
       />
 
-      {/* Diagonal violet light beam from top-right */}
+      {/* Diagonal violet beam */}
       <div
         aria-hidden="true"
-        className="cyber-beam absolute top-0 right-0 w-full h-[650px] pointer-events-none"
+        className="cyber-beam absolute top-0 right-0 w-full h-[700px] pointer-events-none"
       />
 
-      {/* Soft violet glow behind the portrait */}
+      {/* Portrait glow disc — large, centred behind the portrait */}
       <div
         aria-hidden="true"
-        className="absolute top-1/4 right-1/4 w-[420px] h-[420px] rounded-full pointer-events-none"
+        className="absolute pointer-events-none"
         style={{
-          background: "radial-gradient(circle, var(--glow) 0%, transparent 70%)",
-          filter: "blur(50px)",
+          top: "50%",
+          right: "6%",
+          width: "min(600px, 48vw)",
+          height: "min(600px, 48vw)",
+          transform: "translateY(-50%)",
+          background:
+            "radial-gradient(circle, rgba(244,63,94,.26) 0%, rgba(139,92,246,.28) 45%, transparent 70%)",
+          filter: "blur(40px)",
         }}
       />
 
-      {/* Main 2-column hero area */}
-      <div className="section-wrap flex-1 flex items-center py-12 lg:py-16 relative z-10">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center">
-          
-          {/* Left Column: Status, Headline, Copy, Buttons, Links */}
+      {/* Main 2-column area */}
+      <div className="section-wrap flex-1 flex items-center py-14 lg:py-20 relative z-10">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-8 items-center">
+
+          {/* ── Left: text ── */}
           <div className="flex flex-col items-start">
-            
-            {/* Status Line: Small violet square bullet + plain mono line */}
-            <div className="hero-animate-1 flex items-center gap-2.5 mb-6">
-              <span
-                className="w-2 h-2 shrink-0 inline-block bg-[var(--accent)]"
-                style={{
-                  clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                }}
-              />
-              <span className="mono text-xs text-[var(--muted)] tracking-wider">
-                FINAL-YEAR B.TECH CSE · GCET, HYDERABAD · 2027
-              </span>
+
+            {/* Status Badge — one alive element */}
+            <div className="hero-animate-1 mb-7">
+              <div className="status-badge">
+                <span className="status-dot-wrap" aria-hidden="true">
+                  <span className="status-dot-ping" />
+                  <span className="status-dot" />
+                </span>
+                <span
+                  className="mono tracking-wider"
+                  style={{ fontSize: "14px", color: "#fb7185" }}
+                >
+                  Open to AI/ML, DS &amp; SDE roles
+                </span>
+              </div>
             </div>
 
-            {/* H1: Mourya (weight 300 in --text), Birru (weight 700 in lavender #c4b5fd) */}
+            {/* H1 — big */}
             <h1
               className="hero-animate-2 tracking-tight mb-5"
               style={{
-                fontSize: "clamp(3.5rem, 9vw, 7rem)",
-                letterSpacing: "-0.03em",
-                lineHeight: 1.02,
+                fontSize: "clamp(4rem, 9vw, 8.5rem)",
+                letterSpacing: "-0.035em",
+                lineHeight: 1.0,
+                fontWeight: 300,
               }}
             >
-              <span style={{ fontWeight: 300, color: "var(--text)" }}>Mourya </span>
-              <span style={{ fontWeight: 700, color: "#c4b5fd" }}>Birru</span>
+              <span style={{ color: "var(--text)" }}>Mourya </span>
+              <span className="grad-text" style={{ fontWeight: 700 }}>Birru</span>
             </h1>
 
             {/* Subtitle */}
             <p
-              className="hero-animate-3 text-lg sm:text-xl lg:text-2xl font-medium mb-2 text-white"
+              className="hero-animate-3 font-medium mb-2"
               style={{
+                fontSize: "clamp(1.15rem, 2.5vw, 1.4rem)",
                 lineHeight: 1.35,
-                maxWidth: "600px",
+                maxWidth: "580px",
+                color: "var(--text)",
               }}
             >
               Final-year CS student building machine learning and software that works end to end.
             </p>
 
-            {/* Direct addition under sub copy */}
-            <p className="hero-animate-3 text-sm text-[var(--muted)] mb-4 font-normal">
+            {/* Sub-copy */}
+            <p
+              className="hero-animate-3 mb-4"
+              style={{ fontSize: "15px", color: "var(--muted)" }}
+            >
               Open to AI/ML, data science and SDE roles.
             </p>
 
-            {/* Support Line */}
+            {/* Support paragraph */}
             <p
-              className="hero-animate-4 text-sm sm:text-base mb-8 text-[var(--muted)]"
+              className="hero-animate-4 mb-10"
               style={{
-                lineHeight: 1.6,
-                maxWidth: "540px",
+                fontSize: "17px",
+                lineHeight: 1.65,
+                maxWidth: "520px",
+                color: "var(--muted)",
               }}
             >
               From a CUDA inference engine for LLMs to a BLE-connected radiation monitoring app. I like knowing how things work underneath.
             </p>
 
-            {/* Chamfered Buttons */}
-            <div className="hero-animate-4 flex flex-wrap items-center gap-4 mb-8">
-              <a
-                href="#projects"
-                onClick={scrollToProjects}
-                className="btn-primary"
-              >
+            {/* CTAs */}
+            <div className="hero-animate-4 flex flex-wrap items-center gap-4 mb-9">
+              <a href="#projects" onClick={scrollToProjects} className="btn-primary">
                 <span>View projects</span>
-                <FaArrowRight size={12} />
+                <FaArrowRight size={13} />
               </a>
-              <a
-                href="/Mourya_Resume.pdf"
-                download="Mourya_Birru_Resume.pdf"
-                className="btn-secondary"
-              >
+              <a href="/Mourya_Resume.pdf" download="Mourya_Birru_Resume.pdf" className="btn-secondary">
                 <span className="btn-secondary-inner">
-                  <FaDownload size={12} />
+                  <FaDownload size={13} />
                   <span>Resume</span>
                 </span>
               </a>
             </div>
 
-            {/* Text Links */}
-            <div className="hero-animate-4 flex items-center gap-6 mono text-xs">
+            {/* Social links */}
+            <div className="hero-animate-4 flex items-center gap-7 mono" style={{ fontSize: "13px" }}>
               <a
                 href="https://github.com/mourya05"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 transition-colors text-[var(--muted)] hover:text-[var(--accent)]"
-                style={{ textDecoration: "none" }}
+                className="inline-flex items-center gap-1.5 transition-colors"
+                style={{ textDecoration: "none", color: "var(--muted)" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
               >
-                <FaGithub size={13} />
+                <FaGithub size={14} />
                 <span>GitHub</span>
               </a>
               <a
                 href="https://linkedin.com/in/mourya-birru"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 transition-colors text-[var(--muted)] hover:text-[var(--accent)]"
-                style={{ textDecoration: "none" }}
+                className="inline-flex items-center gap-1.5 transition-colors"
+                style={{ textDecoration: "none", color: "var(--muted)" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
               >
-                <FaLinkedin size={13} />
+                <FaLinkedin size={14} />
                 <span>LinkedIn</span>
               </a>
               <a
                 href="mailto:mourya.birru@gmail.com"
-                className="inline-flex items-center gap-1.5 transition-colors text-[var(--muted)] hover:text-[var(--accent)]"
-                style={{ textDecoration: "none" }}
+                className="inline-flex items-center gap-1.5 transition-colors"
+                style={{ textDecoration: "none", color: "var(--muted)" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
               >
-                <FaEnvelope size={13} />
+                <FaEnvelope size={14} />
                 <span>Email</span>
               </a>
             </div>
-
           </div>
 
-          {/* Right Column: Chamfered Duotone Portrait Card */}
+          {/* ── Right: portrait — no frame, mask fade ── */}
           <div className="hero-animate-right flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[320px] sm:max-w-[350px]">
-              
-              {/* Secondary outline frame offset 12px behind for depth */}
+            {/*
+              Container is ~40% of hero width on desktop.
+              The image itself fades out at the bottom and edges via mask-image.
+              A violet-tinted gradient overlay sits on top with mix-blend-mode to
+              kill the harsh white background in the photo.
+            */}
+            <div
+              className="relative"
+              style={{
+                width: "min(360px, 42vw)",
+                /* height auto from aspect-ratio */
+                aspectRatio: "4/5",
+                flexShrink: 0,
+              }}
+            >
+              {/* Photo */}
+              <Image
+                src="/myphoto.jpeg"
+                alt="Mourya Birru — CS Student at GCET"
+                fill
+                priority
+                sizes="(max-width: 768px) 340px, 360px"
+                className="object-cover object-top"
+                style={{
+                  maskImage:
+                    "linear-gradient(to bottom, #000 60%, transparent 100%), " +
+                    "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+                  maskComposite: "intersect",
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, #000 60%, transparent 100%), " +
+                    "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+                  WebkitMaskComposite: "source-in",
+                }}
+              />
+
+              {/* Violet-to-black overlay — kills harsh white bg */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 chamfer-28 pointer-events-none hidden sm:block"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                  transform: "translate(12px, 12px)",
-                  background: "var(--border-strong)",
-                  padding: "1px",
+                  background:
+                    "linear-gradient(180deg, rgba(139,92,246,0.18) 0%, rgba(13,11,20,0.72) 75%, var(--void) 100%)",
+                  mixBlendMode: "multiply",
                 }}
-              >
-                <div
-                  className="w-full h-full chamfer-27"
-                  style={{ background: "transparent" }}
-                />
-              </div>
+              />
 
-              {/* Foreground Chamfered Frame (28px cuts) with 1px border */}
+              {/* Caption in the lower area */}
               <div
-                className="relative aspect-[4/5] chamfer-28"
-                style={{
-                  background: "var(--border-strong)",
-                  padding: "1px",
-                }}
+                className="absolute z-20"
+                style={{ bottom: "18%", left: 0 }}
               >
-                <div
-                  className="relative w-full h-full chamfer-27 overflow-hidden"
-                  style={{
-                    backgroundColor: "var(--surface)",
-                  }}
+                <span
+                  className="mono tracking-wider"
+                  style={{ fontSize: "11px", color: "var(--violet-hi)", opacity: 0.8 }}
                 >
-                  {/* Photo in full natural color */}
-                  <Image
-                    src="/myphoto.jpeg"
-                    alt="Mourya Birru — CS Student at GCET"
-                    fill
-                    priority
-                    sizes="(max-width: 768px) 320px, 350px"
-                    className="object-cover"
-                  />
-
-                  {/* Bottom gradient into --bg */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: "linear-gradient(to top, var(--bg) 0%, rgba(7, 6, 12, 0.4) 35%, transparent 70%)",
-                    }}
-                  />
-
-                  {/* Caption in mono at the bottom-left: "CLASS OF 2027 · GCET" */}
-                  <div className="absolute bottom-4 left-4 z-20">
-                    <span className="mono text-[11px] font-medium tracking-wider text-[var(--text)]">
-                      CLASS OF 2027 · GCET
-                    </span>
-                  </div>
-                </div>
+                  CLASS OF 2027 · GCET
+                </span>
               </div>
-
             </div>
           </div>
 
         </div>
       </div>
 
-      {/* 4.4 Static Strip: One hairline-bordered row, mono muted text, "/" separators */}
+      {/* Capability strip marquee (moving left to right) */}
       <div
-        className="w-full border-t border-b border-[var(--border)] py-3 relative z-10"
+        className="w-full border-t border-b py-3.5 relative z-10 overflow-hidden ticker-mask select-none"
         style={{
-          backgroundColor: "var(--surface)",
+          backgroundColor: "rgba(13,11,20,0.6)",
+          backdropFilter: "blur(8px)",
+          borderColor: "var(--border)",
         }}
+        aria-label="Core Technical Capabilities"
       >
-        <div className="section-wrap flex flex-wrap items-center justify-between gap-4 mono text-xs text-[var(--muted)] tracking-wider">
-          {staticKeywords.map((kw, i) => (
-            <div key={kw} className="flex items-center gap-4 sm:gap-6">
-              <span>{kw}</span>
-              {i < staticKeywords.length - 1 && (
-                <span className="text-[var(--border-strong)]">/</span>
-              )}
-            </div>
-          ))}
+        <div
+          className="ticker-track-right flex items-center mono tracking-widest text-[12px]"
+          style={{ letterSpacing: "0.14em", color: "var(--violet-hi)" }}
+        >
+          {/* Set 1 */}
+          <div className="flex items-center shrink-0">
+            {tickerItems.map((kw, i) => (
+              <div key={`track-a-${i}`} className="flex items-center gap-6 sm:gap-8 pr-6 sm:pr-8">
+                <span className="whitespace-nowrap transition-colors hover:text-white cursor-default">
+                  {kw}
+                </span>
+                <span style={{ color: "var(--border-strong)", opacity: 0.8 }}>/</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Set 2 (Identical duplicate for seamless continuous flow) */}
+          <div className="flex items-center shrink-0" aria-hidden="true">
+            {tickerItems.map((kw, i) => (
+              <div key={`track-b-${i}`} className="flex items-center gap-6 sm:gap-8 pr-6 sm:pr-8">
+                <span className="whitespace-nowrap transition-colors hover:text-white cursor-default">
+                  {kw}
+                </span>
+                <span style={{ color: "var(--border-strong)", opacity: 0.8 }}>/</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
