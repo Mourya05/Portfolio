@@ -1,0 +1,36 @@
+Add crisp, hardware-inspired animations and micro-interactions to my existing portfolio using **Framer Motion** and **Tailwind CSS**.
+
+### Motion Philosophy (Strict Rules)
+- **Aesthetic:** Precision hardware / aerospace telemetry UI. Motion must feel mechanical, instantaneous, and engineered—never bouncy, floaty, or sluggish.
+- **Easing & Timing:** Use `ease: [0.16, 1, 0.3, 1]` (snappy expo-out). Keep hover/click transitions between `150ms–220ms` and scroll reveals under `450ms`.
+- **Performance:** Only animate GPU-composited properties (`transform`, `opacity`). Respect `prefers-reduced-motion`. All scroll reveals must use `viewport={{ once: true, amount: 0.2 }}` so elements never re-hide when scrolling back up.
+
+### 1. Global Ambient & Scroll Polish
+- **Scroll Progress Hairline:** Add a `1px` amber (`#F59E0B`) progress bar pinned to the bottom edge of the sticky navbar, driven by Framer Motion's `useScroll` + `useSpring`.
+- **Subtle Background Grid:** Add a very faint technical dot-grid (`rgba(255,255,255,0.03)`) behind the obsidian background with a subtle cursor-following radial mask spotlight.
+- **Active Nav Indicator:** Use Framer Motion `layoutId` so the active nav underline/pill glides smoothly between `WORK`, `EXPERIENCE`, `STACK`, and `CONTACT` as the user scrolls through sections.
+
+### 2. Hero Section (Snappy Mount Choreography)
+- **Live Status Dot:** Add a subtle, continuous radar-ping pulse animation to the amber dot next to `HYD, IN · OPEN TO AI/ML, DATA SCIENCE & SDE ROLES`.
+- **Staggered Reveal:** On page load (total sequence under `500ms`), stagger-fade and slide up (`y: 12 -> 0`) the status badge, `Mourya Birru` headline, bio, CTAs, and social links (`staggerChildren: 0.06`).
+- **Portrait Frame:** Smooth monochrome-to-color transition on hover (`duration-300`), with the 4 corner crosshair ticks (`+`) subtly expanding outward by `3px` and shifting to amber (`#F59E0B`).
+- **CTA Buttons:** Add tactile press feedback (`whileTap={{ scale: 0.97 }}`) and slide the `→` arrow `4px` to the right on hover.
+
+### 3. Telemetry Strip & StrataKV Metrics (Live Readout Feel)
+- **Number Count-Up / Scramble:** Create a lightweight reusable `<TelemetryNumber />` component that triggers once when scrolled into view and rapidly animates/counts up the numbers over `600ms` (for `Global Rank 542`, `1830 Rating`, `30+`, `Rank #1`, and StrataKV's `34.13 tok/s`, `11.6s`, `1.1B`).
+- **Telemetry Cell Hover:** On hover over any cell in `SYS · TELEMETRY`, subtly brighten the background (`#12161F`), illuminate the top border in amber, and shift the readout text slightly.
+
+### 4. Featured Projects & More Projects Table
+- **Cursor-Tracking Card Glow:** Add a subtle mouse-tracking radial gradient border glow (`amber` at 12–15% opacity) on `StrataKV`, `Hobby OS`, `NeuraMesh`, and `Tab-Based GM Counting System` cards.
+- **Card Corner Crosshairs & Media:** On card hover, light up the corner `+` markers in amber and smoothly scale the project preview image inside an `overflow-hidden` container (`scale: 1 -> 1.03`, `duration-300`).
+- **Staggered Grid Reveal:** Fade and rise (`y: 16 -> 0`) the 3-column project cards in sequence (`0.08s` stagger) on scroll.
+- **More Projects Table Rows:** On row hover, slide in a crisp `2px` amber left-border accent, shift the project title `4px` right, and rotate/nudge the GitHub icon slightly.
+
+### 5. Experience Log (Scroll-Linked Timeline)
+- **Live Vertical Track:** Add a `1px` vertical track line along the left side of the **Internships** list that progressively fills with amber (`#F59E0B`) tied to scroll position (`useScroll` + `useTransform` on `scaleY`).
+- **Role Nodes:** Each internship entry smoothly fades in (`x: -10 -> 0`) with its timeline dot lighting up amber as it enters the viewport.
+
+### 6. Spec Sheet, Contact & `⌘K` Palette
+- **Spec Sheet Pills:** Stagger-reveal tech stack pills quickly (`0.02s` per item) and give each pill a crisp amber border/text highlight on hover.
+- **Copy Email Button:** Animate the icon swap from Copy to Checkmark with an instant amber `COPIED` flash badge.
+- **`⌘K` Command Palette:** Animate open/close with `AnimatePresence` (`scale: 0.96 -> 1`, `opacity: 0 -> 1`, `150ms`) and backdrop blur.

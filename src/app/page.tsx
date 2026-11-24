@@ -1,8 +1,8 @@
 import HeroSection from "@/components/sections/HeroSection";
-import AboutSection from "@/components/sections/AboutSection";
+import TelemetryStrip from "@/components/sections/TelemetryStrip";
 import ProjectsSection from "@/components/sections/ProjectsSection";
 import ExperienceTimeline from "@/components/sections/ExperienceTimeline";
-import ExpertiseSection from "@/components/sections/ExpertiseSection";
+import StackSection from "@/components/sections/StackSection";
 import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
@@ -11,10 +11,8 @@ export default function Home() {
       {/* ── Hero ── */}
       <HeroSection />
 
-      <div className="section-divider" />
-
-      {/* ── About ── */}
-      <AboutSection />
+      {/* ── Telemetry strip ── */}
+      <TelemetryStrip />
 
       <div className="section-divider" />
 
@@ -28,8 +26,8 @@ export default function Home() {
 
       <div className="section-divider" />
 
-      {/* ── Skills & Highlights ── */}
-      <ExpertiseSection />
+      {/* ── Stack + Credentials ── */}
+      <StackSection />
 
       <div className="section-divider" />
 

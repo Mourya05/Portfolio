@@ -1,16 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import { FaGithub, FaLinkedin, FaEnvelope, FaArrowRight, FaDownload } from "react-icons/fa6";
+import { FaGithub, FaLinkedin, FaEnvelope, FaArrowRight, FaDownload, FaCode } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
-const staticKeywords = [
-  "Machine Learning",
-  "LLM Inference",
-  "Computer Vision",
-  "Full-Stack",
-];
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.04,
+    },
+  },
+};
 
-const tickerItems = Array.from({ length: 6 }, () => staticKeywords).flat();
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  },
+};
 
 export default function HeroSection() {
   function scrollToProjects(e: React.MouseEvent) {
@@ -21,271 +36,263 @@ export default function HeroSection() {
     window.scrollTo({ top, behavior: "smooth" });
   }
 
+  function openPalette() {
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }));
+  }
+
   return (
     <section
       id="home"
-      className="relative flex flex-col justify-between overflow-hidden"
+      className="relative flex flex-col overflow-hidden"
       style={{
-        minHeight: "calc(100svh - 64px)",
-        paddingTop: "64px",
+        minHeight: "calc(100vh - 56px)",
+        marginTop: 56,
+        paddingTop: "clamp(32px, 5vh, 60px)",
         background: "transparent",
       }}
     >
-      {/* Fine line-grid overlay — subtle, masked */}
+      {/* Very subtle grid in hero background */}
       <div
         aria-hidden="true"
-        className="cyber-line-grid absolute inset-0 pointer-events-none"
-      />
-
-      {/* Diagonal violet beam */}
-      <div
-        aria-hidden="true"
-        className="cyber-beam absolute top-0 right-0 w-full h-[700px] pointer-events-none"
-      />
-
-      {/* Portrait glow disc — large, centred behind the portrait */}
-      <div
-        aria-hidden="true"
-        className="absolute pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          top: "50%",
-          right: "6%",
-          width: "min(600px, 48vw)",
-          height: "min(600px, 48vw)",
-          transform: "translateY(-50%)",
-          background:
-            "radial-gradient(circle, rgba(244,63,94,.26) 0%, rgba(139,92,246,.28) 45%, transparent 70%)",
-          filter: "blur(40px)",
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          maskImage: "radial-gradient(ellipse 80% 70% at 60% 40%, black 30%, transparent 80%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 60% 40%, black 30%, transparent 80%)",
         }}
       />
 
-      {/* Main 2-column area */}
-      <div className="section-wrap flex-1 flex items-center py-14 lg:py-20 relative z-10">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-8 items-center">
+      {/* Two-column layout */}
+      <div className="section-wrap flex-1 flex items-center relative z-10">
+        <div
+          className="w-full grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-center"
+          style={{ paddingBottom: "clamp(24px, 4vh, 48px)" }}
+        >
 
-          {/* ── Left: text ── */}
-          <div className="flex flex-col items-start">
+          {/* ── LEFT: Text Mount Choreography ── */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col items-start"
+          >
 
-            {/* Status Badge — one alive element */}
-            <div className="hero-animate-1 mb-7">
-              <div className="status-badge">
-                <span className="status-dot-wrap" aria-hidden="true">
-                  <span className="status-dot-ping" />
-                  <span className="status-dot" />
+            {/* Status line with live radar-ping pulse */}
+            <motion.div variants={itemVariants} className="mb-6 flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                <motion.span
+                  className="absolute inline-flex h-full w-full rounded-full bg-[#F59E0B]"
+                  animate={{ scale: [1, 2.5, 2.5], opacity: [0.75, 0, 0] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
+              </span>
+              <span
+                className="mono"
+                style={{ fontSize: 11, letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase" }}
+              >
+                HYD, IN ·{" "}
+                <span style={{ color: "var(--amber)", fontWeight: 500 }}>
+                  OPEN TO AI/ML, DATA SCIENCE & SDE ROLES
                 </span>
-                <span
-                  className="mono tracking-wider"
-                  style={{ fontSize: "14px", color: "#fb7185" }}
-                >
-                  Open to AI/ML, DS &amp; SDE roles
-                </span>
-              </div>
-            </div>
+              </span>
+            </motion.div>
 
-            {/* H1 — big */}
-            <h1
-              className="hero-animate-2 tracking-tight mb-5"
+            {/* H1 */}
+            <motion.h1
+              variants={itemVariants}
+              className="tracking-tight mb-4"
               style={{
-                fontSize: "clamp(4rem, 9vw, 8.5rem)",
-                letterSpacing: "-0.035em",
-                lineHeight: 1.0,
-                fontWeight: 300,
-              }}
-            >
-              <span style={{ color: "var(--text)" }}>Mourya </span>
-              <span className="grad-text" style={{ fontWeight: 700 }}>Birru</span>
-            </h1>
-
-            {/* Subtitle */}
-            <p
-              className="hero-animate-3 font-medium mb-2"
-              style={{
-                fontSize: "clamp(1.15rem, 2.5vw, 1.4rem)",
-                lineHeight: 1.35,
-                maxWidth: "580px",
+                fontSize: "clamp(3.6rem, 8.5vw, 7.8rem)",
+                letterSpacing: "-0.04em",
+                lineHeight: 0.96,
+                fontWeight: 700,
                 color: "var(--text)",
               }}
             >
-              Final-year CS student building machine learning and software that works end to end.
-            </p>
+              Mourya<br />
+              <span style={{ color: "var(--muted)", fontWeight: 300 }}>Birru</span>
+            </motion.h1>
 
-            {/* Sub-copy */}
-            <p
-              className="hero-animate-3 mb-4"
-              style={{ fontSize: "15px", color: "var(--muted)" }}
-            >
-              Open to AI/ML, data science and SDE roles.
-            </p>
-
-            {/* Support paragraph */}
-            <p
-              className="hero-animate-4 mb-10"
+            {/* Positioning copy */}
+            <motion.p
+              variants={itemVariants}
+              className="mb-8"
               style={{
-                fontSize: "17px",
-                lineHeight: 1.65,
-                maxWidth: "520px",
+                fontSize: "clamp(0.95rem, 1.8vw, 1.1rem)",
+                lineHeight: 1.6,
+                maxWidth: 520,
                 color: "var(--muted)",
               }}
             >
-              From a CUDA inference engine for LLMs to a BLE-connected radiation monitoring app. I like knowing how things work underneath.
-            </p>
+              From a CUDA inference engine for LLMs to a BLE-connected radiation monitoring app.
+              I like knowing how things work underneath.
+            </motion.p>
 
             {/* CTAs */}
-            <div className="hero-animate-4 flex flex-wrap items-center gap-4 mb-9">
-              <a href="#projects" onClick={scrollToProjects} className="btn-primary">
-                <span>View projects</span>
-                <FaArrowRight size={13} />
-              </a>
-              <a href="/Mourya_Resume.pdf" download="Mourya_Birru_Resume.pdf" className="btn-secondary">
-                <span className="btn-secondary-inner">
-                  <FaDownload size={13} />
-                  <span>Resume</span>
-                </span>
-              </a>
-            </div>
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-3.5 mb-6">
+              <motion.a
+                whileTap={{ scale: 0.97 }}
+                href="#projects"
+                onClick={scrollToProjects}
+                className="btn-primary group"
+              >
+                <span>View Projects</span>
+                <FaArrowRight
+                  size={11}
+                  className="transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1"
+                />
+              </motion.a>
+
+              <motion.a
+                whileTap={{ scale: 0.97 }}
+                href="/Mourya_Resume.pdf"
+                download="Mourya_Birru_Resume.pdf"
+                className="btn-ghost"
+              >
+                <FaDownload size={11} />
+                <span>Resume</span>
+              </motion.a>
+
+              <button
+                onClick={openPalette}
+                className="mono transition-colors hover:text-white"
+                style={{
+                  fontSize: 11,
+                  color: "var(--subtle)",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  letterSpacing: "0.06em",
+                  padding: "2px 0",
+                }}
+                aria-label="Open command palette"
+              >
+                Press ⌘K to navigate
+              </button>
+            </motion.div>
 
             {/* Social links */}
-            <div className="hero-animate-4 flex items-center gap-7 mono" style={{ fontSize: "13px" }}>
-              <a
-                href="https://github.com/mourya05"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 transition-colors"
-                style={{ textDecoration: "none", color: "var(--muted)" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
-              >
-                <FaGithub size={14} />
-                <span>GitHub</span>
-              </a>
-              <a
-                href="https://linkedin.com/in/mourya-birru"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 transition-colors"
-                style={{ textDecoration: "none", color: "var(--muted)" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
-              >
-                <FaLinkedin size={14} />
-                <span>LinkedIn</span>
-              </a>
-              <a
-                href="mailto:mourya.birru@gmail.com"
-                className="inline-flex items-center gap-1.5 transition-colors"
-                style={{ textDecoration: "none", color: "var(--muted)" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--violet-hi)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
-              >
-                <FaEnvelope size={14} />
-                <span>Email</span>
-              </a>
-            </div>
-          </div>
+            <motion.div variants={itemVariants} className="flex items-center gap-6 mono" style={{ fontSize: 12 }}>
+              {[
+                { href: "https://github.com/mourya05", icon: <FaGithub size={13} />, label: "GitHub" },
+                { href: "https://linkedin.com/in/mourya-birru", icon: <FaLinkedin size={13} />, label: "LinkedIn" },
+                { href: "mailto:mourya.birru@gmail.com", icon: <FaEnvelope size={13} />, label: "Email" },
+                { href: "https://leetcode.com/u/mourya_birru/", icon: <FaCode size={13} />, label: "LeetCode" },
+              ].map(link => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={link.href.startsWith("mailto") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 transition-colors"
+                  style={{
+                    textDecoration: "none",
+                    color: "var(--muted)",
+                    letterSpacing: "0.06em",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--text)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--muted)"; }}
+                >
+                  {link.icon}
+                  <span>{link.label}</span>
+                </a>
+              ))}
+            </motion.div>
+          </motion.div>
 
-          {/* ── Right: portrait — no frame, mask fade ── */}
-          <div className="hero-animate-right flex justify-center lg:justify-end">
-            {/*
-              Container is ~40% of hero width on desktop.
-              The image itself fades out at the bottom and edges via mask-image.
-              A violet-tinted gradient overlay sits on top with mix-blend-mode to
-              kill the harsh white background in the photo.
-            */}
+          {/* ── RIGHT: Portrait Frame with Monochrome-to-Color & Expanding Ticks ── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="flex justify-center lg:justify-end"
+          >
+            {/* Framed portrait container with 4 expanding corner registration ticks on hover */}
             <div
-              className="relative"
+              className="relative group border border-[var(--border)] bg-[var(--bg-elevated)] transition-colors duration-200 hover:border-amber-500/50"
               style={{
-                width: "min(360px, 42vw)",
-                /* height auto from aspect-ratio */
-                aspectRatio: "4/5",
-                flexShrink: 0,
+                width: "min(320px, 80vw)",
+                aspectRatio: "4 / 5",
               }}
             >
-              {/* Photo */}
+              {/* 4 Corner Crosshairs: Expanding 3px outward & shifting to amber on hover */}
+              <span
+                aria-hidden="true"
+                className="absolute w-2 h-2 pointer-events-none -top-1 -left-1 border-t-2 border-l-2 border-amber-500/60 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-amber-400 group-hover:scale-110"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute w-2 h-2 pointer-events-none -top-1 -right-1 border-t-2 border-r-2 border-amber-500/60 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-amber-400 group-hover:scale-110"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute w-2 h-2 pointer-events-none -bottom-1 -left-1 border-b-2 border-l-2 border-amber-500/60 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-[3px] group-hover:translate-y-[3px] group-hover:border-amber-400 group-hover:scale-110"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute w-2 h-2 pointer-events-none -bottom-1 -right-1 border-b-2 border-r-2 border-amber-500/60 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-[3px] group-hover:translate-y-[3px] group-hover:border-amber-400 group-hover:scale-110"
+              />
+
+              {/* Index tag top-left */}
+              <div
+                className="mono absolute z-20 transition-colors duration-200 group-hover:text-amber-400"
+                style={{
+                  top: 10,
+                  left: 10,
+                  fontSize: 9,
+                  letterSpacing: "0.1em",
+                  color: "var(--amber)",
+                  textTransform: "uppercase",
+                  opacity: 0.85,
+                }}
+                aria-hidden="true"
+              >
+                FIG_01 · CLASS_OF_2027
+              </div>
+
+              {/* Photo: smooth monochrome-to-color transition on hover (duration-300) */}
               <Image
                 src="/myphoto.jpeg"
-                alt="Mourya Birru — CS Student at GCET"
+                alt="Mourya Birru — CS Student at GCET, Hyderabad"
                 fill
                 priority
-                sizes="(max-width: 768px) 340px, 360px"
-                className="object-cover object-top"
+                sizes="(max-width: 768px) 80vw, 320px"
+                className="object-cover object-top grayscale brightness-90 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grayscale-0 group-hover:brightness-100"
                 style={{
                   maskImage:
-                    "linear-gradient(to bottom, #000 60%, transparent 100%), " +
-                    "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+                    "linear-gradient(to bottom, #000 55%, transparent 100%), " +
+                    "linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%)",
                   maskComposite: "intersect",
                   WebkitMaskImage:
-                    "linear-gradient(to bottom, #000 60%, transparent 100%), " +
-                    "linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%)",
+                    "linear-gradient(to bottom, #000 55%, transparent 100%), " +
+                    "linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%)",
                   WebkitMaskComposite: "source-in",
                 }}
               />
 
-              {/* Violet-to-black overlay — kills harsh white bg */}
+              {/* Dark overlay for contrast */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 pointer-events-none"
+                className="absolute inset-0 pointer-events-none transition-opacity duration-300 group-hover:opacity-75"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(139,92,246,0.18) 0%, rgba(13,11,20,0.72) 75%, var(--void) 100%)",
-                  mixBlendMode: "multiply",
+                    "linear-gradient(180deg, rgba(7,8,10,0.1) 0%, rgba(7,8,10,0.6) 80%, var(--bg) 100%)",
                 }}
               />
 
-              {/* Caption in the lower area */}
+              {/* GCET label */}
               <div
-                className="absolute z-20"
-                style={{ bottom: "18%", left: 0 }}
+                className="absolute z-20 mono"
+                style={{ bottom: 14, left: 14, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase" }}
               >
-                <span
-                  className="mono tracking-wider"
-                  style={{ fontSize: "11px", color: "var(--violet-hi)", opacity: 0.8 }}
-                >
-                  CLASS OF 2027 · GCET
-                </span>
+                GCET · B.TECH CSE
               </div>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
-      </div>
-
-      {/* Capability strip marquee (moving left to right) */}
-      <div
-        className="w-full border-t border-b py-3.5 relative z-10 overflow-hidden ticker-mask select-none"
-        style={{
-          backgroundColor: "rgba(13,11,20,0.6)",
-          backdropFilter: "blur(8px)",
-          borderColor: "var(--border)",
-        }}
-        aria-label="Core Technical Capabilities"
-      >
-        <div
-          className="ticker-track-right flex items-center mono tracking-widest text-[12px]"
-          style={{ letterSpacing: "0.14em", color: "var(--violet-hi)" }}
-        >
-          {/* Set 1 */}
-          <div className="flex items-center shrink-0">
-            {tickerItems.map((kw, i) => (
-              <div key={`track-a-${i}`} className="flex items-center gap-6 sm:gap-8 pr-6 sm:pr-8">
-                <span className="whitespace-nowrap transition-colors hover:text-white cursor-default">
-                  {kw}
-                </span>
-                <span style={{ color: "var(--border-strong)", opacity: 0.8 }}>/</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Set 2 (Identical duplicate for seamless continuous flow) */}
-          <div className="flex items-center shrink-0" aria-hidden="true">
-            {tickerItems.map((kw, i) => (
-              <div key={`track-b-${i}`} className="flex items-center gap-6 sm:gap-8 pr-6 sm:pr-8">
-                <span className="whitespace-nowrap transition-colors hover:text-white cursor-default">
-                  {kw}
-                </span>
-                <span style={{ color: "var(--border-strong)", opacity: 0.8 }}>/</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
