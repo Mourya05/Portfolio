@@ -171,7 +171,7 @@ export default function StackSection() {
                   </span>
                   <div className="flex gap-4 mt-2">
                     <span className="mono text-[11px] text-[var(--muted)]">Grad 2027</span>
-                    <span className="mono text-[11px] text-amber-400 font-medium">CGPA 7.49 / 10</span>
+                    <span className="mono text-[11px] text-amber-400 font-medium">CGPA 8.22 / 10</span>
                     <span className="mono text-[11px] text-[var(--muted)]">Hyderabad, IN</span>
                   </div>
                 </div>
