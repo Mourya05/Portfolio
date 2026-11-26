@@ -50,7 +50,7 @@ export default function Footer() {
           {[
             { href: "https://github.com/mourya05",          icon: <FaGithub size={13} />,   label: "GitHub"   },
             { href: "https://linkedin.com/in/mourya-birru", icon: <FaLinkedin size={13} />, label: "LinkedIn" },
-            { href: "https://leetcode.com/u/mourya_birru/", icon: <FaCode size={13} />,     label: "LeetCode" },
+            { href: "https://leetcode.com/u/Mourya_birru/", icon: <FaCode size={13} />,     label: "LeetCode" },
           ].map(link => (
             <a
               key={link.label}

@@ -53,9 +53,9 @@ function CommandPalette({
       action: () => { window.open("https://linkedin.com/in/mourya-birru", "_blank"); onClose(); }
     },
     {
-      id: "open-leetcode", label: "Open LeetCode", meta: "mourya_birru", group: "Links",
+      id: "open-leetcode", label: "Open LeetCode", meta: "Mourya_birru", group: "Links",
       icon: <FaCode size={13} />,
-      action: () => { window.open("https://leetcode.com/u/mourya_birru/", "_blank"); onClose(); }
+      action: () => { window.open("https://leetcode.com/u/Mourya_birru/", "_blank"); onClose(); }
     },
     {
       id: "open-resume", label: "Download Resume", group: "Links",

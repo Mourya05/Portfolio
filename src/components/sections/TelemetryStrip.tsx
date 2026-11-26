@@ -22,12 +22,12 @@ const channels = [
     label: "LeetCode",
     renderValue: () => (
       <span>
-        <TelemetryNumber value={1830} duration={0.6} /> Rating
+        <TelemetryNumber value={2205} duration={0.6} /> Rating
       </span>
     ),
-    sub: "Biweekly Rank 101",
-    href: "https://leetcode.com/u/mourya_birru/",
-    dot: false,
+    sub: "Guardian · Top 0.9%",
+    href: "https://leetcode.com/u/Mourya_birru/",
+    dot: true,
   },
   {
     id: "github",

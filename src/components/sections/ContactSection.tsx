@@ -159,7 +159,7 @@ export default function ContactSection() {
                 { href: "/Mourya_Resume.pdf", download: "Mourya_Birru_Resume.pdf", icon: <FaDownload size={12} />, label: "Resume" },
                 { href: "https://github.com/mourya05",          icon: <FaGithub size={12} />,   label: "GitHub"   },
                 { href: "https://linkedin.com/in/mourya-birru", icon: <FaLinkedin size={12} />, label: "LinkedIn" },
-                { href: "https://leetcode.com/u/mourya_birru/", icon: <FaCode size={12} />,     label: "LeetCode" },
+                { href: "https://leetcode.com/u/Mourya_birru/", icon: <FaCode size={12} />,     label: "LeetCode" },
               ].map(link => (
                 <motion.a
                   key={link.label}

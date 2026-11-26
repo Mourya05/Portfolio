@@ -42,7 +42,9 @@ const skillGroups: SkillGroup[] = [
 
 const achievements: AchievementItem[] = [
   { title: "IEEEXtreme 18.0",              context: "Global Rank 542",   isKey: true  },
-  { title: "LeetCode",                     context: "1830 Rating · Biweekly Rank 101", isKey: true },
+  { title: "LeetCode Guardian",             context: "2,205 Rating · Top 0.9% · #7,667 Global", isKey: true },
+  { title: "Biweekly Contest 196",          context: "Rank 63 / 19,209 · Top 0.33%",  isKey: false },
+  { title: "Weekly Contest 529",            context: "Rank 115 / 28,221 · Top 0.41%", isKey: false },
   { title: "Smart Interviews GCET-2027-R", context: "Rank #1",           isKey: true  },
   { title: "GATE CSE 2026",               context: "AIR 9602",           isKey: false },
   { title: "Agentation 2025 Finalist",    context: "Agentic AI Hackathon, Malla Reddy", isKey: false },
